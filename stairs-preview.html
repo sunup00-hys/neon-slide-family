@@ -18,7 +18,7 @@
 <div class="layout">
 <section id="gameShell" class="game-shell" aria-label="계단 게임">
 <div class="stage-view" id="stageView">
-<canvas id="gameCanvas" aria-label="다음 계단의 방향을 보고 방향 전환 또는 오르기를 누르세요"></canvas>
+<canvas id="gameCanvas" tabindex="0" aria-label="다음 계단의 방향을 보고 방향 전환 또는 오르기를 누르세요"></canvas>
 <div class="hud">
 <div class="hud-top"><div class="score-wrap"><span class="score" id="score">0</span><span class="unit">계단</span></div><div class="hud-actions"><button id="pauseButton" aria-label="일시 정지">Ⅱ 정지</button><button id="sizeButton">↙ 작게 보기</button></div></div>
 <div class="energy" role="progressbar" aria-label="남은 시간" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" id="energyBar"><span id="energyFill"></span></div>
@@ -107,7 +107,7 @@ function reset(){
 function start(){
  if(state.status==="paused"){state.status="playing";}
  else{if(state.status==="over"||state.status==="complete")reset();state.status="playing";}
- $("overlay").hidden=true;lastFrame=null;unlockAudio();syncHud();
+ $("overlay").hidden=true;lastFrame=null;unlockAudio();canvas.focus?.({preventScroll:true});syncHud();
 }
 function pause(){
  if(state.status!=="playing")return;
