@@ -61,7 +61,7 @@ body{background:#191b2c}
 <div class="stage-view" id="stageView">
 <canvas id="gameCanvas" tabindex="0" aria-label="다음 계단의 방향을 보고 방향 전환 또는 오르기를 누르세요"></canvas>
 <div class="hud">
-<div class="hud-top"><div class="score-wrap"><span class="score" id="score">0</span><span class="unit">계단</span></div><div class="star-strip" id="starPill"><span class="star-symbol" aria-hidden="true">★</span><span><small>계단 체험 별</small><span id="starBalance">0</span></span></div><div class="hud-actions"><button id="quickWardrobe">캐릭터</button><button id="pauseButton" aria-label="일시 정지">Ⅱ 정지</button><button id="sizeButton">↙ 작게 보기</button></div></div>
+<div class="hud-top"><div class="score-wrap"><span class="score" id="score">0</span><span class="unit">계단</span></div><div class="star-strip" id="starPill"><span class="star-symbol" aria-hidden="true">★</span><span><small>공통 별</small><span id="starBalance">0</span></span></div><div class="hud-actions"><button id="quickWardrobe">캐릭터</button><button id="pauseButton" aria-label="일시 정지">Ⅱ 정지</button><button id="sizeButton">↙ 작게 보기</button></div></div>
 <div class="energy" role="progressbar" aria-label="남은 시간" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" id="energyBar"><span id="energyFill"></span></div>
 <div class="hud-sub"><span id="modeStatus">무한 도전</span><span id="bestStatus">이 기기 최고 0</span></div>
 </div>
@@ -82,7 +82,7 @@ body{background:#191b2c}
 <button class="choice" data-character="prince" aria-pressed="false"><canvas width="160" height="200"></canvas>왕자 레온</button>
 <button class="choice" data-character="witch" aria-pressed="false"><canvas width="160" height="200"></canvas>마법사 미오</button><button class="choice" data-character="ninja" aria-pressed="false"><canvas width="160" height="200"></canvas>닌자 카이</button>
 </div>
-<div class="shop-caption" id="shopCaption">★ 스카이는 무료 · 다른 러너는 별로 해금할 수 있어요.</div><h3>컬러 스타일</h3><div class="chips"><button class="chip" data-outfit="classic" aria-pressed="true">오리지널</button><button class="chip" data-outfit="sport" aria-pressed="false">민트·로즈</button><button class="chip" data-outfit="space" aria-pressed="false">실버·골드</button></div>
+<div class="shop-caption" id="shopCaption">캐릭터 10종은 자유롭게 선택할 수 있어요. 펫·계단 구매에는 공통 별을 사용해요.</div><h3>컬러 스타일</h3><div class="chips"><button class="chip" data-outfit="classic" aria-pressed="true">오리지널</button><button class="chip" data-outfit="sport" aria-pressed="false">민트·로즈</button><button class="chip" data-outfit="space" aria-pressed="false">실버·골드</button></div>
 <h3>액세서리</h3><div class="chips"><button class="chip" id="crownButton" aria-pressed="false">왕관</button><button class="chip" id="wingsButton" aria-pressed="false">날개</button><button class="chip" id="shoesButton" aria-pressed="false">네온 운동화</button></div>
 <h3>펫</h3><div class="chips" id="petChoices"></div><h3>계단</h3><div class="chips"><button class="chip" data-stairs="brick" aria-pressed="true">자수정 석판</button><button class="chip" data-stairs="crystal" aria-pressed="false">크리스털</button><button class="chip" data-stairs="cloud" aria-pressed="false">구름</button><button class="chip" data-stairs="wood" aria-pressed="false">나무</button></div>
 <h3>배경</h3><div class="chips"><button class="chip" data-background="city" aria-pressed="false">도시 야경</button><button class="chip" data-background="castle" aria-pressed="true">별빛 성</button><button class="chip" data-background="forest" aria-pressed="false">숲</button><button class="chip" data-background="space" aria-pressed="false">우주</button></div>
@@ -488,7 +488,7 @@ function refreshShopUI(){
   const owned=inventory.owned.includes(item.id),selected=state.character===item.id;
   b.classList.toggle("locked",!owned);b.setAttribute("aria-pressed",String(selected));
   b.querySelector(".cost")?.remove();const small=document.createElement("span");small.className="cost";
-  small.textContent=selected?"✓ 사용 중":owned?"보유": "★ "+item.price;
+  small.textContent=selected?"✓ 사용 중":owned?"보유":"선택";
   b.append(small);
  });
  const petBox=$("petChoices");petBox.replaceChildren();
