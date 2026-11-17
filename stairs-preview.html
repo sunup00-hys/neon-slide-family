@@ -384,7 +384,7 @@ function drawBackground(){
 
 // One source of truth for five character choices, unlocks and gameplay.
 const STORE_KEY="neon-stairs-integrated-shop-v1";
-const RUNNERS=[{id:"azure",name:"스카이",price:0},{id:"luna",name:"루나",price:8},{id:"prince",name:"왕자 레온",price:12},{id:"witch",name:"마법사 미오",price:15},{id:"ninja",name:"닌자 카이",price:18},{id:"knight",name:"기사 아론",price:20},{id:"pirate",name:"해적 루크",price:22},{id:"robot",name:"로봇 제트",price:24},{id:"astronaut",name:"우주인 노바",price:26},{id:"shadow",name:"그림자 검객",price:30}];
+const RUNNERS=[{id:"azure",name:"스카이",price:0},{id:"luna",name:"루나",price:8},{id:"prince",name:"왕자 레온",price:12},{id:"witch",name:"마법사 미오",price:15},{id:"ninja",name:"닌자 카이",price:18},{id:"knight",name:"복싱선수",price:20},{id:"pirate",name:"저격수",price:22},{id:"robot",name:"레드 아머",price:24},{id:"astronaut",name:"그린 타이탄",price:26},{id:"shadow",name:"투명인간",price:30}];
 const PETS=[{id:"none",name:"없음",price:0},{id:"dog",name:"강아지",price:0},{id:"cat",name:"고양이",price:5},{id:"bunny",name:"토끼",price:7},{id:"fox",name:"여우",price:9},{id:"dragon",name:"드래곤",price:14},{id:"panda",name:"판다",price:16},{id:"penguin",name:"펭귄",price:18},{id:"unicorn",name:"유니콘",price:20},{id:"slime",name:"슬라임",price:22},{id:"phoenix",name:"불사조",price:25}];
 const STAIR_ITEMS=[{id:"brick",name:"자수정 석판",price:0},{id:"crystal",name:"크리스털",price:6},{id:"cloud",name:"구름",price:8},{id:"wood",name:"나무",price:6},{id:"gold",name:"황금",price:12},{id:"lava",name:"용암",price:14},{id:"rainbow",name:"무지개",price:16},{id:"glass",name:"투명 유리",price:18},{id:"fire",name:"불꽃 계단",price:20},{id:"ice",name:"빙하 계단",price:18},{id:"neon",name:"네온 계단",price:22},{id:"cosmic",name:"우주석 계단",price:24}];
 let inventory={owned:["azure","brick","none","dog"],character:"azure",pet:"dog",stairs:"brick"};
@@ -477,6 +477,7 @@ function drawRunner(c,x,y,scale,facing,phase,config){
  const factor=72*scale/row.maxHeight,w=frame.right-frame.x,h=frame.bottom-frame.y;
  c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing,1);
  c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";
+ if(config.character==="shadow")c.globalAlpha=.72+.22*Math.sin((phase<0?0:phase)*Math.PI/4);
  if(config.outfit==="sport")c.filter="hue-rotate(22deg)";
  if(config.outfit==="space")c.filter="saturate(.6) brightness(1.12)";
  c.drawImage(runnerAtlas,frame.x,frame.y,w,h,(frame.x-frame.center)*factor,-h*factor,w*factor,h*factor);
@@ -523,11 +524,11 @@ saveInventory();refreshShopUI();
 /* v0.9: 8 individually rendered motion frames for five additional heroes.
    Frames are generated once into transparent canvases, not redrawn as a static icon. */
 const EXTRA_HEROES={
- knight:{hair:"#f1c85e",coat:"#a9bed5",trim:"#f5d47c",skin:"#f1c39c",hat:"helm"},
- pirate:{hair:"#452e38",coat:"#a93d51",trim:"#e9bc73",skin:"#d9a67e",hat:"pirate"},
- robot:{hair:"#77d7e8",coat:"#557eae",trim:"#91f4ef",skin:"#c4e6f1",hat:"robot"},
- astronaut:{hair:"#d8edff",coat:"#f1f4fa",trim:"#78d6ed",skin:"#f3c9a4",hat:"space"},
- shadow:{hair:"#2a2948",coat:"#42386b",trim:"#d06db5",skin:"#e0b5ad",hat:"hood"}
+ knight:{hair:"#54312d",coat:"#e75b3f",trim:"#f5d47c",skin:"#f1c39c",hat:"boxer"},
+ pirate:{hair:"#d8b479",coat:"#394e63",trim:"#e9bc73",skin:"#d9a67e",hat:"sniper"},
+ robot:{hair:"#ffe58a",coat:"#d83c3d",trim:"#91f4ef",skin:"#c4e6f1",hat:"robot"},
+ astronaut:{hair:"#26362a",coat:"#65ac51",trim:"#78d6ed",skin:"#73bf64",hat:"titan"},
+ shadow:{hair:"#82eaff",coat:"#3c9fc5",trim:"#b3ffff",skin:"#b4f6ff",hat:"invisible"}
 };
 const extraHeroFrames={};
 function buildExtraHeroes(){
@@ -539,9 +540,13 @@ function buildExtraHeroes(){
    const bob=[0,-2,-4,-2,0,-2,-4,-2][f],swing=[0,5,8,4,0,-5,-8,-4][f];
    c.save();c.translate(0,bob);
    q("#25243e",25,19,24,30);q(p.hair,27,17,20,13);
+   if(p.hat==="boxer"){q("#c94c34",22,44,10,13);q("#f2b76b",31,12,14,5);}
    if(p.hat==="helm"){q("#c8d7e6",24,12,28,13);q("#f4d97e",35,8,6,8);q("#62758b",24,25,28,4);}
+   if(p.hat==="sniper"){q("#32435c",21,10,34,10);q("#f1c47c",28,17,20,3);q("#1e253a",51,45,18,4);q("#9daeb9",58,42,12,3);}
    if(p.hat==="pirate"){q("#252238",21,10,34,12);q("#f1c47c",26,16,24,3);q("#252238",31,5,14,8);}
    if(p.hat==="robot"){q("#a8cbdc",24,11,28,27);q("#4b6a89",27,20,22,8);q("#70fff1",30,23,5,3);q("#70fff1",42,23,5,3);q("#f8d37a",35,5,5,7);}
+   if(p.hat==="titan"){q("#293e2d",23,10,30,11);q("#64b65d",25,20,27,20);}
+   if(p.hat==="invisible"){q("#80f7ff99",22,8,32,36);q("#d6ffff",29,24,4,3);q("#d6ffff",42,24,4,3);}
    if(p.hat==="space"){q("#b4d5e8",21,8,34,37);q("#f3f8ff",24,11,28,31);q("#5d8da9",26,18,24,14);q("#a8f6fa",28,20,20,8);}
    if(p.hat==="hood"){q("#29243f",22,8,32,36);q("#554677",25,17,26,20);}
    if(!["robot","space"].includes(p.hat)){q(p.skin,29,26,18,17);q("#26243a",32,31,4,3);q("#26243a",42,31,4,3);q("#f4d0ae",35,38,8,2);}
@@ -551,9 +556,9 @@ function buildExtraHeroes(){
    q("#161b30",22+swing*.32,85,14,6);q("#161b30",42-swing*.32,85,14,6);
    q(p.coat,17-swing*.4,48,9,19);q(p.coat,51+swing*.4,48,9,19);
    q(p.skin,17-swing*.4,64,8,6);q(p.skin,51+swing*.4,64,8,6);
-   if(p.hat==="knight")q("#e6edf8",56+swing*.4,48,3,30);
-   if(p.hat==="pirate")q("#e6e8ec",57+swing*.4,49,3,24);
-   if(p.hat==="shadow")q("#b66be3",57+swing*.4,44,3,34);
+   if(p.hat==="boxer")q("#e6edf8",56+swing*.4,48,3,30);
+   if(p.hat==="sniper"){q("#2c3548",50+swing*.4,48,20,5);q("#a8b9c5",62+swing*.4,46,9,2);}
+   if(p.hat==="invisible")q("#b66be3",57+swing*.4,44,3,34);
    c.restore();return cv;
   });
  }
@@ -639,8 +644,8 @@ for(const item of RUNNERS){
  const cv=document.createElement("canvas");cv.width=160;cv.height=200;b.append(cv,document.createTextNode(item.name));
  $("characters").append(b);b.addEventListener("click",()=>equipOrBuy("character",item));
 }
-document.querySelector(".footer").textContent="2026.11.17 · v0.9 — 캐릭터 10종 · 펫 10종 · 계단 12종 · 신규 8프레임 애니메이션";
-document.querySelector(".note").innerHTML=document.querySelector(".note").innerHTML.replace("플레이 버전 0.8","플레이 버전 0.9");
+document.querySelector(".footer").textContent="2026.11.17 · v1.0 — 캐릭터 10종 · 펫 10종 · 계단 12종 · 신규 8프레임 애니메이션";
+document.querySelector(".note").innerHTML=document.querySelector(".note").innerHTML.replace("플레이 버전 0.8","플레이 버전 1.0");
 
 runnerAtlas.src="./assets/stairs-runners-v08.png";
 new ResizeObserver(resize).observe($("stageView"));resize();drawPreviews();syncHud();requestAnimationFrame(frame);
