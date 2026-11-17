@@ -63,7 +63,7 @@ body{background:#191b2c}
 <div class="hud-sub"><span id="modeStatus">무한 도전</span><span id="bestStatus">이 기기 최고 0</span></div>
 </div>
 <div class="toast" id="starToast" role="status" hidden></div><div class="overlay" id="overlay">
-<div class="dialog"><div class="mode-label" id="overlayLabel">READY TO RUN</div><h2 id="overlayTitle">계단을 달려 올라요</h2><div class="result" id="result" hidden></div><p id="overlayText">오른쪽 버튼은 바라보는 방향으로 한 칸!<br>계단이 꺾이면 왼쪽 ‘방향 전환’으로 돌아서 한 칸!</p><button class="primary" id="startButton">게임 시작</button><button class="secondary" id="wardrobeButton">캐릭터 · 게임 설정</button></div>
+<div class="dialog"><div class="mode-label" id="overlayLabel">READY TO RUN</div><h2 id="overlayTitle">계단을 달려 올라요</h2><div class="result" id="result" hidden></div><p id="overlayText">오른쪽 버튼은 바라보는 방향으로 한 칸!<br>계단이 꺾이면 왼쪽 ‘방향 전환’으로 돌아서 한 칸!</p><button class="primary" id="startButton">게임 시작</button><button class="secondary" id="reviveButton" hidden>😇 ★ 3개로 현재 계단에서 부활</button><button class="secondary" id="wardrobeButton">캐릭터 · 게임 설정</button></div>
 </div>
 </div>
 <div class="controls" aria-label="게임 조작">
@@ -142,21 +142,36 @@ function reset(){
  route=makeRoute(20261117+(++seedCounter)*7919,state.mode==="stage"?state.stage-1:0);
  state.index=0;state.facing=1;state.energy=1;state.status="ready";
  renderX=renderY=camX=camY=fall=runUntil=0;gainEffects=[];trail=[];stepAt=-1000;$("starToast").hidden=true;
+ $("reviveButton").hidden=true;
  showOverlay("READY TO RUN","계단을 달려 올라요","오르기는 그대로 한 칸, 방향 전환은 돌아서 한 칸! 다음 계단의 방향을 보고 눌러요.","게임 시작");syncHud();
 }
 function start(){
  if(!runnerFrames)return;
  if(state.status==="paused"){state.status="playing";}
  else{if(state.status==="over"||state.status==="complete")reset();state.status="playing";}
- $("overlay").hidden=true;lastFrame=null;unlockAudio();canvas.focus?.({preventScroll:true});syncHud();
+ $("overlay").hidden=true;$("reviveButton").hidden=true;lastFrame=null;unlockAudio();canvas.focus?.({preventScroll:true});syncHud();
 }
 function pause(){
  if(state.status!=="playing")return;
  state.status="paused";showOverlay("PAUSED","잠깐 쉬는 중","캐릭터를 바꾸고 여기서 이어서 달릴 수 있어요.","계속 달리기",state.index);syncHud();
 }
+const REVIVE_COST=3;
+function revive(){
+ if(state.status!=="over")return;
+ if(starLedger.stars<REVIVE_COST){toastShop("★ 부활에는 별 3개가 필요해요.");return;}
+ starLedger.stars-=REVIVE_COST;
+ try{localStorage.setItem(STAR_KEY,JSON.stringify(starLedger));}catch(e){}
+ state.energy=1;state.status="playing";fall=0;lastFrame=null;runUntil=0;trail=[];
+ $("overlay").hidden=true;$("reviveButton").hidden=true;
+ syncHud();toastShop("😇 천사의 도움! "+state.index+"계단에서 다시 시작");
+}
+$("reviveButton").addEventListener("click",revive);
 function finish(success,reason){
  if(state.status!=="playing")return;state.status=success?"complete":"over";recordBest();if(success)checkStars(true);
  showOverlay(success?"STAGE CLEAR":"TRY AGAIN",success?"스테이지 성공!":"다시 달려 볼까요?",reason,success&&state.stage<10?"다음 스테이지":"다시 도전",state.index);
+ $("reviveButton").hidden=success;
+ $("reviveButton").textContent="😇 ★ "+REVIVE_COST+"개로 "+state.index+"계단에서 부활";
+ $("reviveButton").disabled=starLedger.stars<REVIVE_COST;
  sound(success?"win":"fail");syncHud();
 }
 function action(kind){
@@ -188,7 +203,7 @@ function sound(kind){
 }
 function resize(){
  const box=$("stageView").getBoundingClientRect();width=Math.max(240,box.width);height=Math.max(220,box.height);
- const dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
+ const dpr=Math.min(window.devicePixelRatio||1,1.5);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingEnabled=false;
 }
 function rect(c,color,x,y,w,h){c.fillStyle=color;c.fillRect(Math.round(x),Math.round(y),w,h);}
@@ -217,22 +232,23 @@ rect(ctx,"#251f3755",x+23,y+3,3,13);
  if(index>0&&index%20===0){rect(ctx,"#c08b45",x-24,y+12,48,3);rect(ctx,"#ffe3a1",x-2,y+5,4,4);}
  if(index===state.index)rect(ctx,"#f2d294",x-23,y-2,46,2);
 }
+let lastHudAt=0;
 function frame(now){
  if(lastFrame===null)lastFrame=now;
  const dt=Math.min((now-lastFrame)/1000,.05);lastFrame=now;animTime=now;
- if(state.status==="playing"){state.energy=Math.max(0,state.energy-dt*(.15+Math.min(.12,state.index*.00035)+(state.mode==="stage"?(state.stage-1)*.005:0)));if(state.energy<=0)finish(false,"시간이 다 되었어요. 리듬을 이어서 빠르게 올라 보세요.");syncHud();}
+ if(state.status==="playing"){state.energy=Math.max(0,state.energy-dt*(.15+Math.min(.12,state.index*.00035)+(state.mode==="stage"?(state.stage-1)*.005:0)));if(state.energy<=0)finish(false,"시간이 다 되었어요. 리듬을 이어서 빠르게 올라 보세요.");if(now-lastHudAt>100){syncHud();lastHudAt=now;}}
  if(state.status==="over"&&!reduced)fall=Math.min(100,fall+dt*200);
  const step=route.steps[state.index],tx=step.x*STEP_X,ty=-step.y*STEP_Y;
- const blend=reduced?1:1-Math.exp(-dt*38);
+ const blend=reduced?1:1-Math.exp(-dt*20);
  renderX+=(tx-renderX)*blend;renderY+=(ty-renderY)*blend;
- camX+=(renderX-camX)*Math.min(1,dt*14);camY+=(renderY-camY)*Math.min(1,dt*18);
+ camX+=(renderX-camX)*Math.min(1,dt*11);camY+=(renderY-camY)*Math.min(1,dt*12);
  // Keep decorative backgrounds fixed to the viewport; only stairs and runners scroll.
  const movingCamX=camX,movingCamY=camY;
  camX=0;camY=0;
  try{drawBackground();}finally{camX=movingCamX;camY=movingCamY;}
  ctx.save();
  ctx.translate(Math.round(width/2-camX),Math.round(height*.72-camY));
- const first=Math.max(0,state.index-Math.ceil(height/STEP_Y)),last=Math.min(route.steps.length-1,state.index+Math.ceil(height/STEP_Y)+4);
+ const first=Math.max(0,state.index-Math.ceil(height/STEP_Y)-2),last=Math.min(route.steps.length-1,state.index+Math.ceil(height/STEP_Y)+4);
  for(let i=first;i<=last;i++){const s=route.steps[i];drawStair(s.x*STEP_X,-i*STEP_Y,i);if(i>state.index&&i%20===0&&state.mode==="infinite"&&i>starLedger.infiniteMilestone*20)drawStar(s.x*STEP_X,-i*STEP_Y-18,10,now);}
  // Only a tiny running bob; the camera follows the fast diagonal stride.
  const active=state.status==="playing"&&now<runUntil;const phase=active?(now-stepAt)/26+state.index:-1;
@@ -606,7 +622,7 @@ function drawPetPreviews(){
 }
 let lastPreviewAt=0;
 function animatePreviews(now){
- if(!state.large&&now-lastPreviewAt>90){drawPreviews();drawPetPreviews();lastPreviewAt=now;}
+ if(!state.large&&state.status!=="playing"&&now-lastPreviewAt>240){drawPreviews();drawPetPreviews();lastPreviewAt=now;}
 }
 heroMotionAtlas.src="./assets/stairs-heroes-motion-v11.webp";
 petMotionAtlas.src="./assets/stairs-pets-motion-v11.webp";
