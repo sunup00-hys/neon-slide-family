@@ -63,7 +63,7 @@ body{background:#191b2c}
 <div class="hud-sub"><span id="modeStatus">무한 도전</span><span id="bestStatus">이 기기 최고 0</span></div>
 </div>
 <div class="toast" id="starToast" role="status" hidden></div><div class="overlay" id="overlay">
-<div class="dialog"><div class="mode-label" id="overlayLabel">READY TO RUN</div><h2 id="overlayTitle">계단을 달려 올라요</h2><div class="result" id="result" hidden></div><p id="overlayText">오른쪽 버튼은 바라보는 방향으로 한 칸!<br>계단이 꺾이면 왼쪽 ‘방향 전환’으로 돌아서 한 칸!</p><button class="primary" id="startButton">게임 시작</button><button class="secondary" id="reviveButton" hidden>😇 ★ 3개로 현재 계단에서 부활</button><button class="secondary" id="wardrobeButton">캐릭터 · 게임 설정</button></div>
+<div class="dialog"><div class="mode-label" id="overlayLabel">READY TO RUN</div><h2 id="overlayTitle">계단을 달려 올라요</h2><div class="result" id="result" hidden></div><p id="overlayText">오른쪽 버튼은 바라보는 방향으로 한 칸!<br>계단이 꺾이면 왼쪽 ‘방향 전환’으로 돌아서 한 칸!</p><button class="primary" id="startButton">게임 시작</button><button class="secondary" id="reviveButton" hidden>😇 ★ 15개로 현재 계단에서 부활</button><button class="secondary" id="wardrobeButton">캐릭터 · 게임 설정</button></div>
 </div>
 </div>
 <div class="controls" aria-label="게임 조작">
@@ -155,10 +155,10 @@ function pause(){
  if(state.status!=="playing")return;
  state.status="paused";showOverlay("PAUSED","잠깐 쉬는 중","캐릭터를 바꾸고 여기서 이어서 달릴 수 있어요.","계속 달리기",state.index);syncHud();
 }
-const REVIVE_COST=3;
+const REVIVE_COST=15;
 function revive(){
  if(state.status!=="over")return;
- if(starLedger.stars<REVIVE_COST){toastShop("★ 부활에는 별 3개가 필요해요.");return;}
+ if(starLedger.stars<REVIVE_COST){toastShop("★ 부활에는 별 15개가 필요해요.");return;}
  starLedger.stars-=REVIVE_COST;
  try{localStorage.setItem(STAR_KEY,JSON.stringify(starLedger));}catch(e){}
  state.energy=1;state.status="playing";fall=0;lastFrame=null;runUntil=0;trail=[];
