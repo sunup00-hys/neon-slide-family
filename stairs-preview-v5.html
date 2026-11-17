@@ -79,12 +79,12 @@ frame.addEventListener("load",()=>{
 
 const SHOP_KEY="neon-stairs-wardrobe-v8";
 const heroes=[
- ["azure","스카이","무료","#8fe4ff","azure"],
- ["luna","루나","무료","#f4a3dc","luna"],
- ["prince","태양 왕자",5,"#ffe09c","prince"],
+ ["azure","스카이",0,"#8fe4ff","azure"],
+ ["luna","루나",8,"#f4a3dc","luna"],
+ ["prince","왕자 레온",12,"#ffe09c","prince"],
  ["princess","달빛 공주",5,"#caa3ff","princess"],
- ["ninja","그림자 닌자",8,"#8188b6","azure"],
- ["witch","별빛 마법사",10,"#db9bff","luna"],
+ ["ninja","닌자 카이",18,"#8188b6","azure"],
+ ["witch","마법사 미오",15,"#db9bff","luna"],
  ["robot","네온 로봇",12,"#80f3e5","prince"],
  ["pirate","보물 해적",12,"#e3ac72","prince"],
  ["knight","은빛 기사",15,"#b4d8f4","prince"],
@@ -110,7 +110,7 @@ const steps=[
 ];
 let shopData;
 try{shopData=JSON.parse(localStorage.getItem(SHOP_KEY)||"null")}catch(e){}
-if(!shopData||typeof shopData!=="object")shopData={owned:["azure","luna","dog","brick"],hero:"azure",pet:"dog",step:"brick"};
+if(!shopData||typeof shopData!=="object")shopData={owned:["azure","dog","brick"],hero:"azure",pet:"dog",step:"brick"};
 if(!Array.isArray(shopData.owned))shopData.owned=["azure","luna","dog","brick"];
 const saveShop=()=>localStorage.setItem(SHOP_KEY,JSON.stringify(shopData));
 const shop=document.createElement("div");
@@ -140,7 +140,7 @@ function refreshShop(){
   const card=document.createElement("div");card.className="ns-item"+(selected?" selected":"");
   const cv=document.createElement("canvas");cv.width=80;cv.height=96;card.append(cv);
   const context=cv.getContext("2d");context.imageSmoothingEnabled=false;
-  if(tab==="hero"&&game){const character=item[4]||"azure";originalRunner?.(context,40,90,1.55,1,-1,{character,outfit:"classic",crown:id==="knight",wings:id==="dragon",shoes:true});context.fillStyle=color;context.fillRect(3,3,12,12)}
+  if(tab==="hero"&&game){if(["azure","luna","prince","witch","ninja"].includes(id))drawFiveRunner(context,40,90,1.55,1,-1,id,{});else originalRunner?.(context,40,90,1.55,1,-1,{character:item[4]||"azure",outfit:"classic",crown:id==="knight",wings:id==="dragon",shoes:true});}
   else{context.font="48px system-ui";context.textAlign="center";context.fillText(tab==="pet"?item[3]:item[3],40,60)}
   const title=document.createElement("strong");title.textContent=name;card.append(title);
   const button=document.createElement("button");button.textContent=selected?"✓ 사용 중":owned?"사용하기":"★ "+price+" 구매";
@@ -170,6 +170,57 @@ function drawPet(c,x,y,scale,facing,phase){
  q("#d76b75",3,-8,3,2);q(main,-11,-5,6,5);q(main,4,-5,6,5);
  c.restore();
 }
+
+// Five distinctive animated pixel characters based on the approved concept art.
+// All parts are rendered every frame, so arms, legs and accessories follow the run cycle.
+function drawFiveRunner(c,x,y,scale,facing,phase,id,config){
+ const palettes={
+ azure:{hair:"#c2f5ff",shadow:"#aa83f4",jacket:"#236bdb",trim:"#f5c95a",pants:"#1e75c4",eye:"#52d876"},
+ luna:{hair:"#ff8dbb",shadow:"#db558e",jacket:"#24263f",trim:"#ffadd1",pants:"#f2a4c7",eye:"#914b73"},
+ prince:{hair:"#ffd177",shadow:"#c88a35",jacket:"#2e62bf",trim:"#ffe08a",pants:"#f2f1e9",eye:"#9b6035"},
+ witch:{hair:"#e5e0ff",shadow:"#a99add",jacket:"#8149bf",trim:"#f6d17c",pants:"#623b9a",eye:"#ae71db"},
+ ninja:{hair:"#f5f6ff",shadow:"#a7aeca",jacket:"#242739",trim:"#48d6f7",pants:"#1b2639",eye:"#46d9f7"}
+ };
+ const p=palettes[id]||palettes.azure,f=phase<0?0:Math.floor(phase)%8;
+ const stride=phase<0?0:[-5,-3,0,4,6,3,0,-4][f],swing=phase<0?0:[4,2,0,-3,-5,-2,0,3][f];
+ c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing*scale,scale);
+ c.translate(0,phase<0?0:[0,-1,-2,-1,0,-1,-2,-1][f]);
+ const q=(co,a,b,w,h)=>{c.fillStyle=co;c.fillRect(Math.round(a),Math.round(b),w,h)};
+ const ink="#211f35",skin="#f1ba91";
+ // Back hair and flowing accessories
+ if(id==="luna"){q(ink,-14,-42,9,27);q(p.shadow,-13,-41,7,25);q(p.hair,-12,-40,5,19)}
+ if(id==="witch"){q(ink,-12,-44,10,27);q(p.shadow,-11,-43,8,25)}
+ if(id==="ninja"){q(p.trim,-15,-26,10,4);q(p.trim,-20-swing,-24,12,3)}
+ if(id==="prince"){q(p.jacket,-12,-28,10,27);q(p.trim,-13,-25,3,23)}
+ // Articulated back arm and leg
+ q(ink,-5-stride,-13,6,12);q(p.pants,-4-stride,-12,4,10);q("#f4f6ff",-6-stride,-3,10,3);
+ q(ink,-10-swing,-31,7,14);q(p.jacket,-9-swing,-30,5,10);q(skin,-8-swing,-21,4,4);
+ // Body, garment, buttons and belt
+ q(ink,-9,-34,19,20);q(p.jacket,-8,-33,17,17);q(p.trim,-7,-31,3,13);
+ q("#ffffff",0,-32,4,12);q(p.trim,5,-30,2,2);q(p.trim,5,-25,2,2);
+ q(ink,-8,-17,17,4);q(p.trim,-1,-17,4,2);
+ if(id==="luna"){q(p.trim,-10,-20,21,6);q("#ffffff",0,-31,4,9)}
+ if(id==="ninja"){q("#101522",-8,-33,17,12);q(p.trim,-8,-23,17,3)}
+ // Legs with eight running poses
+ q(ink,stride-1,-14,7,12);q(p.pants,stride,-13,5,10);
+ q(ink,stride-3,-4,13,4);q("#eff8ff",stride-2,-3,11,2);
+ q(ink,5+swing,-31,7,14);q(p.jacket,6+swing,-30,5,10);q(skin,8+swing,-21,4,4);
+ // Head, eyes and hairstyle
+ q(ink,-10,-49,21,17);q(p.shadow,-9,-48,19,15);
+ q(skin,-6,-41,17,10);q("#ffdfb4",0,-40,10,6);
+ q(ink,7,-38,3,4);q(p.eye,7,-38,2,3);q("#ffffff",8,-38,1,1);
+ q("#d47d77",7,-32,3,1);
+ q(p.hair,-10,-49,20,8);q(p.shadow,-10,-45,7,8);
+ q("#ffffff",-7,-48,9,2);q(p.hair,1,-46,9,5);
+ if(id==="azure"){q(p.shadow,-5,-49,10,4);q("#eafaff",2,-46,9,4);q(p.hair,-11,-41,5,9);q(p.shadow,-3,-55,7,7);q("#d4f9ff",-1,-57,5,4)}
+ if(id==="luna"){q(p.hair,-13,-42,6,16);q(p.hair,-10,-51,15,5);q(ink,-9,-52,19,5);q("#a7e9ff",-7,-51,7,3);q("#a7e9ff",2,-51,7,3);q("#ffffff",-5,-51,3,1)}
+ if(id==="prince"){q(ink,-10,-54,20,6);q(p.trim,-9,-53,18,5);for(const xx of [-8,-2,5])q("#fff1a6",xx,-58,4,7);q("#e96485",0,-53,3,3);q("#fff8e7",-10,-29,4,14)}
+ if(id==="witch"){q(ink,-17,-52,36,5);q("#673a9f",-16,-52,34,4);q(ink,-9,-64,18,14);q("#8048c0",-8,-63,16,13);q("#f4ce74",3,-56,5,5);q("#fff4a0",4,-58,2,9);q("#fff4a0",1,-55,8,2)}
+ if(id==="ninja"){q(ink,-10,-41,21,11);q("#293346",-9,-40,19,9);q(p.eye,6,-38,3,2);q(p.trim,-10,-45,8,3);q("#b9d4e7",-7,-51,12,3);q(ink,-15,-31,5,22);q("#6a8fa8",-14,-30,3,19)}
+ if(id==="witch"){q("#e8c57c",16+swing,-48,3,36);q("#b99cfc",11+swing,-54,13,12);q("#fff1aa",16+swing,-51,4,7)}
+ if(id==="azure"||id==="witch"){for(let i=0;i<3;i++){const a=[[-16,-43],[17,-39],[13,-56]][i];q(i%2?"#ffffff":"#e9a5ff",a[0],a[1],3,3)}}
+ c.restore();
+}
 function attachShop(){
  game=frame.contentWindow;
  try{
@@ -181,7 +232,7 @@ function attachShop(){
     const originalCharacter=config.character;
     const chosen=heroes.find(v=>v[0]===shopData.hero);
     config.character=chosen?.[4]||"azure";
-    originalRunner(c,x,y,scale,facing,phase,config);
+    if(["azure","luna","prince","witch","ninja"].includes(shopData.hero))drawFiveRunner(c,x,y,scale,facing,phase,shopData.hero,config);else originalRunner(c,x,y,scale,facing,phase,config);
     config.character=originalCharacter;
     if(scale>1.3 && shopData.pet!=="dog")drawPet(c,x,y,scale,facing,phase);
   };
