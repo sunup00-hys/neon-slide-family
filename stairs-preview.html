@@ -384,9 +384,9 @@ function drawBackground(){
 
 // One source of truth for five character choices, unlocks and gameplay.
 const STORE_KEY="neon-stairs-integrated-shop-v1";
-const RUNNERS=[{id:"azure",name:"스카이",price:0},{id:"luna",name:"루나",price:8},{id:"prince",name:"왕자 레온",price:12},{id:"witch",name:"마법사 미오",price:15},{id:"ninja",name:"닌자 카이",price:18}];
-const PETS=[{id:"none",name:"없음",price:0},{id:"dog",name:"강아지",price:0},{id:"cat",name:"고양이",price:5},{id:"bunny",name:"토끼",price:7},{id:"fox",name:"여우",price:9},{id:"dragon",name:"드래곤",price:14}];
-const STAIR_ITEMS=[{id:"brick",name:"자수정 석판",price:0},{id:"crystal",name:"크리스털",price:6},{id:"cloud",name:"구름",price:8},{id:"wood",name:"나무",price:6},{id:"gold",name:"황금",price:12},{id:"lava",name:"용암",price:14},{id:"rainbow",name:"무지개",price:16}];
+const RUNNERS=[{id:"azure",name:"스카이",price:0},{id:"luna",name:"루나",price:8},{id:"prince",name:"왕자 레온",price:12},{id:"witch",name:"마법사 미오",price:15},{id:"ninja",name:"닌자 카이",price:18},{id:"knight",name:"기사 아론",price:20},{id:"pirate",name:"해적 루크",price:22},{id:"robot",name:"로봇 제트",price:24},{id:"astronaut",name:"우주인 노바",price:26},{id:"shadow",name:"그림자 검객",price:30}];
+const PETS=[{id:"none",name:"없음",price:0},{id:"dog",name:"강아지",price:0},{id:"cat",name:"고양이",price:5},{id:"bunny",name:"토끼",price:7},{id:"fox",name:"여우",price:9},{id:"dragon",name:"드래곤",price:14},{id:"panda",name:"판다",price:16},{id:"penguin",name:"펭귄",price:18},{id:"unicorn",name:"유니콘",price:20},{id:"slime",name:"슬라임",price:22},{id:"phoenix",name:"불사조",price:25}];
+const STAIR_ITEMS=[{id:"brick",name:"자수정 석판",price:0},{id:"crystal",name:"크리스털",price:6},{id:"cloud",name:"구름",price:8},{id:"wood",name:"나무",price:6},{id:"gold",name:"황금",price:12},{id:"lava",name:"용암",price:14},{id:"rainbow",name:"무지개",price:16},{id:"glass",name:"투명 유리",price:18},{id:"fire",name:"불꽃 계단",price:20},{id:"ice",name:"빙하 계단",price:18},{id:"neon",name:"네온 계단",price:22},{id:"cosmic",name:"우주석 계단",price:24}];
 let inventory={owned:["azure","brick","none","dog"],character:"azure",pet:"dog",stairs:"brick"};
 try{const saved=JSON.parse(localStorage.getItem(STORE_KEY)||"null");if(saved&&Array.isArray(saved.owned))inventory={...inventory,...saved};}catch(e){}
 for(const key of ["neon-stairs-unified-v10","neon-stairs-wardrobe-v8"]){
@@ -519,6 +519,129 @@ for(const type of ["character","pet","stairs"]){const arr=type==="character"?RUN
 const wallet=new URLSearchParams(location.search).get("wallet");
 if(wallet){const home=document.querySelector(".page-head a");const u=new URL(home.href);u.searchParams.set("wallet",wallet);home.href=u.href;}
 saveInventory();refreshShopUI();
+
+/* v0.9: 8 individually rendered motion frames for five additional heroes.
+   Frames are generated once into transparent canvases, not redrawn as a static icon. */
+const EXTRA_HEROES={
+ knight:{hair:"#f1c85e",coat:"#a9bed5",trim:"#f5d47c",skin:"#f1c39c",hat:"helm"},
+ pirate:{hair:"#452e38",coat:"#a93d51",trim:"#e9bc73",skin:"#d9a67e",hat:"pirate"},
+ robot:{hair:"#77d7e8",coat:"#557eae",trim:"#91f4ef",skin:"#c4e6f1",hat:"robot"},
+ astronaut:{hair:"#d8edff",coat:"#f1f4fa",trim:"#78d6ed",skin:"#f3c9a4",hat:"space"},
+ shadow:{hair:"#2a2948",coat:"#42386b",trim:"#d06db5",skin:"#e0b5ad",hat:"hood"}
+};
+const extraHeroFrames={};
+function buildExtraHeroes(){
+ for(const [id,p] of Object.entries(EXTRA_HEROES)){
+  extraHeroFrames[id]=Array.from({length:8},(_,f)=>{
+   const cv=document.createElement("canvas");cv.width=72;cv.height=94;
+   const c=cv.getContext("2d");c.imageSmoothingEnabled=false;
+   const q=(color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
+   const bob=[0,-2,-4,-2,0,-2,-4,-2][f],swing=[0,5,8,4,0,-5,-8,-4][f];
+   c.save();c.translate(0,bob);
+   q("#25243e",25,19,24,30);q(p.hair,27,17,20,13);
+   if(p.hat==="helm"){q("#c8d7e6",24,12,28,13);q("#f4d97e",35,8,6,8);q("#62758b",24,25,28,4);}
+   if(p.hat==="pirate"){q("#252238",21,10,34,12);q("#f1c47c",26,16,24,3);q("#252238",31,5,14,8);}
+   if(p.hat==="robot"){q("#a8cbdc",24,11,28,27);q("#4b6a89",27,20,22,8);q("#70fff1",30,23,5,3);q("#70fff1",42,23,5,3);q("#f8d37a",35,5,5,7);}
+   if(p.hat==="space"){q("#b4d5e8",21,8,34,37);q("#f3f8ff",24,11,28,31);q("#5d8da9",26,18,24,14);q("#a8f6fa",28,20,20,8);}
+   if(p.hat==="hood"){q("#29243f",22,8,32,36);q("#554677",25,17,26,20);}
+   if(!["robot","space"].includes(p.hat)){q(p.skin,29,26,18,17);q("#26243a",32,31,4,3);q("#26243a",42,31,4,3);q("#f4d0ae",35,38,8,2);}
+   q("#22243b",23,46,29,26);q(p.coat,26,45,24,26);q(p.trim,35,46,6,20);q(p.trim,26,67,24,3);
+   q("#27243b",24+swing*.32,72,10,15);q("#27243b",42-swing*.32,72,10,15);
+   q(p.coat,25+swing*.32,72,8,12);q(p.coat,43-swing*.32,72,8,12);
+   q("#161b30",22+swing*.32,85,14,6);q("#161b30",42-swing*.32,85,14,6);
+   q(p.coat,17-swing*.4,48,9,19);q(p.coat,51+swing*.4,48,9,19);
+   q(p.skin,17-swing*.4,64,8,6);q(p.skin,51+swing*.4,64,8,6);
+   if(p.hat==="knight")q("#e6edf8",56+swing*.4,48,3,30);
+   if(p.hat==="pirate")q("#e6e8ec",57+swing*.4,49,3,24);
+   if(p.hat==="shadow")q("#b66be3",57+swing*.4,44,3,34);
+   c.restore();return cv;
+  });
+ }
+}
+buildExtraHeroes();
+const originalDrawRunner=drawRunner;
+drawRunner=function(c,x,y,scale,facing,phase,config){
+ const frames=extraHeroFrames[config.character];
+ if(!frames)return originalDrawRunner(c,x,y,scale,facing,phase,config);
+ const f=phase<0?0:Math.floor(phase)%8,cv=frames[f];
+ c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing,1);
+ if(config.outfit==="sport")c.filter="hue-rotate(25deg)";
+ if(config.outfit==="space")c.filter="saturate(.65) brightness(1.15)";
+ c.imageSmoothingEnabled=false;c.drawImage(cv,-36*scale,-94*scale,72*scale,94*scale);c.filter="none";
+ if(config.crown){c.fillStyle="#ffe38a";c.fillRect(-7*scale,-98*scale,14*scale,5*scale);}
+ if(config.wings){c.fillStyle="#a2dcffbb";c.fillRect(-28*scale,-58*scale,15*scale,26*scale);}
+ if(config.shoes){c.fillStyle="#81f9ed";c.fillRect(-12*scale,-4*scale,24*scale,3*scale);}
+ c.restore();
+};
+const PET_STYLES={
+ dog:["#bd8657","#ffe2a9","ears"],cat:["#9c91c9","#f6e9fc","ears"],
+ bunny:["#f4dce9","#fff8fc","long"],fox:["#e99a4d","#fff0d2","ears"],
+ dragon:["#65c4aa","#c9fff0","horn"],panda:["#f2f0eb","#33344a","round"],
+ penguin:["#343e64","#f4f5f8","round"],unicorn:["#f3dff8","#fff9fe","horn"],
+ slime:["#7ce4c7","#c5fff1","slime"],phoenix:["#f3a34e","#ffe37e","wings"]
+};
+const petFrames={};
+function buildPets(){
+ for(const [id,p] of Object.entries(PET_STYLES)){
+  petFrames[id]=Array.from({length:8},(_,f)=>{
+   const cv=document.createElement("canvas");cv.width=52;cv.height=54;const c=cv.getContext("2d");
+   const q=(color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
+   const bounce=[0,-2,-4,-2,0,-1,-3,-1][f],tail=[0,3,5,2,0,-2,-4,-2][f];
+   c.save();c.translate(0,bounce);
+   q("#28263e",9,18,35,27);q(p[0],11,16,31,27);q(p[1],16,29,21,13);
+   if(p[2]==="long"){q(p[0],13,2,8,21);q(p[0],32,2,8,21);q(p[1],16,4,3,15);q(p[1],35,4,3,15);}
+   if(p[2]==="ears"){q(p[0],10,9,10,16);q(p[0],33,9,10,16);}
+   if(p[2]==="horn"){q("#f9e3a0",23,3,7,17);q(p[0],11,12,9,10);q(p[0],33,12,9,10);}
+   if(p[2]==="wings"){q("#ef654a",2+tail,20,13,17);q("#ffd76e",37-tail,20,13,17);q("#f9dc75",23,4,7,17);}
+   if(id==="panda"){q("#33344a",13,12,9,11);q("#33344a",32,12,9,11);q("#33344a",16,26,8,9);q("#33344a",30,26,8,9);}
+   if(id==="penguin"){q("#f6c16d",21,33,11,5);}
+   if(id==="unicorn"){q("#e7a8e9",11,15,12,9);q("#a8e7ff",32,15,8,8);}
+   if(id==="slime"){q("#a9fbe6",15,17,23,4);}
+   q("#26253c",19,25,4,5);q("#26253c",31,25,4,5);q("#ff8c9a",26,33,4,3);
+   q(p[0],13+tail*.3,42,10,7);q(p[0],31-tail*.3,42,10,7);
+   c.restore();return cv;
+  });
+ }
+}
+buildPets();
+drawPet=function(c,x,y,scale,facing,phase){
+ if(state.pet==="none")return;
+ const frames=petFrames[state.pet];if(!frames)return;
+ const f=phase<0?0:Math.floor(phase)%8;
+ c.save();c.translate(Math.round(x-facing*scale*30),Math.round(y));
+ c.scale(facing,1);c.imageSmoothingEnabled=false;
+ c.drawImage(frames[f],-26*scale*.78,-54*scale*.78,52*scale*.78,54*scale*.78);
+ c.restore();
+};
+const priorStairRenderer=drawStair;
+drawStair=function(x,y,index){
+ const skin=state.stairs;
+ if(!["glass","fire","ice","neon","cosmic"].includes(skin))return priorStairRenderer(x,y,index);
+ const palette={
+ glass:["#b8f4ff","#468da8","#ecffff"],fire:["#e94d3b","#8d293a","#ffd16a"],
+ ice:["#9bdcf6","#3e8ebc","#efffff"],neon:["#d969ec","#46358c","#73fff4"],
+ cosmic:["#7264a8","#24224b","#f5c1ff"]
+ }[skin];
+ rect(ctx,"#11162d88",x-29,y+17,59,5);
+ rect(ctx,palette[1],x-28,y,56,18);rect(ctx,palette[0],x-26,y,52,13);
+ rect(ctx,palette[2],x-26,y,52,3);rect(ctx,palette[1],x-26,y+13,52,4);
+ if(skin==="glass"){rect(ctx,"#ffffffaa",x-22,y+4,13,2);rect(ctx,"#b8ffff66",x+9,y+5,13,7);}
+ if(skin==="fire"){for(let i=0;i<5;i++){const h=4+(index+i*7)%8;rect(ctx,i%2?"#ffdc70":"#ff743e",x-21+i*10,y+13-h,5,h);}}
+ if(skin==="ice"){rect(ctx,"#f4ffff",x-16,y+5,4,7);rect(ctx,"#e1ffff",x+9,y+4,6,4);}
+ if(skin==="neon"){rect(ctx,"#65fff1",x-24,y+9,48,2);rect(ctx,"#fff3ff",x-21,y+4,9,2);}
+ if(skin==="cosmic"){for(let i=0;i<5;i++)rect(ctx,i%2?"#ffbde8":"#a4e9ff",x-19+i*9,y+5+(i%3)*2,3,3);}
+};
+const previousPreviews=drawPreviews;
+drawPreviews=function(){previousPreviews();};
+for(const item of RUNNERS){
+ if(document.querySelector('[data-character="'+item.id+'"]'))continue;
+ const b=document.createElement("button");b.className="choice";b.dataset.character=item.id;b.setAttribute("aria-pressed","false");
+ const cv=document.createElement("canvas");cv.width=160;cv.height=200;b.append(cv,document.createTextNode(item.name));
+ $("characters").append(b);b.addEventListener("click",()=>equipOrBuy("character",item));
+}
+document.querySelector(".footer").textContent="2026.11.17 · v0.9 — 캐릭터 10종 · 펫 10종 · 계단 12종 · 신규 8프레임 애니메이션";
+document.querySelector(".note").innerHTML=document.querySelector(".note").innerHTML.replace("플레이 버전 0.8","플레이 버전 0.9");
+
 runnerAtlas.src="./assets/stairs-runners-v08.png";
 new ResizeObserver(resize).observe($("stageView"));resize();drawPreviews();syncHud();requestAnimationFrame(frame);
 </script>
