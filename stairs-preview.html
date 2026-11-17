@@ -6,7 +6,7 @@
 <title>NEON STAIRS · 별빛 성의 러너</title>
 <style>
 :root{color-scheme:dark;--ink:#f3f5ff;--muted:#b2bed1;--panel:#202e43;--mint:#b1e6d6;--purple:#c7b6ed}
-*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:#111b2b;color:var(--ink);font:15px/1.5 system-ui,-apple-system,sans-serif}button,select{font:inherit}button{cursor:pointer;color:inherit;border:1px solid #ffffff26;background:#30415a;border-radius:14px;padding:12px 16px;touch-action:manipulation}button:focus-visible,select:focus-visible{outline:3px solid var(--mint);outline-offset:3px}button:disabled{opacity:.4;cursor:default}a{color:var(--mint)}.page{max-width:1200px;margin:auto;padding:28px 20px}.page-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.eyebrow{font-size:11px;letter-spacing:3px;color:var(--mint)}h1{font-size:27px;margin:5px 0}p{color:var(--muted)}.layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.8fr);gap:24px;align-items:start}.game-shell{position:relative;isolation:isolate;overflow:hidden;border-radius:24px;border:1px solid #ffffff20;background:#18283d;height:690px;display:flex;flex-direction:column}.stage-view{position:relative;flex:1;min-height:0;overflow:hidden}.stage-view canvas{display:block;width:100%;height:100%;touch-action:none}.hud{position:absolute;inset:0 0 auto;padding:16px 18px;z-index:2;pointer-events:none;background:linear-gradient(#142033d9,transparent)}.hud-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.score-wrap{display:flex;align-items:baseline;gap:8px}.score{font-size:40px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.1}.unit{font-size:12px;color:#c6d2e3}.hud-actions{display:flex;gap:7px;pointer-events:auto}.hud-actions button{font-size:12px;padding:9px 10px;border-radius:10px;background:#142033b8;backdrop-filter:blur(8px)}.energy{height:7px;border-radius:6px;background:#ffffff25;overflow:hidden;margin-top:12px}.energy span{display:block;height:100%;width:100%;background:#c5e6c0;transform-origin:left;transition:background .2s}.hud-sub{display:flex;justify-content:space-between;font-size:11px;color:#d1ddef;margin-top:7px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#101a2b;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom)}.control{border:0;border-radius:0;min-height:126px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;box-shadow:inset 0 1px #ffffff20}.control .icon{font-size:32px;line-height:1}.control strong{font-size:19px;letter-spacing:.5px}.control small{font-size:10px;opacity:.65}.turn{background:#6b598d}.climb{background:#3e786f}.control:active,.control.pressed{filter:brightness(1.25);transform:translateY(1px)}.overlay{position:absolute;inset:0;z-index:3;background:#102034a8;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:22px}.overlay[hidden]{display:none}.dialog{max-width:360px;width:100%;padding:27px 24px;border-radius:22px;text-align:center;background:#1b2b43eF;border:1px solid #ffffff26;box-shadow:0 20px 80px #07122355}.dialog h2{font-size:27px;margin:10px 0}.dialog p{font-size:13px;margin:10px 0 20px}.dialog .primary{background:var(--mint);color:#18352e;border:0;width:100%;font-weight:800;font-size:17px}.dialog .secondary{margin-top:9px;width:100%;background:transparent}.mode-label{font-size:11px;letter-spacing:1px;color:var(--mint)}.result{font-size:45px;font-weight:900;color:#e4d8ff}.settings{background:var(--panel);border:1px solid #ffffff18;border-radius:24px;padding:24px}.settings h2{font-size:20px;margin:0 0 6px}.settings h3{font-size:13px;color:#d0d9e8;margin:23px 0 10px}.settings p{font-size:12px;margin:0 0 20px}.choices{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.choice{padding:8px 4px;border-radius:12px;font-size:11px;display:flex;align-items:center;flex-direction:column;gap:5px;background:#17253a}.choice canvas{width:40px;height:54px;image-rendering:pixelated}.shop-caption{margin-top:10px;color:#f7da96;font-size:12px}.choice.locked{border-color:#8d704a}.choice .cost{color:#ffdf82;font-weight:900}.shop-chip{position:relative}.shop-chip[aria-pressed=true]{outline:2px solid #eecb87}.choices{grid-template-columns:repeat(5,minmax(0,1fr))}.choice[aria-pressed=true],.chip[aria-pressed=true]{border-color:var(--mint);background:#354c52;color:#e9fff9}.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{font-size:12px;padding:9px 11px;background:#17253a}.setting-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;font-size:13px}select{background:#152338;color:var(--ink);border:1px solid #ffffff25;padding:8px;border-radius:9px;max-width:65%}.full-button{width:100%;margin-top:22px;background:var(--purple);color:#291c40;font-weight:800}.note{font-size:11px!important;margin:18px 0 0!important;line-height:1.7}.footer{font-size:11px;color:#8597b0;margin-top:22px}.immersive{overflow:hidden}.immersive .game-shell{position:fixed;inset:0;width:100%;height:100vh;height:100dvh;max-width:none;border:0;border-radius:0;z-index:20}.immersive .control{min-height:clamp(112px,20dvh,174px)}.immersive .hud{padding-top:max(16px,env(safe-area-inset-top))}.immersive .control strong{font-size:22px}.immersive .control .icon{font-size:38px}
+*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:#111b2b;color:var(--ink);font:15px/1.5 system-ui,-apple-system,sans-serif}button,select{font:inherit}button{cursor:pointer;color:inherit;border:1px solid #ffffff26;background:#30415a;border-radius:14px;padding:12px 16px;touch-action:manipulation}button:focus-visible,select:focus-visible{outline:3px solid var(--mint);outline-offset:3px}button:disabled{opacity:.4;cursor:default}a{color:var(--mint)}.page{max-width:1200px;margin:auto;padding:28px 20px}.page-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.eyebrow{font-size:11px;letter-spacing:3px;color:var(--mint)}h1{font-size:27px;margin:5px 0}p{color:var(--muted)}.layout{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(300px,.8fr);gap:24px;align-items:start}.game-shell{position:relative;isolation:isolate;overflow:hidden;border-radius:24px;border:1px solid #ffffff20;background:#18283d;height:690px;display:flex;flex-direction:column}.stage-view{position:relative;flex:1;min-height:0;overflow:hidden}.stage-view canvas{display:block;width:100%;height:100%;touch-action:none}.hud{position:absolute;inset:0 0 auto;padding:16px 18px;z-index:2;pointer-events:none;background:linear-gradient(#142033d9,transparent)}.hud-top{display:flex;align-items:center;justify-content:space-between;gap:12px}.score-wrap{display:flex;align-items:baseline;gap:8px}.score{font-size:40px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.1}.unit{font-size:12px;color:#c6d2e3}.hud-actions{display:flex;gap:7px;pointer-events:auto}.hud-actions button{font-size:12px;padding:9px 10px;border-radius:10px;background:#142033b8;backdrop-filter:blur(8px)}.energy{height:7px;border-radius:6px;background:#ffffff25;overflow:hidden;margin-top:12px}.energy span{display:block;height:100%;width:100%;background:#c5e6c0;transform-origin:left;transition:background .2s}.hud-sub{display:flex;justify-content:space-between;font-size:11px;color:#d1ddef;margin-top:7px}.controls{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:#101a2b;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom)}.control{border:0;border-radius:0;min-height:126px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;touch-action:none;box-shadow:inset 0 1px #ffffff20}.control .icon{font-size:32px;line-height:1}.control strong{font-size:19px;letter-spacing:.5px}.control small{font-size:10px;opacity:.65}.turn{background:#6b598d}.climb{background:#3e786f}.control:active,.control.pressed{filter:brightness(1.25);transform:translateY(1px)}.overlay{position:absolute;inset:0;z-index:3;background:#102034a8;backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:22px}.overlay[hidden]{display:none}.dialog{max-width:360px;width:100%;padding:27px 24px;border-radius:22px;text-align:center;background:#1b2b43eF;border:1px solid #ffffff26;box-shadow:0 20px 80px #07122355}.dialog h2{font-size:27px;margin:10px 0}.dialog p{font-size:13px;margin:10px 0 20px}.dialog .primary{background:var(--mint);color:#18352e;border:0;width:100%;font-weight:800;font-size:17px}.dialog .secondary{margin-top:9px;width:100%;background:transparent}.mode-label{font-size:11px;letter-spacing:1px;color:var(--mint)}.result{font-size:45px;font-weight:900;color:#e4d8ff}.settings{background:var(--panel);border:1px solid #ffffff18;border-radius:24px;padding:24px}.settings h2{font-size:20px;margin:0 0 6px}.settings h3{font-size:13px;color:#d0d9e8;margin:23px 0 10px}.settings p{font-size:12px;margin:0 0 20px}.choices{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}.choice{padding:8px 4px;border-radius:12px;font-size:11px;display:flex;align-items:center;flex-direction:column;gap:5px;background:#17253a}.choice canvas{width:56px;height:70px;image-rendering:auto}.shop-caption{margin-top:10px;color:#f7da96;font-size:12px}.choice.locked{border-color:#8d704a}.choice .cost{color:#ffdf82;font-weight:900}.shop-chip{position:relative}.shop-chip[aria-pressed=true]{outline:2px solid #eecb87}.choices{grid-template-columns:repeat(5,minmax(0,1fr))}.choice[aria-pressed=true],.chip[aria-pressed=true]{border-color:var(--mint);background:#354c52;color:#e9fff9}.chips{display:flex;flex-wrap:wrap;gap:7px}.chip{font-size:12px;padding:9px 11px;background:#17253a}.setting-line{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;font-size:13px}select{background:#152338;color:var(--ink);border:1px solid #ffffff25;padding:8px;border-radius:9px;max-width:65%}.full-button{width:100%;margin-top:22px;background:var(--purple);color:#291c40;font-weight:800}.note{font-size:11px!important;margin:18px 0 0!important;line-height:1.7}.footer{font-size:11px;color:#8597b0;margin-top:22px}.immersive{overflow:hidden}.immersive .game-shell{position:fixed;inset:0;width:100%;height:100vh;height:100dvh;max-width:none;border:0;border-radius:0;z-index:20}.immersive .control{min-height:clamp(112px,20dvh,174px)}.immersive .hud{padding-top:max(16px,env(safe-area-inset-top))}.immersive .control strong{font-size:22px}.immersive .control .icon{font-size:38px}
 @media(min-width:800px){.immersive .control{min-height:140px}.immersive .hud{padding-left:32px;padding-right:32px}.immersive .hud-top,.immersive .energy,.immersive .hud-sub{max-width:900px;margin-left:auto;margin-right:auto}}
 @media(max-width:760px){.page{padding:18px 12px}.layout{grid-template-columns:1fr}.game-shell{height:620px;height:min(75dvh,680px)}.page-head{align-items:flex-start}h1{font-size:23px}.page-head a{font-size:12px}.control{min-height:102px}.settings{padding:20px}.hud-actions button{padding:9px 8px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}.energy{transition:none}}
@@ -50,7 +50,7 @@ body{background:#191b2c}
 .choices{grid-template-columns:repeat(3,minmax(0,1fr))}.choice canvas{width:100%;height:auto;max-width:112px;image-rendering:auto}.choice{padding:10px 5px}.choice[aria-pressed=true]{box-shadow:0 0 15px #d6b7ff35}.hud-actions button{white-space:nowrap}
 </style>
 </head>
-<body class="immersive">
+<body class="immersive" data-build="1.1-illustrated-motion">
 <main class="page">
 <header class="page-head"><div><div class="eyebrow">NEON STAIRS · FAMILY GAME</div><h1>별빛 성의 러너</h1></div><nav aria-label="가족게임 이동" style="display:flex;gap:9px;flex-wrap:wrap"><a href="./words.html">✦ 낱말게임</a><a href="./index.html">⌂ 가족게임 홈</a></nav></header>
 <div class="layout">
@@ -72,7 +72,7 @@ body{background:#191b2c}
 </div>
 </section>
 <aside class="settings" id="settings">
-<h2>나의 러너</h2><p>새로운 도트 러너와 함께 별빛 성을 올라요.<br>달리기 동작에도 코디가 그대로 적용돼요.</p>
+<h2>나의 러너</h2><p>원본 일러스트 러너와 함께 별빛 성을 올라요.<br>달리기 동작에도 코디가 그대로 적용돼요.</p>
 <div class="choices" id="characters">
 <button class="choice" data-character="azure" aria-pressed="true"><canvas width="160" height="200"></canvas>스카이</button>
 <button class="choice" data-character="luna" aria-pressed="false"><canvas width="160" height="200"></canvas>루나</button>
@@ -238,7 +238,7 @@ function frame(now){
  drawPet(ctx,renderX,renderY+fall+stride,Math.min(3,Math.max(2,width/170)),state.facing,phase);
   drawRunner(ctx,renderX,renderY+fall+stride,Math.min(3,Math.max(2,width/170)),state.facing,phase,state);
  if(active&&!reduced){rect(ctx,"#e2e0bd77",renderX-state.facing*19,renderY-2,3,2);}
- ctx.restore();drawGain(now);requestAnimationFrame(frame);
+ ctx.restore();drawGain(now);animatePreviews(now);requestAnimationFrame(frame);
 }
 function bindControl(id,kind){
  const b=$(id);
@@ -274,7 +274,7 @@ document.addEventListener("keydown",e=>{
 });
 document.addEventListener("visibilitychange",()=>{if(document.hidden)pause();});
 window.addEventListener("blur",pause);window.addEventListener("resize",resize);
-function drawPreviews(){document.querySelectorAll("[data-character]").forEach(b=>{const cv=b.querySelector("canvas"),c=cv.getContext("2d");c.clearRect(0,0,cv.width,cv.height);c.imageSmoothingEnabled=true;drawRunner(c,80,192,2.45,1,-1,Object.assign({},state,{character:b.getAttribute("data-character")}));});}
+function drawPreviews(){document.querySelectorAll("[data-character]").forEach(b=>{const cv=b.querySelector("canvas"),c=cv.getContext("2d");c.clearRect(0,0,cv.width,cv.height);c.imageSmoothingEnabled=true;drawRunner(c,80,192,2.45,1,reduced?-1:animTime/75,Object.assign({},state,{character:b.getAttribute("data-character")}));});}
 
 const STAR_KEY="neon-stairs-preview-stars-v3";
 function readStars(){
@@ -384,8 +384,8 @@ function drawBackground(){
 
 // One source of truth for five character choices, unlocks and gameplay.
 const STORE_KEY="neon-stairs-integrated-shop-v1";
-const RUNNERS=[{id:"azure",name:"스카이",price:0},{id:"luna",name:"루나",price:8},{id:"prince",name:"왕자 레온",price:12},{id:"witch",name:"마법사 미오",price:15},{id:"ninja",name:"닌자 카이",price:18},{id:"knight",name:"복싱선수",price:20},{id:"pirate",name:"저격수",price:22},{id:"robot",name:"레드 아머",price:24},{id:"astronaut",name:"그린 타이탄",price:26},{id:"shadow",name:"투명인간",price:30}];
-const PETS=[{id:"none",name:"없음",price:0},{id:"dog",name:"강아지",price:0},{id:"cat",name:"고양이",price:5},{id:"bunny",name:"토끼",price:7},{id:"fox",name:"여우",price:9},{id:"dragon",name:"드래곤",price:14},{id:"panda",name:"판다",price:16},{id:"penguin",name:"펭귄",price:18},{id:"unicorn",name:"유니콘",price:20},{id:"slime",name:"슬라임",price:22},{id:"phoenix",name:"불사조",price:25}];
+const RUNNERS=[{id:"azure",name:"스카이",price:0},{id:"luna",name:"루나",price:8},{id:"prince",name:"왕자 레온",price:12},{id:"witch",name:"마법사 미오",price:15},{id:"ninja",name:"닌자 카이",price:18},{id:"knight",name:"복싱선수",price:20},{id:"pirate",name:"저격수",price:22},{id:"robot",name:"아이언맨",price:24},{id:"astronaut",name:"헐크",price:26},{id:"shadow",name:"투명인간",price:30}];
+const PETS=[{id:"none",name:"없음",price:0},{id:"dog",name:"강아지",price:0},{id:"cat",name:"고양이",price:5},{id:"bunny",name:"토끼",price:7},{id:"fox",name:"여우",price:9},{id:"dragon",name:"드래곤",price:14},{id:"panda",name:"판다",price:16},{id:"penguin",name:"로봇캣",price:18},{id:"unicorn",name:"유니콘",price:20},{id:"slime",name:"마법책",price:22},{id:"phoenix",name:"불사조",price:25}];
 const STAIR_ITEMS=[{id:"brick",name:"자수정 석판",price:0},{id:"crystal",name:"크리스털",price:6},{id:"cloud",name:"구름",price:8},{id:"wood",name:"나무",price:6},{id:"gold",name:"황금",price:12},{id:"lava",name:"용암",price:14},{id:"rainbow",name:"무지개",price:16},{id:"glass",name:"투명 유리",price:18},{id:"fire",name:"불꽃 계단",price:20},{id:"ice",name:"빙하 계단",price:18},{id:"neon",name:"네온 계단",price:22},{id:"cosmic",name:"우주석 계단",price:24}];
 let inventory={owned:["azure","brick","none","dog"],character:"azure",pet:"dog",stairs:"brick"};
 try{const saved=JSON.parse(localStorage.getItem(STORE_KEY)||"null");if(saved&&Array.isArray(saved.owned))inventory={...inventory,...saved};}catch(e){}
@@ -419,8 +419,9 @@ function refreshShopUI(){
   b.append(small);
  });
  const petBox=$("petChoices");petBox.replaceChildren();
- for(const item of PETS){const b=document.createElement("button");b.className="chip shop-chip";b.setAttribute("aria-pressed",String(state.pet===item.id));
-  b.textContent=item.name+(state.pet===item.id?" ✓":inventory.owned.includes(item.id)?"":" ★"+item.price);
+ for(const item of PETS){const b=document.createElement("button");b.className="chip shop-chip pet-choice";b.setAttribute("aria-pressed",String(state.pet===item.id));b.dataset.pet=item.id;
+  if(item.id!=="none"){const cv=document.createElement("canvas");cv.width=100;cv.height=100;cv.dataset.petPreview=item.id;cv.style.cssText="width:48px;height:48px;display:block;margin:auto";b.append(cv);}
+  b.append(document.createTextNode(item.name+(state.pet===item.id?" ✓":inventory.owned.includes(item.id)?"":" ★"+item.price)));
   b.addEventListener("click",()=>equipOrBuy("pet",item));petBox.append(b);}
  // The original stair chips share the div directly after the '계단' heading.
  const stairHeading=Array.from(document.querySelectorAll(".settings h3")).find(h=>h.textContent==="계단");
@@ -465,8 +466,7 @@ function prepareRunnerAtlas(){
   const maxHeight=Math.max(...frames.map(f=>f.bottom-f.y));
   runnerFrames[RUNNER_ROWS[row]]={frames,maxHeight};
  }
- drawPreviews();$("startButton").disabled=false;$("largeButton").disabled=false;
- $("overlayText").textContent="오르기는 그대로 한 칸, 방향 전환은 돌아서 한 칸! 다음 계단을 보고 눌러요.";
+ markAssetLoaded("base");
 }
 runnerAtlas.onload=()=>{try{prepareRunnerAtlas();}catch(error){console.error(error);$("overlayText").textContent="캐릭터를 불러오지 못했어요. 새로고침해 주세요.";}};
 runnerAtlas.onerror=()=>{$("overlayText").textContent="캐릭터 이미지를 불러오지 못했어요. 새로고침해 주세요.";};
@@ -518,106 +518,86 @@ for(const b of document.querySelectorAll("[data-character]")){
 }
 for(const type of ["character","pet","stairs"]){const arr=type==="character"?RUNNERS:type==="pet"?PETS:STAIR_ITEMS;if(arr.some(v=>v.id===inventory[type])&&inventory.owned.includes(inventory[type]))state[type]=inventory[type];}
 const wallet=new URLSearchParams(location.search).get("wallet");
-if(wallet){const home=document.querySelector(".page-head a");const u=new URL(home.href);u.searchParams.set("wallet",wallet);home.href=u.href;}
+if(wallet)for(const home of document.querySelectorAll(".page-head a")){const u=new URL(home.href);u.searchParams.set("wallet",wallet);home.href=u.href;}
 saveInventory();refreshShopUI();
 
-/* v0.9: 8 individually rendered motion frames for five additional heroes.
-   Frames are generated once into transparent canvases, not redrawn as a static icon. */
-const EXTRA_HEROES={
- knight:{hair:"#54312d",coat:"#e75b3f",trim:"#f5d47c",skin:"#f1c39c",hat:"boxer"},
- pirate:{hair:"#d8b479",coat:"#394e63",trim:"#e9bc73",skin:"#d9a67e",hat:"sniper"},
- robot:{hair:"#ffe58a",coat:"#d83c3d",trim:"#91f4ef",skin:"#c4e6f1",hat:"robot"},
- astronaut:{hair:"#26362a",coat:"#65ac51",trim:"#78d6ed",skin:"#73bf64",hat:"titan"},
- shadow:{hair:"#82eaff",coat:"#3c9fc5",trim:"#b3ffff",skin:"#b4f6ff",hat:"invisible"}
-};
-const extraHeroFrames={};
-function buildExtraHeroes(){
- for(const [id,p] of Object.entries(EXTRA_HEROES)){
-  extraHeroFrames[id]=Array.from({length:8},(_,f)=>{
-   const cv=document.createElement("canvas");cv.width=72;cv.height=94;
-   const c=cv.getContext("2d");c.imageSmoothingEnabled=false;
-   const q=(color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
-   const bob=[0,-2,-4,-2,0,-2,-4,-2][f],swing=[0,5,8,4,0,-5,-8,-4][f];
-   c.save();c.translate(0,bob);
-   q("#25243e",25,19,24,30);q(p.hair,27,17,20,13);
-   if(p.hat==="boxer"){q("#c94c34",22,44,10,13);q("#f2b76b",31,12,14,5);}
-   if(p.hat==="helm"){q("#c8d7e6",24,12,28,13);q("#f4d97e",35,8,6,8);q("#62758b",24,25,28,4);}
-   if(p.hat==="sniper"){q("#32435c",21,10,34,10);q("#f1c47c",28,17,20,3);q("#1e253a",51,45,18,4);q("#9daeb9",58,42,12,3);}
-   if(p.hat==="pirate"){q("#252238",21,10,34,12);q("#f1c47c",26,16,24,3);q("#252238",31,5,14,8);}
-   if(p.hat==="robot"){q("#a8cbdc",24,11,28,27);q("#4b6a89",27,20,22,8);q("#70fff1",30,23,5,3);q("#70fff1",42,23,5,3);q("#f8d37a",35,5,5,7);}
-   if(p.hat==="titan"){q("#293e2d",23,10,30,11);q("#64b65d",25,20,27,20);}
-   if(p.hat==="invisible"){q("#80f7ff99",22,8,32,36);q("#d6ffff",29,24,4,3);q("#d6ffff",42,24,4,3);}
-   if(p.hat==="space"){q("#b4d5e8",21,8,34,37);q("#f3f8ff",24,11,28,31);q("#5d8da9",26,18,24,14);q("#a8f6fa",28,20,20,8);}
-   if(p.hat==="hood"){q("#29243f",22,8,32,36);q("#554677",25,17,26,20);}
-   if(!["robot","space"].includes(p.hat)){q(p.skin,29,26,18,17);q("#26243a",32,31,4,3);q("#26243a",42,31,4,3);q("#f4d0ae",35,38,8,2);}
-   q("#22243b",23,46,29,26);q(p.coat,26,45,24,26);q(p.trim,35,46,6,20);q(p.trim,26,67,24,3);
-   q("#27243b",24+swing*.32,72,10,15);q("#27243b",42-swing*.32,72,10,15);
-   q(p.coat,25+swing*.32,72,8,12);q(p.coat,43-swing*.32,72,8,12);
-   q("#161b30",22+swing*.32,85,14,6);q("#161b30",42-swing*.32,85,14,6);
-   q(p.coat,17-swing*.4,48,9,19);q(p.coat,51+swing*.4,48,9,19);
-   q(p.skin,17-swing*.4,64,8,6);q(p.skin,51+swing*.4,64,8,6);
-   if(p.hat==="boxer")q("#e6edf8",56+swing*.4,48,3,30);
-   if(p.hat==="sniper"){q("#2c3548",50+swing*.4,48,20,5);q("#a8b9c5",62+swing*.4,46,9,2);}
-   if(p.hat==="invisible")q("#b66be3",57+swing*.4,44,3,34);
-   c.restore();return cv;
-  });
+/* Illustrated motion assets: one image source per character, in shop and play. */
+const loadedAssets=new Set();
+function markAssetLoaded(name){
+ loadedAssets.add(name);drawPreviews();
+ if(loadedAssets.size===3){
+  $("startButton").disabled=false;$("largeButton").disabled=false;
+  $("overlayText").textContent="오르기는 그대로 한 칸, 방향 전환은 돌아서 한 칸! 다음 계단을 보고 눌러요.";
+  document.body.dataset.assets="ready";
  }
 }
-buildExtraHeroes();
+function assetFailed(name){
+ document.body.dataset.assets="error";
+ $("startButton").disabled=true;$("largeButton").disabled=true;
+ $("overlayText").textContent=name+" 이미지를 불러오지 못했어요. 새로고침해 주세요.";
+}
+const heroMotionAtlas=new Image(),petMotionAtlas=new Image();
+let heroMotionRows=null,petMotionRows=null;
+// Alpha bounds are measured in each equal cell; row scale stays constant through the gait.
+function readMotionGrid(img,ids,columns,rowEdges){
+ const cv=document.createElement("canvas");cv.width=img.naturalWidth;cv.height=img.naturalHeight;
+ const c=cv.getContext("2d",{willReadFrequently:true});c.drawImage(img,0,0);
+ const pixels=c.getImageData(0,0,cv.width,cv.height).data,rows={};
+ ids.forEach((id,row)=>{
+  const frames=[];
+  for(let col=0;col<columns;col++){
+   const left=Math.round(col*cv.width/columns),right=Math.round((col+1)*cv.width/columns);
+   const top=rowEdges?rowEdges[row]:Math.round(row*cv.height/ids.length),bottom=rowEdges?rowEdges[row+1]:Math.round((row+1)*cv.height/ids.length);
+   let x0=right,y0=bottom,x1=left,y1=top;
+   for(let y=top;y<bottom;y++)for(let x=left;x<right;x++){
+    if(pixels[(y*cv.width+x)*4+3]>100){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x);y1=Math.max(y1,y);}
+   }
+   if(x1<=x0||y1<=y0)throw Error("Empty motion cell: "+id+"/"+col);
+   frames.push({x:x0,y:y0,w:x1-x0+1,h:y1-y0+1,center:(left+right)/2});
+  }
+  rows[id]={frames,maxHeight:Math.max(...frames.map(f=>f.h))};
+ });return rows;
+}
+heroMotionAtlas.onload=()=>{try{heroMotionRows=readMotionGrid(heroMotionAtlas,["knight","pirate","robot","astronaut","shadow"],4,[0,269,547,806,1085,1402]);markAssetLoaded("heroes");}catch(e){console.error(e);assetFailed("추가 캐릭터");}};
+petMotionAtlas.onload=()=>{try{petMotionRows=readMotionGrid(petMotionAtlas,["dog","cat","bunny","panda","dragon","phoenix","penguin","unicorn","fox","slime"],4,[0,176,354,541,715,881,1051,1223,1389,1569,1774]);markAssetLoaded("pets");refreshShopUI();drawPreviews();}catch(e){console.error(e);assetFailed("펫");}};
+heroMotionAtlas.onerror=()=>assetFailed("추가 캐릭터");petMotionAtlas.onerror=()=>assetFailed("펫");
+function drawMotion(c,img,row,x,y,scale,facing,phase,targetHeight){
+ const f=row.frames[phase<0?0:Math.floor(phase)%row.frames.length],k=targetHeight*scale/row.maxHeight;
+ c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing,1);
+ c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";
+ c.drawImage(img,f.x,f.y,f.w,f.h,(f.x-f.center)*k,-f.h*k,f.w*k,f.h*k);
+ c.restore();
+}
 const originalDrawRunner=drawRunner;
 drawRunner=function(c,x,y,scale,facing,phase,config){
- const frames=extraHeroFrames[config.character];
- if(!frames)return originalDrawRunner(c,x,y,scale,facing,phase,config);
- const f=phase<0?0:Math.floor(phase)%8,cv=frames[f];
- c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing,1);
- if(config.outfit==="sport")c.filter="hue-rotate(25deg)";
- if(config.outfit==="space")c.filter="saturate(.65) brightness(1.15)";
- c.imageSmoothingEnabled=false;c.drawImage(cv,-36*scale,-94*scale,72*scale,94*scale);c.filter="none";
- if(config.crown){c.fillStyle="#ffe38a";c.fillRect(-7*scale,-98*scale,14*scale,5*scale);}
- if(config.wings){c.fillStyle="#a2dcffbb";c.fillRect(-28*scale,-58*scale,15*scale,26*scale);}
- if(config.shoes){c.fillStyle="#81f9ed";c.fillRect(-12*scale,-4*scale,24*scale,3*scale);}
+ if(!["knight","pirate","robot","astronaut","shadow"].includes(config.character))return originalDrawRunner(c,x,y,scale,facing,phase,config);
+ const row=heroMotionRows?.[config.character];if(!row)return;
+ c.save();
+ if(config.outfit==="sport")c.filter="hue-rotate(22deg)";
+ if(config.outfit==="space")c.filter="saturate(.6) brightness(1.12)";
+ drawMotion(c,heroMotionAtlas,row,x,y,scale,facing,phase,72);c.filter="none";
+ if(config.crown){c.font=String(15*scale)+"px serif";c.textAlign="center";c.fillText("♛",x,y-72*scale);}
+ if(config.wings){c.fillStyle="#c8ecff99";c.beginPath();c.ellipse(x-facing*18*scale,y-35*scale,8*scale,18*scale,-.5*facing,0,Math.PI*2);c.fill();}
+ if(config.shoes){c.fillStyle="#a1ffe6";c.fillRect(x-8*scale,y-2*scale,16*scale,scale);}
  c.restore();
 };
-const PET_STYLES={
- dog:["#bd8657","#ffe2a9","ears"],cat:["#9c91c9","#f6e9fc","ears"],
- bunny:["#f4dce9","#fff8fc","long"],fox:["#e99a4d","#fff0d2","ears"],
- dragon:["#65c4aa","#c9fff0","horn"],panda:["#f2f0eb","#33344a","round"],
- penguin:["#343e64","#f4f5f8","round"],unicorn:["#f3dff8","#fff9fe","horn"],
- slime:["#7ce4c7","#c5fff1","slime"],phoenix:["#f3a34e","#ffe37e","wings"]
-};
-const petFrames={};
-function buildPets(){
- for(const [id,p] of Object.entries(PET_STYLES)){
-  petFrames[id]=Array.from({length:8},(_,f)=>{
-   const cv=document.createElement("canvas");cv.width=52;cv.height=54;const c=cv.getContext("2d");
-   const q=(color,x,y,w,h)=>{c.fillStyle=color;c.fillRect(x,y,w,h);};
-   const bounce=[0,-2,-4,-2,0,-1,-3,-1][f],tail=[0,3,5,2,0,-2,-4,-2][f];
-   c.save();c.translate(0,bounce);
-   q("#28263e",9,18,35,27);q(p[0],11,16,31,27);q(p[1],16,29,21,13);
-   if(p[2]==="long"){q(p[0],13,2,8,21);q(p[0],32,2,8,21);q(p[1],16,4,3,15);q(p[1],35,4,3,15);}
-   if(p[2]==="ears"){q(p[0],10,9,10,16);q(p[0],33,9,10,16);}
-   if(p[2]==="horn"){q("#f9e3a0",23,3,7,17);q(p[0],11,12,9,10);q(p[0],33,12,9,10);}
-   if(p[2]==="wings"){q("#ef654a",2+tail,20,13,17);q("#ffd76e",37-tail,20,13,17);q("#f9dc75",23,4,7,17);}
-   if(id==="panda"){q("#33344a",13,12,9,11);q("#33344a",32,12,9,11);q("#33344a",16,26,8,9);q("#33344a",30,26,8,9);}
-   if(id==="penguin"){q("#f6c16d",21,33,11,5);}
-   if(id==="unicorn"){q("#e7a8e9",11,15,12,9);q("#a8e7ff",32,15,8,8);}
-   if(id==="slime"){q("#a9fbe6",15,17,23,4);}
-   q("#26253c",19,25,4,5);q("#26253c",31,25,4,5);q("#ff8c9a",26,33,4,3);
-   q(p[0],13+tail*.3,42,10,7);q(p[0],31-tail*.3,42,10,7);
-   c.restore();return cv;
-  });
- }
-}
-buildPets();
 drawPet=function(c,x,y,scale,facing,phase){
- if(state.pet==="none")return;
- const frames=petFrames[state.pet];if(!frames)return;
- const f=phase<0?0:Math.floor(phase)%8;
- c.save();c.translate(Math.round(x-facing*scale*30),Math.round(y));
- c.scale(facing,1);c.imageSmoothingEnabled=false;
- c.drawImage(frames[f],-26*scale*.78,-54*scale*.78,52*scale*.78,54*scale*.78);
- c.restore();
+ const row=petMotionRows?.[state.pet];if(!row)return;
+ drawMotion(c,petMotionAtlas,row,x-facing*43*scale,y-4,scale,facing,phase,30);
 };
+function drawPetPreviews(){
+ document.querySelectorAll("[data-pet-preview]").forEach(cv=>{
+  const c=cv.getContext("2d");c.clearRect(0,0,cv.width,cv.height);
+  const row=petMotionRows?.[cv.dataset.petPreview];
+  if(row)drawMotion(c,petMotionAtlas,row,50,90,2.6,1,reduced?-1:animTime/90,30);
+ });
+}
+let lastPreviewAt=0;
+function animatePreviews(now){
+ if(!state.large&&now-lastPreviewAt>90){drawPreviews();drawPetPreviews();lastPreviewAt=now;}
+}
+heroMotionAtlas.src="./assets/stairs-heroes-motion-v11.webp";
+petMotionAtlas.src="./assets/stairs-pets-motion-v11.webp";
 const priorStairRenderer=drawStair;
 drawStair=function(x,y,index){
  const skin=state.stairs;
@@ -644,8 +624,8 @@ for(const item of RUNNERS){
  const cv=document.createElement("canvas");cv.width=160;cv.height=200;b.append(cv,document.createTextNode(item.name));
  $("characters").append(b);b.addEventListener("click",()=>equipOrBuy("character",item));
 }
-document.querySelector(".footer").textContent="2026.11.17 · v1.0 — 캐릭터 10종 · 펫 10종 · 계단 12종 · 신규 8프레임 애니메이션";
-document.querySelector(".note").innerHTML=document.querySelector(".note").innerHTML.replace("플레이 버전 0.8","플레이 버전 1.0");
+document.querySelector(".footer").textContent="2026.11.17 · v1.1 — 원본 일러스트 동작 적용 · 캐릭터 10종 · 펫 10종 · 계단 12종";
+document.querySelector(".note").innerHTML=document.querySelector(".note").innerHTML.replace("플레이 버전 0.8","플레이 버전 1.1 · 원본 일러스트 동작 적용");
 
 runnerAtlas.src="./assets/stairs-runners-v08.png";
 new ResizeObserver(resize).observe($("stageView"));resize();drawPreviews();syncHud();requestAnimationFrame(frame);
