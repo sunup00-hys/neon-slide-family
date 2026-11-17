@@ -226,7 +226,11 @@ function frame(now){
  const blend=reduced?1:1-Math.exp(-dt*38);
  renderX+=(tx-renderX)*blend;renderY+=(ty-renderY)*blend;
  camX+=(renderX-camX)*Math.min(1,dt*14);camY+=(renderY-camY)*Math.min(1,dt*18);
- drawBackground();ctx.save();
+ // Keep decorative backgrounds fixed to the viewport; only stairs and runners scroll.
+ const movingCamX=camX,movingCamY=camY;
+ camX=0;camY=0;
+ try{drawBackground();}finally{camX=movingCamX;camY=movingCamY;}
+ ctx.save();
  ctx.translate(Math.round(width/2-camX),Math.round(height*.72-camY));
  const first=Math.max(0,state.index-Math.ceil(height/STEP_Y)),last=Math.min(route.steps.length-1,state.index+Math.ceil(height/STEP_Y)+4);
  for(let i=first;i<=last;i++){const s=route.steps[i];drawStair(s.x*STEP_X,-i*STEP_Y,i);if(i>state.index&&i%20===0&&state.mode==="infinite"&&i>starLedger.infiniteMilestone*20)drawStar(s.x*STEP_X,-i*STEP_Y-18,10,now);}
