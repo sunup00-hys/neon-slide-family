@@ -47,6 +47,7 @@ body{background:#191b2c}
 .stage-view canvas{image-rendering:pixelated}
 @media(orientation:landscape) and (max-height:540px){.immersive .controls{padding-top:7px;gap:12px}.immersive .control{min-height:78px;flex-direction:row;gap:16px;padding:6px}.immersive .control .icon{width:48px;height:48px}.immersive .control small{display:none}.immersive .hud{padding-top:8px}.immersive .energy{margin-top:5px;height:15px}.immersive .score{font-size:35px}}
 .choice{min-width:0}.choice .cost{font-size:10px;color:#ffe0a0;font-weight:800}.shop-caption{font-size:12px;color:#e5d4b0;margin-top:12px}.choice.locked{border-style:dashed}@media(max-width:520px){.choices{grid-template-columns:repeat(3,minmax(0,1fr))}.hud-top{gap:5px}.hud-actions{gap:4px}.hud-actions button{padding:8px 6px;font-size:10px}.star-strip{margin-right:0;padding:4px 6px;gap:4px}.score{font-size:36px}.unit{font-size:10px}}
+.choices{grid-template-columns:repeat(3,minmax(0,1fr))}.choice canvas{width:100%;height:auto;max-width:112px;image-rendering:auto}.choice{padding:10px 5px}.choice[aria-pressed=true]{box-shadow:0 0 15px #d6b7ff35}.hud-actions button{white-space:nowrap}
 </style>
 </head>
 <body class="immersive">
@@ -73,10 +74,10 @@ body{background:#191b2c}
 <aside class="settings" id="settings">
 <h2>나의 러너</h2><p>새로운 도트 러너와 함께 별빛 성을 올라요.<br>달리기 동작에도 코디가 그대로 적용돼요.</p>
 <div class="choices" id="characters">
-<button class="choice" data-character="azure" aria-pressed="true"><canvas width="64" height="82"></canvas>스카이</button>
-<button class="choice" data-character="luna" aria-pressed="false"><canvas width="64" height="82"></canvas>루나</button>
-<button class="choice" data-character="prince" aria-pressed="false"><canvas width="64" height="82"></canvas>왕자 레온</button>
-<button class="choice" data-character="witch" aria-pressed="false"><canvas width="64" height="82"></canvas>마법사 미오</button><button class="choice" data-character="ninja" aria-pressed="false"><canvas width="64" height="82"></canvas>닌자 카이</button>
+<button class="choice" data-character="azure" aria-pressed="true"><canvas width="160" height="200"></canvas>스카이</button>
+<button class="choice" data-character="luna" aria-pressed="false"><canvas width="160" height="200"></canvas>루나</button>
+<button class="choice" data-character="prince" aria-pressed="false"><canvas width="160" height="200"></canvas>왕자 레온</button>
+<button class="choice" data-character="witch" aria-pressed="false"><canvas width="160" height="200"></canvas>마법사 미오</button><button class="choice" data-character="ninja" aria-pressed="false"><canvas width="160" height="200"></canvas>닌자 카이</button>
 </div>
 <div class="shop-caption" id="shopCaption">★ 스카이는 무료 · 다른 러너는 별로 해금할 수 있어요.</div><h3>컬러 스타일</h3><div class="chips"><button class="chip" data-outfit="classic" aria-pressed="true">오리지널</button><button class="chip" data-outfit="sport" aria-pressed="false">민트·로즈</button><button class="chip" data-outfit="space" aria-pressed="false">실버·골드</button></div>
 <h3>액세서리</h3><div class="chips"><button class="chip" id="crownButton" aria-pressed="false">왕관</button><button class="chip" id="wingsButton" aria-pressed="false">날개</button><button class="chip" id="shoesButton" aria-pressed="false">네온 운동화</button></div>
@@ -86,10 +87,10 @@ body{background:#191b2c}
 <div class="setting-line" id="stageRow" hidden><label for="stageSelect">시작 스테이지</label><select id="stageSelect"><option value="1">1 · 20계단</option><option value="2">2 · 40계단</option><option value="3">3 · 60계단</option><option value="4">4 · 80계단</option><option value="5">5 · 100계단</option><option value="6">6 · 120계단</option><option value="7">7 · 140계단</option><option value="8">8 · 160계단</option><option value="9">9 · 180계단</option><option value="10">10 · 200계단</option></select></div>
 <div class="setting-line"><span>효과음</span><button class="chip" id="soundButton" aria-pressed="true">켜짐</button></div>
 <div class="reward-info"><div>나의 계단 체험 별 <strong id="wardrobeStars">★ 0</strong></div><p>무한 도전: 새 최고 기록 20계단마다 1개<br>스테이지: 처음 성공한 단계마다 3개<br>이 기기에 저장되며 공용 별과 별도로 표시됩니다.</p></div><button class="full-button" id="largeButton">↗ 크게 보고 계속하기</button>
-<p class="note">방향 전환 버튼도 한 칸을 올라갑니다. 잘못 누르거나 시간이 다 되면 다시 도전해요. 설정 화면을 열면 게임은 잠시 멈춥니다.<br>플레이 버전 0.7 · 공용 별 합산은 서버 연동 후 지원됩니다.</p>
+<p class="note">방향 전환 버튼도 한 칸을 올라갑니다. 잘못 누르거나 시간이 다 되면 다시 도전해요. 설정 화면을 열면 게임은 잠시 멈춥니다.<br>플레이 버전 0.8 · 공용 별 합산은 서버 연동 후 지원됩니다.</p>
 </aside>
 </div>
-<footer class="footer">2026.11.17 · 0.7 — 5종 신규 러너·8프레임 달리기·별 해금·펫·계단 상점</footer>
+<footer class="footer">2026.11.17 · 0.8 — 5종 신규 러너·원본 디자인 4프레임 달리기·별 해금·펫·계단 상점</footer>
 </main>
 <script>
 "use strict";
@@ -144,6 +145,7 @@ function reset(){
  showOverlay("READY TO RUN","계단을 달려 올라요","오르기는 그대로 한 칸, 방향 전환은 돌아서 한 칸! 다음 계단의 방향을 보고 눌러요.","게임 시작");syncHud();
 }
 function start(){
+ if(!runnerFrames)return;
  if(state.status==="paused"){state.status="playing";}
  else{if(state.status==="over"||state.status==="complete")reset();state.status="playing";}
  $("overlay").hidden=true;lastFrame=null;unlockAudio();canvas.focus?.({preventScroll:true});syncHud();
@@ -159,6 +161,7 @@ function finish(success,reason){
 }
 function action(kind){
  if(!state.large && state.status==="paused")return;
+ if(!runnerFrames)return;
  if(state.status==="ready")start();
  if(state.status!=="playing")return;
  const move=resolveMove(route,state.index,state.facing,kind);
@@ -189,40 +192,6 @@ function resize(){
  ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingEnabled=false;
 }
 function rect(c,color,x,y,w,h){c.fillStyle=color;c.fillRect(Math.round(x),Math.round(y),w,h);}
-function fallbackRunner(c,x,y,scale,facing,phase,config){
- c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing*scale,scale);
- const moving=phase>=0,frame=moving?Math.floor(phase)%4:0;
- const bob=moving&&!reduced?(frame===1||frame===3?-1:0):0;c.translate(0,bob);
- let hair=config.character==="princess"?"#a87440":config.character==="prince"?"#e5be70":"#202536";
- let shirt=config.character==="business"?"#f5f0df":config.character==="boxer"?"#c85253":config.character==="prince"?"#6a95bd":"#a48cd2";
- let pants=config.character==="princess"?"#8063ad":"#263348";
- if(config.outfit==="sport"){shirt="#78b8a7";pants="#394c64";}
- if(config.outfit==="space"){shirt="#dfdfe6";pants="#8292aa";}
- if(config.wings){rect(c,"#c4d5e7",-11,-21,5,11);rect(c,"#e1edf8",-14,-24,4,10);rect(c,"#a2b9d4",-8,-17,3,8);}
- // Compact, side-facing pixel silhouette: adult proportions, small face.
- rect(c,hair,-4,-30,8,4);rect(c,hair,-5,-28,10,4);
- rect(c,"#d8a27c",-3,-26,8,7);rect(c,"#edbd96",-1,-26,7,6);
- rect(c,hair,-5,-26,3,6);rect(c,hair,-3,-27,7,2);
- rect(c,"#172238",4,-25,1,2);rect(c,"#c58b6b",6,-22,2,2);
- if(config.character==="princess"){rect(c,hair,-6,-24,3,14);rect(c,hair,-8,-19,3,7);}
- rect(c,shirt,-4,-19,8,10);rect(c,shirt,-3,-20,6,2);
- rect(c,"#d8a27c",0,-20,3,2);
- if(config.character==="business"&&config.outfit==="classic"){rect(c,"#bd4d51",1,-18,2,6);rect(c,"#ece3d6",-1,-18,2,2);}
- if(config.character==="prince"&&config.outfit==="classic"){rect(c,"#e5c579",-4,-18,8,1);rect(c,"#d9bc78",-4,-10,8,2);}
- if(config.outfit==="space"){rect(c,"#73849a",-3,-18,6,4);rect(c,"#d7e9f0",-2,-17,3,2);}
- const legA=moving?[0,3,1,-3][frame]:0, legB=-legA;
- rect(c,pants,-4,-9,8,3);
- if(config.character==="princess"&&config.outfit==="classic"){rect(c,shirt,-5,-12,11,7);rect(c,pants,-2,-5,3,4);}
- else{rect(c,pants,-3+legA,-7,3,5);rect(c,pants,1+legB,-7,3,5);}
- const shoe=config.shoes?"#9ee3c5":"#172232";
- rect(c,shoe,-3+legA,-2,5,2);rect(c,shoe,1+legB,-2,5,2);
- // Opposing arm swing makes each tap feel like a running stride.
- rect(c,shirt,-4-legA,-18,3,6);rect(c,"#e4ad86",-4-legA,-12,3,3);
- rect(c,shirt,3+legA,-18,3,5);rect(c,"#edbd96",3+legA,-13,3,3);
- if(config.character==="boxer"&&config.outfit==="classic"){rect(c,"#dd655a",2+legA,-14,4,4);rect(c,"#dd655a",-5-legA,-13,4,4);}
- if(config.crown){rect(c,"#e6bf68",-5,-32,11,2);rect(c,"#f6da8a",-5,-35,2,4);rect(c,"#f6da8a",0,-36,2,5);rect(c,"#f6da8a",4,-35,2,4);}
- c.restore();
-}
 function drawClassicBackground(){
  const palettes={city:["#182b46","#526a83"],sunset:["#665978","#dcab9c"],forest:["#1d444a","#6e9990"],space:["#111b36","#34476e"]};
  const p=palettes[state.background];const gradient=ctx.createLinearGradient(0,0,0,height);gradient.addColorStop(0,p[0]);gradient.addColorStop(1,p[1]);ctx.fillStyle=gradient;ctx.fillRect(0,0,width,height);
@@ -305,7 +274,7 @@ document.addEventListener("keydown",e=>{
 });
 document.addEventListener("visibilitychange",()=>{if(document.hidden)pause();});
 window.addEventListener("blur",pause);window.addEventListener("resize",resize);
-function drawPreviews(){document.querySelectorAll("[data-character]").forEach(b=>{const cv=b.querySelector("canvas"),c=cv.getContext("2d");c.clearRect(0,0,cv.width,cv.height);c.imageSmoothingEnabled=false;drawRunner(c,32,77,1.05,1,-1,Object.assign({},state,{character:b.getAttribute("data-character")}));});}
+function drawPreviews(){document.querySelectorAll("[data-character]").forEach(b=>{const cv=b.querySelector("canvas"),c=cv.getContext("2d");c.clearRect(0,0,cv.width,cv.height);c.imageSmoothingEnabled=true;drawRunner(c,80,192,2.45,1,-1,Object.assign({},state,{character:b.getAttribute("data-character")}));});}
 
 const STAR_KEY="neon-stairs-preview-stars-v3";
 function readStars(){
@@ -349,48 +318,6 @@ function drawGain(now){
  drawStar(width/2-22,height*.43-progress*45,15,now);ctx.font="900 22px system-ui";ctx.textAlign="left";ctx.fillStyle="#fff0bd";ctx.strokeStyle="#55332e";ctx.lineWidth=4;ctx.strokeText("+"+g.value,width/2+1,height*.43-progress*45+7);ctx.fillText("+"+g.value,width/2+1,height*.43-progress*45+7);ctx.restore();}
 }
 
-function fallbackPixelRunner(c,x,y,scale,facing,phase,config){
- // Small head, long torso and articulated limbs: 24 x 40 pixel runner.
- const moving=phase>=0, f=moving?Math.floor(phase)%6:0;
- const female=config.character==="luna"||config.character==="princess";
- const leg=[[-5,4],[-3,3],[0,0],[4,-5],[3,-3],[0,0]][f];
- const arm=[4,2,0,-4,-2,0][f];
- const ink="#171b2d",skin="#e9b289",shade="#b77c61";
- let coat=female?"#c75366":"#e7dfc5",dark=female?"#71394f":"#515f6a",pants="#27354e",hair=female?"#663e39":"#292334";
- if(config.character==="prince"){coat="#497bb0";dark="#2b456c";hair="#d9b268";}
- if(config.character==="princess"){coat="#aa76bc";dark="#654d85";hair="#b37b40";}
- if(config.outfit==="sport"){coat=female?"#eb877e":"#68c4b3";dark="#347e83";}
- if(config.outfit==="space"){coat="#d8e0e8";dark="#7c8caa";pants="#46536e";}
- c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing*scale,scale);
- const p=(color,xx,yy,w,h)=>rect(c,color,xx,yy,w,h);
- if(config.wings){p(ink,-12,-29,6,17);p("#8498c0",-14,-29,4,13);p("#d3dff0",-16,-31,4,10);}
- // Rear arm and rear leg.
- p(ink,-5-arm,-25,5,10);p(dark,-4-arm,-24,3,6);p(shade,-4-arm,-18,3,3);
- p(ink,-4+leg[1],-12,5,10);p(pants,-3+leg[1],-11,3,8);
- p(ink,-4+leg[1],-4,8,4);p("#64758a",-2+leg[1],-3,5,1);
- // Neck, jacket and waist.
- p(ink,-6,-29,12,17);p(dark,-5,-27,9,14);p(coat,-3,-27,8,12);
- p(skin,0,-30,4,4);p("#fff1d6",2,-25,2,9);p(ink,-5,-14,10,3);
- if(config.character==="azure"){p("#ac4254",2,-24,2,8);p("#714053",3,-17,2,2);}
- else{p("#e7bc74",-4,-23,2,2);p(dark,3,-19,2,1);}
- // Profile head: no oversized eyes or round baby silhouette.
- p(ink,-5,-40,11,11);p(hair,-4,-39,9,5);p(shade,-3,-35,8,6);
- p(skin,0,-35,6,5);p(skin,5,-33,3,2);p(ink,4,-35,1,2);
- p(hair,-4,-36,4,5);p("#f3c7a2",0,-32,2,2);p(shade,3,-30,3,1);
- if(female){p(ink,-9,-37,5,13);p(hair,-8,-36,4,11);p("#a56852",-7,-35,1,8);}
- else{p("#484052",-3,-39,5,1);}
- // Bent lead leg, forward shoe, opposing lead arm.
- p(ink,leg[0]-1,-12,5,8);p(pants,leg[0],-11,3,6);
- p(ink,leg[0]+1,-7,4,5);p(dark,leg[0]+2,-6,2,4);
- p(ink,leg[0]+1,-3,8,3);p(config.shoes?"#8ef2c8":"#b7bcc7",leg[0]+3,-2,5,1);
- p(ink,3+arm,-26,5,8);p(coat,4+arm,-25,3,5);
- p(ink,5+arm,-21,5,5);p(skin,6+arm,-20,3,3);
- if(config.crown||config.character==="prince"||config.character==="princess"){
-  p(ink,-6,-44,13,5);p("#dfac52",-5,-43,11,3);
-  for(const xx of [-5,0,4])p("#ffe5a0",xx,-46,2,5);p("#bd505b",0,-42,2,2);
- }
- c.restore();
-}
 function torch(x,y){
  const flicker=Math.floor(animTime/100)%3;
  const glow=ctx.createRadialGradient(x,y-20,2,x,y-20,48);glow.addColorStop(0,"#ffdc8666");glow.addColorStop(1,"#ffbd5600");ctx.fillStyle=glow;ctx.fillRect(x-50,y-70,100,100);
@@ -455,70 +382,6 @@ function drawBackground(){
 }
 
 
-function oldDrawRunner(c,x,y,scale,facing,phase,config){
- const moving=phase>=0,f=moving?Math.floor(phase)%8:0;
- const poses=[[-7,5,5,-4],[-5,3,3,-6],[-2,0,0,-3],[3,-5,-4,2],[6,-7,-6,5],[4,-4,-3,6],[0,-1,0,3],[-4,3,4,-2]];
- const pose=moving?poses[f]:[-2,2,1,-1];
- const skins={
- azure:{hair:"#192b42",light:"#466780",coat:"#337ca4",hi:"#77c7df",dark:"#20425f",accent:"#e78b54",pants:"#26374f"},
- luna:{hair:"#342c55",light:"#81669d",coat:"#674b91",hi:"#bd9bde",dark:"#392f60",accent:"#6ee3dc",pants:"#2b2d49"},
- prince:{hair:"#785437",light:"#e0b778",coat:"#284c7e",hi:"#628bc1",dark:"#1a2b4d",accent:"#efd18a",pants:"#24304c"},
- princess:{hair:"#51304c",light:"#ab6382",coat:"#963a65",hi:"#df7f9c",dark:"#53243f",accent:"#f0c78a",pants:"#342840"}
- };
- const p=Object.assign({},skins[config.character]||skins.azure),female=config.character==="luna"||config.character==="princess";
- if(config.outfit==="sport"){p.coat="#267c76";p.hi="#6bdebf";p.dark="#20454d";p.accent="#f4d075";}
- if(config.outfit==="space"){p.coat="#8b9bb2";p.hi="#e2edf2";p.dark="#45536f";p.accent="#6de0f1";}
- const ink="#121b2c",skin="#e4ab85",skinHi="#f6c7a0",skinShade="#a96a56";
- c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing*scale,scale);c.imageSmoothingEnabled=false;
- const box=(color,a,b,w,h)=>rect(c,color,a,b,w,h);
- const limb=(color,points,w)=>{c.strokeStyle=ink;c.lineWidth=w+2;c.lineCap="butt";c.lineJoin="miter";c.beginPath();c.moveTo(points[0][0],points[0][1]);points.slice(1).forEach(v=>c.lineTo(v[0],v[1]));c.stroke();c.strokeStyle=color;c.lineWidth=w;c.stroke();};
- // A separate back layer keeps scarf, ponytail and accessories behind the body.
- if(config.wings){box(ink,-16,-33,8,19);box("#647faa",-18,-34,7,17);box("#c4dfed",-21,-37,6,13);box("#f1f8ef",-22,-38,3,9);}
- const flutter=moving?[0,-1,-3,-2,0,2,3,1][f]:0;
- box(ink,-17,-31+flutter,12,5);box(p.accent,-16,-30+flutter,11,3);box(p.dark,-18,-28+flutter,5,3);
- if(female){box(ink,-9,-43,6,16);box(p.hair,-8,-42,5,13);box(p.light,-8,-40,1,8);box(p.hair,-12,-29+flutter,7,4);}
- // Far arm and a bent rear leg.
- limb(p.dark,[[-4,-30],[-8-pose[2],-24],[-5-pose[2],-20]],3);
- box(skinShade,-7-pose[2],-22,4,4);
- limb(p.pants,[[-3,-17],[pose[1],-10],[pose[1]-4,-3]],4);
- box(ink,pose[1]-7,-4,10,4);box("#58657c",pose[1]-6,-3,7,2);
- // Fitted jacket, shoulder plates, lapels and belt.
- box(ink,-7,-33,14,17);box(p.dark,-6,-32,11,15);box(p.coat,-4,-32,10,14);
- box(p.hi,-4,-31,2,10);box(p.hi,2,-30,3,3);box(p.dark,3,-25,3,8);
- box(skinShade,0,-36,4,5);box(skinHi,1,-35,3,3);
- box(ink,-5,-18,11,3);box(p.accent,-1,-18,3,2);box("#fff0cc",0,-18,1,1);
- box(p.dark,-6,-22,4,3);box(p.hi,-5,-22,2,1);
- if(config.character==="prince"||config.character==="princess"){
-  box(p.accent,-6,-32,4,2);box(p.accent,3,-31,4,2);box(p.accent,1,-26,1,6);
-  box(ink,-8,-20,5,7);box(p.coat,-7,-20,4,6);
- }else{box("#dce7df",0,-30,2,3);box(p.accent,1,-27,2,5);}
- // Small angular profile, swept hair, brow, nose and jaw highlights.
- box(ink,-5,-46,11,11);box(p.hair,-4,-45,9,5);box(p.hair,-7,-44,4,4);
- box(p.light,-3,-45,6,1);box(p.light,-5,-43,4,1);
- box(skinShade,-3,-40,8,6);box(skin,0,-41,6,6);box(skinHi,2,-40,4,3);
- box(skin,6,-39,2,2);box(ink,3,-41,3,1);box(ink,5,-40,1,1);
- box(skinShade,4,-36,3,1);box(p.hair,-4,-41,4,4);box(skinHi,-1,-39,2,2);
- if(config.outfit==="space"){box(ink,-5,-46,12,4);box(p.hi,-4,-45,10,2);box("#67cfe1",2,-41,5,2);}
- // Near leg crosses the far leg through eight distinct running poses.
- const kneeX=pose[0],kneeY=moving?(-10-Math.abs(pose[0])*.5):-10;
- const ankleX=moving?kneeX+pose[3]:-2,ankleY=moving&&Math.abs(pose[0])>4?-5: -2;
- limb(p.pants,[[2,-16],[kneeX,kneeY],[ankleX,ankleY]],4);
- box(p.hi,kneeX-1,Math.round(kneeY)-1,2,2);
- box(ink,ankleX-2,ankleY-1,10,4);box(config.shoes?"#79f6cf":"#8395aa",ankleX-1,ankleY,8,2);
- box(config.shoes?"#d9fff1":"#e0e5e4",ankleX-1,ankleY+2,9,1);
- // Bent lead elbow and visible glove produce a purposeful forward sprint.
- const elbow=pose[2];limb(p.coat,[[4,-31],[7+elbow,-26],[10+elbow,-29]],4);
- box(p.hi,4,-32,4,2);box(ink,8+elbow,-31,5,5);box(skin,9+elbow,-30,3,3);box(skinHi,10+elbow,-30,2,1);
- if(config.crown||config.character==="prince"||config.character==="princess"){
-  box(ink,-6,-48,14,4);box("#b97e3d",-5,-48,12,3);box(p.accent,-5,-49,12,2);
-  for(const xx of [-5,0,5]){box(ink,xx-1,-52,3,4);box("#ffe2a0",xx,-51,2,4);}
-  box("#c74f6e",1,-48,2,2);
- }
- c.restore();
-}
-
-
-
 // One source of truth for five character choices, unlocks and gameplay.
 const STORE_KEY="neon-stairs-integrated-shop-v1";
 const RUNNERS=[{id:"azure",name:"스카이",price:0},{id:"luna",name:"루나",price:8},{id:"prince",name:"왕자 레온",price:12},{id:"witch",name:"마법사 미오",price:15},{id:"ninja",name:"닌자 카이",price:18}];
@@ -566,49 +429,64 @@ function refreshShopUI(){
   b.textContent=item.name+(state.stairs===item.id?" ✓":inventory.owned.includes(item.id)?"":" ★"+item.price);
   b.addEventListener("click",()=>equipOrBuy("stairs",item));stairBox.append(b);}
 }
-function drawFiveRunner(c,x,y,scale,facing,phase,config){
- let p={
-  azure:{hair:"#b7f2ff",shade:"#a18cf0",coat:"#2875d0",trim:"#f8d17a",pants:"#2c81d5",eye:"#3fa86c"},
-  luna:{hair:"#f895c4",shade:"#b85d9c",coat:"#34354d",trim:"#f7bad6",pants:"#cb79b7",eye:"#7e4d88"},
-  prince:{hair:"#f7d17b",shade:"#bd9046",coat:"#3268b8",trim:"#ffdb86",pants:"#f1ebdc",eye:"#835d48"},
-  witch:{hair:"#e4dfff",shade:"#ac9cd7",coat:"#7d49b8",trim:"#f7d77c",pants:"#5c3d93",eye:"#8551b5"},
-  ninja:{hair:"#e9f3ff",shade:"#a1b2c9",coat:"#222b41",trim:"#53d8ed",pants:"#172338",eye:"#64e4f3"}
- }[config.character]||null;
- if(!p){oldDrawRunner(c,x,y,scale,facing,phase,config);return;}
- p={...p};
- if(config.outfit==="sport"){p.coat=config.character==="luna"?"#bd527f":"#278f87";p.trim="#ffd889";p.pants="#30535f";}
- if(config.outfit==="space"){p.coat="#b6c7dc";p.trim="#ffe5a1";p.pants="#586880";}
- const active=phase>=0,f=active?Math.floor(phase)%8:0;
- const leg=active?[-4,-2,1,4,5,2,-1,-5][f]:0;
- const arm=active?[4,2,-1,-4,-5,-2,1,4][f]:0;
- const box=(color,a,b,w,h)=>rect(c,color,a,b,w,h),skin="#f1bb91",ink="#222239";
- c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing*scale,scale);c.imageSmoothingEnabled=false;
- if(active)c.translate(0,[0,-1,-2,-1,0,-1,-2,-1][f]);
- if(config.wings){box("#c7d8f4",-17,-31,10,18);box("#ffffff",-19,-33,5,12);}
- if(config.character==="luna"||config.character==="witch"){box(ink,-12,-45,9,26);box(p.shade,-11,-44,7,23);}
- if(config.character==="prince"){box(p.trim,-13,-27,4,24);box(p.coat,-12,-27,8,23);}
- if(config.character==="ninja"){box(p.trim,-18-arm,-25,13,4);box(p.trim,-12,-27,7,4);}
- // Rear arm and two independently moving legs
- box(ink,-9-arm,-30,7,14);box(p.coat,-8-arm,-29,5,10);box(skin,-7-arm,-20,4,4);
- box(ink,-5-leg,-14,7,12);box(p.pants,-4-leg,-13,5,10);box("#f6f7ff",-6-leg,-3,10,3);
- box(ink,-9,-34,19,20);box(p.coat,-8,-33,17,17);box(p.trim,-7,-31,3,12);
- box("#f6f0e6",0,-31,3,12);box(p.trim,5,-28,2,3);box(p.trim,5,-23,2,2);
- box(ink,-8,-17,17,4);box(p.trim,-1,-17,4,2);
- box(ink,leg-1,-14,7,12);box(p.pants,leg,-13,5,10);box(ink,leg-3,-4,13,4);box(config.shoes?"#89ffd7":"#e9f7ff",leg-2,-3,11,2);
- box(ink,5+arm,-31,7,14);box(p.coat,6+arm,-30,5,10);box(skin,8+arm,-21,4,4);
- // Angular anime-pixel profile, expressive eye and styled hair
- box(ink,-10,-49,21,18);box(p.shade,-9,-48,19,15);box(skin,-6,-41,17,10);box("#ffe0b8",0,-40,10,6);
- box(ink,7,-38,3,4);box(p.eye,7,-38,2,3);box("#ffffff",8,-38,1,1);box("#d47776",7,-32,3,1);
- box(p.hair,-10,-49,20,8);box(p.shade,-10,-45,7,8);box("#ffffff",-7,-48,9,2);box(p.hair,1,-46,9,5);
- if(config.character==="azure"){box(p.shade,-5,-49,10,4);box("#e6fbff",2,-46,9,4);box(p.hair,-11,-41,5,9);box(p.shade,-3,-55,7,7);box("#d4f9ff",-1,-57,5,4);}
- if(config.character==="luna"){box(p.hair,-13,-42,6,16);box(ink,-9,-52,19,5);box("#a7e9ff",-7,-51,7,3);box("#a7e9ff",2,-51,7,3);}
- if(config.character==="prince"){box(ink,-10,-54,20,6);box(p.trim,-9,-53,18,5);for(const xx of [-8,-2,5])box("#fff1a6",xx,-58,4,7);box("#e96485",0,-53,3,3);}
- if(config.character==="witch"){box(ink,-17,-52,36,5);box("#673a9f",-16,-52,34,4);box(ink,-9,-64,18,14);box("#8048c0",-8,-63,16,13);box("#f4ce74",3,-56,5,5);box("#e8c57c",16+arm,-48,3,36);box("#b99cfc",11+arm,-54,13,12);}
- if(config.character==="ninja"){box(ink,-10,-41,21,11);box("#293346",-9,-40,19,9);box(p.eye,6,-38,3,2);box(p.trim,-10,-45,8,3);box("#b9d4e7",-7,-51,12,3);}
- if(config.crown&&config.character!=="prince"){box("#ffe08d",-9,-54,19,4);box("#fff1a6",-7,-58,4,6);}
+// Actual illustrated PNG frames; selection and gameplay share this atlas.
+const runnerAtlas=new Image();
+let runnerFrames=null;
+const RUNNER_ROWS=["azure","luna","prince","witch","ninja"];
+$("startButton").disabled=true;$("largeButton").disabled=true;
+$("overlayText").textContent="캐릭터 이미지를 불러오고 있어요.";
+function prepareRunnerAtlas(){
+ const buffer=document.createElement("canvas");buffer.width=runnerAtlas.naturalWidth;buffer.height=runnerAtlas.naturalHeight;
+ const c=buffer.getContext("2d",{willReadFrequently:true});c.drawImage(runnerAtlas,0,0);
+ const pixels=c.getImageData(0,0,buffer.width,buffer.height).data;
+ runnerFrames={};
+ for(let row=0;row<5;row++){
+  const frames=[];
+  for(let col=0;col<4;col++){
+   const l=Math.round(col*buffer.width/4),r=Math.round((col+1)*buffer.width/4),t=Math.round(row*buffer.height/5),b=Math.round((row+1)*buffer.height/5);
+   // Ignore isolated alpha speckles: bound the connected character, not stray pixels.
+   const cw=r-l,ch=b-t,seen=new Uint8Array(cw*ch),parts=[];
+   for(let yy=0;yy<ch;yy++)for(let xx=0;xx<cw;xx++){
+    const id=yy*cw+xx;if(seen[id]||pixels[((t+yy)*buffer.width+l+xx)*4+3]<160)continue;
+    const queue=[id];seen[id]=1;let count=0,x0=xx,x1=xx,y0=yy,y1=yy;
+    for(let n=0;n<queue.length;n++){
+     const at=queue[n],x=at%cw,y=Math.floor(at/cw);count++;x0=Math.min(x0,x);x1=Math.max(x1,x);y0=Math.min(y0,y);y1=Math.max(y1,y);
+     for(const next of [x>0?at-1:-1,x<cw-1?at+1:-1,y>0?at-cw:-1,y<ch-1?at+cw:-1]){
+      if(next<0||seen[next])continue;seen[next]=1;
+      if(pixels[((t+Math.floor(next/cw))*buffer.width+l+next%cw)*4+3]>=160)queue.push(next);
+     }
+    }
+    parts.push({count,x0,x1,y0,y1});
+   }
+   parts.sort((a,b)=>b.count-a.count);if(!parts.length)throw Error("캐릭터 이미지가 비어 있어요");
+   const body=parts.filter(p=>p.count>=Math.max(80,parts[0].count*.025));
+   frames.push({x:Math.max(l,l+Math.min(...body.map(p=>p.x0))-2),y:Math.max(t,t+Math.min(...body.map(p=>p.y0))-2),right:Math.min(r,l+Math.max(...body.map(p=>p.x1))+3),bottom:Math.min(b,t+Math.max(...body.map(p=>p.y1))+3),center:(l+r)/2});
+  }
+  const maxHeight=Math.max(...frames.map(f=>f.bottom-f.y));
+  runnerFrames[RUNNER_ROWS[row]]={frames,maxHeight};
+ }
+ drawPreviews();$("startButton").disabled=false;$("largeButton").disabled=false;
+ $("overlayText").textContent="오르기는 그대로 한 칸, 방향 전환은 돌아서 한 칸! 다음 계단을 보고 눌러요.";
+}
+runnerAtlas.onload=()=>{try{prepareRunnerAtlas();}catch(error){console.error(error);$("overlayText").textContent="캐릭터를 불러오지 못했어요. 새로고침해 주세요.";}};
+runnerAtlas.onerror=()=>{$("overlayText").textContent="캐릭터 이미지를 불러오지 못했어요. 새로고침해 주세요.";};
+function drawRunner(c,x,y,scale,facing,phase,config){
+ if(!runnerFrames)return;
+ const row=runnerFrames[config.character]||runnerFrames.azure;
+ const frame=row.frames[phase>=0?Math.floor(phase/2.3)%4:0];
+ const factor=72*scale/row.maxHeight,w=frame.right-frame.x,h=frame.bottom-frame.y;
+ c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing,1);
+ c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";
+ if(config.outfit==="sport")c.filter="hue-rotate(22deg)";
+ if(config.outfit==="space")c.filter="saturate(.6) brightness(1.12)";
+ c.drawImage(runnerAtlas,frame.x,frame.y,w,h,(frame.x-frame.center)*factor,-h*factor,w*factor,h*factor);
+ c.filter="none";
+ if(config.wings){c.globalAlpha=.8;c.fillStyle="#c8ecff";c.beginPath();c.ellipse(-17*scale,-34*scale,8*scale,18*scale,-.5,0,Math.PI*2);c.fill();c.globalAlpha=1;}
+ if(config.crown&&config.character!=="prince"){c.font=String(15*scale)+"px serif";c.textAlign="center";c.fillText("♛",0,-68*scale);}
+ if(config.shoes){c.shadowColor="#79f6cf";c.shadowBlur=7;c.fillStyle="#a1ffe6";c.fillRect(-8*scale,-2*scale,16*scale,scale);}
  c.restore();
 }
-function drawRunner(c,x,y,scale,facing,phase,config){drawFiveRunner(c,x,y,scale,facing,phase,config);}
+
 function drawPet(c,x,y,scale,facing,phase){
  if(state.pet==="none")return;
  const colors={dog:["#b77e46","#fff1cb"],cat:["#8481b6","#f4e7fa"],bunny:["#f8e1f3","#ffffff"],fox:["#e99547","#fff0cb"],dragon:["#6ac0ac","#b7f5db"]};
@@ -641,6 +519,7 @@ for(const type of ["character","pet","stairs"]){const arr=type==="character"?RUN
 const wallet=new URLSearchParams(location.search).get("wallet");
 if(wallet){const home=document.querySelector(".page-head a");const u=new URL(home.href);u.searchParams.set("wallet",wallet);home.href=u.href;}
 saveInventory();refreshShopUI();
+runnerAtlas.src="./assets/stairs-runners-v08.png";
 new ResizeObserver(resize).observe($("stageView"));resize();drawPreviews();syncHud();requestAnimationFrame(frame);
 </script>
 </body></html>
