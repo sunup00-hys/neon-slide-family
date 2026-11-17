@@ -117,7 +117,7 @@ body{background:#191b2c}
 }
 </style>
 </head>
-<body class="immersive" data-build="2.2-phone-fit">
+<body class="immersive" data-build="2.3-failure-fall">
 <nav class="family-switch" aria-label="가족 게임 전환"><div class="family-switch-links"><a href="./index.html">♫ 리듬</a><a class="current" href="./stairs-preview.html" aria-current="page">↗ 계단</a><a href="./words.html">✦ 낱말</a><a href="./sudoku.html">▦ 스도쿠</a><a href="./magic.html">⚗ 물약</a><a href="./arrows.html">➜ 화살표</a><a href="./zoodoku.html">🐾 쥬도쿠</a><a href="./bus.html">🚌 버스</a><a class="family-dress-link" href="./words.html?view=dress&amp;v=21-stairs-levels">♕ 꾸미기</a></div><button id="familyProfileButton" type="button">👤 사용자 선택</button><span id="familyProfileStatus">사용자 확인 중</span></nav>
 <dialog id="familyProfileDialog" class="family-profile-dialog"><h2>사용자 변경</h2><p>기존 가족게임의 사용자 목록을 불러옵니다.</p><div id="familyProfileChoices"></div><p id="familyProfileError"></p><button id="familyProfileClose" type="button">닫기</button></dialog>
 <main class="page">
@@ -182,7 +182,7 @@ const $=id=>document.getElementById(id);
 const canvas=$("gameCanvas"),ctx=canvas.getContext("2d");
 const state={status:"ready",index:0,facing:1,energy:1,mode:"infinite",stage:1,difficulty:"beginner",best:0,character:"azure",outfit:"classic",stairs:"brick",background:"castle",crown:false,wings:false,shoes:false,sound:true,large:true};
 try{state.best=Math.max(0,Number(localStorage.getItem("neon-stairs-preview-best-v2"))||0);}catch(e){}
-let route=makeRoute(20261117,0,state.difficulty), width=400,height=550,renderX=0,renderY=0,camX=0,camY=0,lastFrame=null,runUntil=0,stepAt=-1000,trail=[],animTime=0,fall=0,seedCounter=0,audio=null;
+let route=makeRoute(20261117,0,state.difficulty), width=400,height=550,renderX=0,renderY=0,camX=0,camY=0,lastFrame=null,runUntil=0,stepAt=-1000,trail=[],animTime=0,fall=0,seedCounter=0,audio=null,failure=null;
 const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function target(){return state.mode==="stage"?state.stage*20:Infinity;}
 function syncHud(){
@@ -194,6 +194,8 @@ function syncHud(){
  $("modeStatus").textContent=({beginner:"초보",intermediate:"중수",expert:"고수"}[state.difficulty])+" · "+(state.mode==="stage"?"스테이지 "+state.stage+" · 목표 "+target()+"계단":"무한 도전 · 직접 조작");
  $("bestStatus").textContent="이 기기 최고 "+state.best;
  document.querySelectorAll("[data-difficulty]").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.difficulty===state.difficulty));b.disabled=shared.starting||shared.busy;});
+ for(const id of ["pauseButton","quickWardrobe","sizeButton"])$(id).disabled=state.status==="falling";
+ $("gameShell").dataset.phase=state.status;
  $("pauseButton").textContent=state.status==="paused"?"▶ 계속":"Ⅱ 정지";
 }
 function showOverlay(label,title,text,button,result){
@@ -203,6 +205,7 @@ function showOverlay(label,title,text,button,result){
 }
 function recordBest(){if(state.index>state.best){state.best=state.index;try{localStorage.setItem("neon-stairs-preview-best-v2",String(state.best));}catch(e){}}}
 function reset(){
+ failure=null;
  flushProgress();
  route=makeRoute(20261117+(++seedCounter)*7919,state.mode==="stage"?state.stage-1:0,state.difficulty);
  state.index=0;state.facing=1;state.energy=1;state.status="ready";
@@ -211,7 +214,7 @@ function reset(){
  showOverlay("READY TO RUN","계단을 달려 올라요","오르기는 그대로 한 칸, 방향 전환은 돌아서 한 칸! 다음 계단의 방향을 보고 눌러요.","게임 시작");syncHud();
 }
 async function start(){
- if(!runnerFrames||shared.starting||shared.busy)return;
+ if(!runnerFrames||shared.starting||shared.busy||state.status==="falling")return;
  if(!shared.ready){toastShop("공통 별 서버에 연결한 뒤 시작해주세요.");$("familyProfileDialog").showModal();return;}
  if(state.status==="paused"){beginPlaying();return;}
  if(state.status==="playing")return;
@@ -219,7 +222,7 @@ async function start(){
  shared.starting=true;
  try{await newSharedRun();beginPlaying();}catch(e){walletError(e);}finally{shared.starting=false;}
 }
-function beginPlaying(){state.status="playing";$("overlay").hidden=true;$("reviveButton").hidden=true;lastFrame=null;unlockAudio();canvas.focus?.({preventScroll:true});syncHud();}
+function beginPlaying(){failure=null;fall=0;state.status="playing";$("overlay").hidden=true;$("reviveButton").hidden=true;lastFrame=null;unlockAudio();canvas.focus?.({preventScroll:true});syncHud();}
 async function newSharedRun(){
  await shared.queue;
  const result=await enqueueWallet(()=>walletApi("stairsStart",{mode:state.mode,stage:state.stage,difficulty:state.difficulty}));
@@ -233,7 +236,7 @@ function pause(){
 const REVIVE_COST=15;
 const elevatorPrices={100:30,200:50,300:100};
 async function takeElevator(floor){
- const cost=elevatorPrices[floor];if(!cost||state.status==="playing"||shared.busy||shared.starting)return;
+ const cost=elevatorPrices[floor];if(!cost||state.status==="playing"||state.status==="falling"||shared.busy||shared.starting)return;
  if(!shared.ready){toastShop("사용자를 선택하고 공통 별 서버에 연결해주세요.");return;}
  if(state.mode!=="infinite"){toastShop("🛗 엘리베이터는 무한 도전에서 이용할 수 있어요.");return;}
  shared.busy=true;
@@ -253,18 +256,51 @@ async function revive(){
  try{
   await shared.queue;
   await enqueueWallet(()=>walletApi("stairsRevive",{runId:shared.run.id,expectedIndex:state.index}));
-  state.energy=1;fall=0;runUntil=0;trail=[];beginPlaying();
+  state.energy=1;fall=0;runUntil=0;trail=[];
+  const step=route.steps[state.index];renderX=camX=step.x*STEP_X;renderY=camY=-step.y*STEP_Y;beginPlaying();
   toastShop("😇 공통 별 15개 사용! "+state.index+"계단에서 다시 시작");
  }catch(e){walletError(e);}finally{shared.busy=false;$("reviveButton").disabled=starLedger.stars<REVIVE_COST;}
 }
 $("reviveButton").addEventListener("click",revive);
 function finish(success,reason){
- if(state.status!=="playing")return;state.status=success?"complete":"over";recordBest();if(success)checkStars(true);else flushProgress(true);
+ if(state.status!=="playing")return;
+ if(!success){beginFailure(reason);return;}
+ state.status="complete";recordBest();checkStars(true);
+ showResult(true,reason);
+}
+function showResult(success,reason){
  showOverlay(success?"STAGE CLEAR":"TRY AGAIN",success?"스테이지 성공!":"다시 달려 볼까요?",reason,success&&state.stage<10?"다음 스테이지":"다시 도전",state.index);
  $("reviveButton").hidden=success;
  $("reviveButton").textContent="😇 ★ "+REVIVE_COST+"개로 "+state.index+"계단에서 부활";
  $("reviveButton").disabled=starLedger.stars<REVIVE_COST;
- sound(success?"win":"fail");syncHud();
+ if(success)sound("win");syncHud();
+}
+// A failed attempt is visual only: keep the last valid index for rewards and revival.
+function failurePose(elapsed,travel,height,reducedMotion=false){
+ if(reducedMotion)return {progress:1,hop:0,drop:0,drift:0,angle:0,alpha:Math.max(0,1-elapsed/.24),label:0,done:elapsed>=.24};
+ const progress=Math.min(1,elapsed/.20),flight=Math.max(0,(elapsed-.38)/.58);
+ return {progress:1-Math.pow(1-progress,3),hop:elapsed<.20?-Math.sin(progress*Math.PI)*14:elapsed<.38?-Math.sin((elapsed-.20)/.18*Math.PI)*22:0,
+  drop:flight*flight*(height+240),drift:flight*travel*28,angle:elapsed<.38?Math.sin(elapsed*48)*.12:travel*Math.min(1,flight)*1.7,
+  alpha:1,label:elapsed>=.18&&elapsed<.67?1:0,done:elapsed>=1.04};
+}
+function beginFailure(reason){
+ if(state.status!=="playing")return;
+ const step=route.steps[state.index];
+ failure={elapsed:0,reason,fromX:renderX,fromY:renderY,targetX:(step.x+state.facing)*STEP_X,targetY:-(step.y+1)*STEP_Y,pop:false};
+ state.status="falling";fall=0;runUntil=0;trail=[];recordBest();flushProgress(true);
+ $("overlay").hidden=true;$("reviveButton").hidden=true;
+ $("gameShell").dataset.phase="falling";syncHud();
+}
+function updateFailure(dt){
+ if(state.status!=="falling"||!failure)return null;
+ failure.elapsed+=dt;
+ if(!failure.pop&&failure.elapsed>=.18){failure.pop=true;sound("boing");}
+ const pose=failurePose(failure.elapsed,state.facing,height,reduced);
+ renderX=failure.fromX+(failure.targetX-failure.fromX)*pose.progress;
+ renderY=failure.fromY+(failure.targetY-failure.fromY)*pose.progress+pose.hop;
+ fall=pose.drop;
+ if(pose.done){const reason=failure.reason;state.status="over";$("gameShell").dataset.phase="over";showResult(false,reason);}
+ return pose;
 }
 function action(kind){
  if(!state.large && state.status==="paused")return;
@@ -283,6 +319,7 @@ function action(kind){
  if(state.index>=target())finish(true,"목표 계단을 모두 올랐어요!");
 }
 function setLarge(large){
+ if(state.status==="falling")return;
  if(!large)pause();state.large=large;
  document.body.classList.toggle("immersive",large);$("sizeButton").textContent=large?"↙ 작게 보기":"↗ 크게 보기";
  $("largeButton").textContent=state.status==="paused"?"↗ 크게 보고 계속하기":"↗ 크게 보고 시작하기";
@@ -292,6 +329,13 @@ function setLarge(large){
 function unlockAudio(){if(!state.sound)return;try{if(!audio){const AC=window.AudioContext||window.webkitAudioContext;if(AC)audio=new AC();}if(audio&&audio.state==="suspended")audio.resume().catch(()=>{});}catch(e){}}
 function sound(kind){
  if(!state.sound||!audio||audio.state!=="running")return;
+ if(kind==="boing"){
+  try{const t=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();o.type="sine";
+   o.frequency.setValueAtTime(240,t);o.frequency.exponentialRampToValueAtTime(920,t+.08);o.frequency.exponentialRampToValueAtTime(130,t+.38);
+   g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.10,t+.015);g.gain.exponentialRampToValueAtTime(.001,t+.40);
+   o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+.42);
+  }catch(e){}return;
+ }
  try{const now=audio.currentTime,o=audio.createOscillator(),g=audio.createGain();o.type="square";o.frequency.setValueAtTime(kind==="step"?480+state.index%4*75:kind==="win"?740:180,now);o.frequency.exponentialRampToValueAtTime(kind==="fail"?60:kind==="win"?1100:650,now+.055);g.gain.setValueAtTime(.022,now);g.gain.exponentialRampToValueAtTime(.001,now+.07);o.connect(g);g.connect(audio.destination);o.start(now);o.stop(now+.08);}catch(e){}
 }
 function resize(){
@@ -330,11 +374,13 @@ function frame(now){
  if(lastFrame===null)lastFrame=now;
  const dt=Math.min((now-lastFrame)/1000,.05);lastFrame=now;animTime=now;
  if(state.status==="playing"){state.energy=Math.max(0,state.energy-dt*(.15+Math.min(.12,state.index*.00035)+(state.mode==="stage"?(state.stage-1)*.005:0)));if(state.energy<=0)finish(false,"시간이 다 되었어요. 리듬을 이어서 빠르게 올라 보세요.");if(now-lastHudAt>100){syncHud();lastHudAt=now;}}
- if(state.status==="over"&&!reduced)fall=Math.min(100,fall+dt*200);
+ const failPose=updateFailure(dt);
  const step=route.steps[state.index],tx=step.x*STEP_X,ty=-step.y*STEP_Y;
  const blend=reduced?1:1-Math.exp(-dt*20);
- renderX+=(tx-renderX)*blend;renderY+=(ty-renderY)*blend;
- camX+=(renderX-camX)*Math.min(1,dt*11);camY+=(renderY-camY)*Math.min(1,dt*12);
+ if(!failure){renderX+=(tx-renderX)*blend;renderY+=(ty-renderY)*blend;}
+ // Follow the missed step, then keep the camera still while the runner falls away.
+ const focusX=failure?failure.targetX:renderX,focusY=failure?failure.targetY:renderY;
+ camX+=(focusX-camX)*Math.min(1,dt*11);camY+=(focusY-camY)*Math.min(1,dt*12);
  // Keep decorative backgrounds fixed to the viewport; only stairs and runners scroll.
  const movingCamX=camX,movingCamY=camY;
  camX=0;camY=0;
@@ -351,7 +397,16 @@ function frame(now){
  const petStep=route.steps[Math.max(0,state.index-3)];
  const petX=petStep.x*STEP_X,petY=-petStep.y*STEP_Y;
  drawPet(ctx,petX,petY-5,Math.min(3,Math.max(2,width/170)),state.facing,phase);
-  drawRunner(ctx,renderX,renderY+fall+stride,Math.min(3,Math.max(2,width/170)),state.facing,phase,state);
+ if(failure){
+  const pose=failPose||failurePose(failure.elapsed,state.facing,height,reduced);
+  ctx.save();ctx.globalAlpha=state.status==="over"?0:pose.alpha;
+  ctx.translate(renderX+pose.drift,renderY+fall-70);ctx.rotate(pose.angle);
+  drawRunner(ctx,0,70,Math.min(3,Math.max(2,width/170)),state.facing,-1,state);ctx.restore();
+  if(pose.label&&state.status==="falling"){
+   ctx.save();ctx.font="900 24px system-ui";ctx.textAlign="center";ctx.lineWidth=5;ctx.strokeStyle="#39253f";ctx.fillStyle="#ffe492";
+   ctx.strokeText("띠용!",failure.targetX,failure.targetY-178);ctx.fillText("띠용!",failure.targetX,failure.targetY-178);ctx.restore();
+  }
+ }else drawRunner(ctx,renderX,renderY+stride,Math.min(3,Math.max(2,width/170)),state.facing,phase,state);
  if(active&&!reduced){rect(ctx,"#e2e0bd77",renderX-state.facing*19,renderY-2,3,2);}
  ctx.restore();drawGain(now);animatePreviews(now);requestAnimationFrame(frame);
 }
