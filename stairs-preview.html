@@ -116,6 +116,11 @@ body{background:#191b2c}
  .overlay #elevatorChoices{grid-column:2;grid-row:3/5}
 }
 .difficulty-guide{margin:10px 0;font-size:12px;color:#ead79e}.difficulty-guide summary{cursor:pointer}.difficulty-guide p{margin:8px 0;font-size:11px;line-height:1.6}
+
+.stair-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.stair-grid .stair-choice{padding:4px 2px 8px;min-width:0;overflow:hidden;font-size:11px;background:linear-gradient(145deg,#15263e,#101a31);border:1px solid #72789c;border-radius:15px}
+.stair-choice canvas{display:block;width:100%;height:auto;aspect-ratio:1.35;image-rendering:auto}
+.stair-choice[aria-pressed=true]{border-color:#ffde85;box-shadow:0 0 12px #ffdc6570;outline:2px solid #ffde85}
 </style>
 </head>
 <body class="immersive" data-build="2.6-bolt-motion-fix">
@@ -684,10 +689,12 @@ function refreshShopUI(){
   b.addEventListener("click",()=>equipOrBuy("pet",item));petBox.append(b);}
  // The original stair chips share the div directly after the '계단' heading.
  const stairHeading=Array.from(document.querySelectorAll(".settings h3")).find(h=>h.textContent==="계단");
- const stairBox=stairHeading.nextElementSibling;stairBox.replaceChildren();
- for(const item of STAIR_ITEMS){const b=document.createElement("button");b.className="chip shop-chip";b.dataset.stairs=item.id;b.setAttribute("aria-pressed",String(state.stairs===item.id));
-  b.textContent=item.name+(state.stairs===item.id?" ✓":inventory.owned.includes(item.id)?"":" ★"+item.price);
+ const stairBox=stairHeading.nextElementSibling;stairBox.classList.add("stair-grid");stairBox.replaceChildren();
+ for(const item of STAIR_ITEMS){const b=document.createElement("button");b.className="chip shop-chip stair-choice";b.dataset.stairs=item.id;b.setAttribute("aria-pressed",String(state.stairs===item.id));
+  const cv=document.createElement("canvas");cv.width=240;cv.height=176;cv.dataset.stairPreview=item.id;b.append(cv);
+  b.append(document.createTextNode(item.name+(state.stairs===item.id?" ✓":inventory.owned.includes(item.id)?"":" ★"+item.price)));
   b.addEventListener("click",()=>equipOrBuy("stairs",item));stairBox.append(b);}
+ drawStairPreviews();
 }
 // Actual illustrated PNG frames; selection and gameplay share this atlas.
 const runnerAtlas=new Image();
@@ -818,7 +825,7 @@ refreshShopUI();
 const loadedAssets=new Set();
 function markAssetLoaded(name){
  loadedAssets.add(name);drawPreviews();
- if(loadedAssets.has("base")){
+ if(loadedAssets.has("base")&&loadedAssets.has("stairs")){
   $("startButton").disabled=false;$("largeButton").disabled=false;
   $("overlayText").textContent="오르기는 그대로 한 칸, 방향 전환은 돌아서 한 칸! 다음 계단을 보고 눌러요.";
   document.body.dataset.assets="ready";
@@ -891,24 +898,59 @@ function animatePreviews(now){
 }
 heroMotionAtlas.src="./assets/stairs-heroes-motion-v11.webp";
 petMotionAtlas.src="./assets/stairs-pets-motion-v11.webp";
-const priorStairRenderer=drawStair;
+/* v22: the shop and live route share one illustrated single-step atlas. */
+var stairAtlas=new Image(),stairFrames=null;
+function prepareStairAtlas(){
+ // Clip source artwork to the platform silhouette when drawing: broad preview glows must not cover the route.
+ const shapes=[
+ [[24,219],[61,175],[365,174],[382,181],[368,262],[343,288],[26,287]],
+ [[17,220],[28,178],[43,198],[61,160],[74,197],[312,174],[327,153],[339,174],[359,158],[355,183],[371,191],[366,268],[343,287],[24,285]],
+ [[8,245],[19,232],[21,211],[46,185],[76,172],[268,171],[280,154],[308,151],[332,167],[359,168],[368,187],[360,237],[365,251],[350,279],[320,291],[286,284],[47,286],[17,272]],
+ [[11,217],[27,199],[39,181],[77,173],[114,171],[315,170],[327,163],[349,175],[361,175],[368,194],[361,261],[342,293],[320,286],[52,287],[22,280]],
+ [[22,160],[58,117],[362,116],[382,123],[366,202],[342,230],[25,229]],
+ [[18,164],[50,120],[360,115],[373,120],[367,202],[345,230],[22,229]],
+ [[11,162],[52,116],[360,116],[370,121],[355,201],[335,230],[19,229],[11,218]],
+ [[10,163],[51,116],[362,116],[374,122],[363,199],[340,229],[18,229],[10,218]],
+ [[19,111],[39,86],[46,63],[58,45],[57,65],[74,45],[85,30],[78,62],[102,43],[93,72],[109,62],[103,76],[180,74],[201,56],[194,74],[259,72],[273,45],[280,63],[304,25],[300,47],[320,33],[311,62],[332,51],[322,74],[366,69],[381,77],[369,151],[342,178],[25,178]],
+ [[18,109],[37,85],[74,63],[112,72],[277,68],[308,54],[333,62],[367,73],[374,85],[366,141],[354,174],[345,162],[334,189],[322,150],[310,198],[301,157],[281,184],[268,158],[253,178],[239,162],[226,188],[211,157],[197,198],[180,159],[164,183],[153,163],[138,194],[123,157],[106,177],[96,158],[80,184],[66,156],[48,166],[29,157]],
+ [[10,112],[52,69],[360,68],[371,75],[356,150],[333,179],[18,177],[9,165]],
+ [[9,115],[49,72],[360,69],[373,76],[362,151],[338,178],[18,179],[8,168]]
+ ];
+ const walk=[185,186,185,185,127,127,127,127,79,80,80,80];
+ const frames={};
+ STAIR_ITEMS.forEach((item,i)=>{
+  const points=shapes[i],x0=Math.min(...points.map(p=>p[0])),x1=Math.max(...points.map(p=>p[0]));
+  const y0=Math.min(...points.map(p=>p[1])),y1=Math.max(...points.map(p=>p[1]));
+  const tile=document.createElement("canvas");tile.width=x1-x0+2;tile.height=y1-y0+2;
+  const c=tile.getContext("2d");c.translate(-x0,-y0);c.beginPath();points.forEach(([x,y],n)=>n?c.lineTo(x,y):c.moveTo(x,y));c.closePath();c.clip();
+  c.drawImage(stairAtlas,i%4*384,Math.floor(i/4)*1024/3,384,1024/3,0,0,384,1024/3);
+  frames[item.id]={image:tile,x:0,y:0,w:tile.width,h:tile.height,tread:walk[i]-y0};
+ });
+ stairFrames=frames;document.body.dataset.stairAssets="ready";drawStairPreviews();markAssetLoaded("stairs");
+}
+function paintIllustratedStair(c,skin,x,y,stepWidth){
+ const f=stairFrames?.[skin];if(!f)return false;
+ const k=stepWidth/f.w;
+ c.save();c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";
+ c.drawImage(f.image,f.x,f.y,f.w,f.h,x-stepWidth/2,y-f.tread*k,stepWidth,f.h*k);c.restore();return true;
+}
+const fallbackStairRenderer=drawStair;
 drawStair=function(x,y,index){
- const skin=state.stairs;
- if(!["glass","fire","ice","neon","cosmic"].includes(skin))return priorStairRenderer(x,y,index);
- const palette={
- glass:["#b8f4ff","#468da8","#ecffff"],fire:["#e94d3b","#8d293a","#ffd16a"],
- ice:["#9bdcf6","#3e8ebc","#efffff"],neon:["#d969ec","#46358c","#73fff4"],
- cosmic:["#7264a8","#24224b","#f5c1ff"]
- }[skin];
- rect(ctx,"#11162d88",x-29,y+17,59,5);
- rect(ctx,palette[1],x-28,y,56,18);rect(ctx,palette[0],x-26,y,52,13);
- rect(ctx,palette[2],x-26,y,52,3);rect(ctx,palette[1],x-26,y+13,52,4);
- if(skin==="glass"){rect(ctx,"#ffffffaa",x-22,y+4,13,2);rect(ctx,"#b8ffff66",x+9,y+5,13,7);}
- if(skin==="fire"){for(let i=0;i<5;i++){const h=4+(index+i*7)%8;rect(ctx,i%2?"#ffdc70":"#ff743e",x-21+i*10,y+13-h,5,h);}}
- if(skin==="ice"){rect(ctx,"#f4ffff",x-16,y+5,4,7);rect(ctx,"#e1ffff",x+9,y+4,6,4);}
- if(skin==="neon"){rect(ctx,"#65fff1",x-24,y+9,48,2);rect(ctx,"#fff3ff",x-21,y+4,9,2);}
- if(skin==="cosmic"){for(let i=0;i<5;i++)rect(ctx,i%2?"#ffbde8":"#a4e9ff",x-19+i*9,y+5+(i%3)*2,3,3);}
+ if(!paintIllustratedStair(ctx,state.stairs,x,y,72)){
+  const desired=state.stairs;state.stairs="brick";fallbackStairRenderer(x,y,index);state.stairs=desired;return;
+ }
+ if(index===state.index){ctx.save();ctx.strokeStyle="#fff3c6";ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(x-21,y);ctx.lineTo(x+20,y);ctx.stroke();ctx.restore();}
 };
+function drawStairPreviews(){
+ if(!stairFrames)return;
+ document.querySelectorAll("[data-stair-preview]").forEach(cv=>{
+  const c=cv.getContext("2d");c.clearRect(0,0,cv.width,cv.height);
+  for(let i=3;i>=0;i--)paintIllustratedStair(c,cv.dataset.stairPreview,62+i*37,139-i*30,117);
+ });
+}
+stairAtlas.onload=()=>{try{prepareStairAtlas();}catch(e){console.error(e);document.body.dataset.stairAssets="error";assetFailed("계단");}};
+stairAtlas.onerror=()=>{document.body.dataset.stairAssets="error";assetFailed("계단");};
+stairAtlas.src="./assets/stairs-illustrated-v22.webp";
 const previousPreviews=drawPreviews;
 drawPreviews=function(){previousPreviews();};
 for(const item of RUNNERS){
@@ -917,7 +959,7 @@ for(const item of RUNNERS){
  const cv=document.createElement("canvas");cv.width=160;cv.height=200;b.append(cv,document.createTextNode(item.name));
  $("characters").append(b);b.addEventListener("click",()=>equipOrBuy("character",item));
 }
-document.querySelector(".footer").textContent="2026.11.17 · v2.6 — 볼트 히어로 24프레임 · 캐릭터 11종 · 공통 별 · 서버 저장";
+document.querySelector(".footer").textContent="2026.11.17 · v2.7 — 고화질 계단 12종 · 설정과 플레이 이미지 통합 · 공통 별";
 document.querySelector(".note").innerHTML=document.querySelector(".note").innerHTML.replace("플레이 버전 0.8","플레이 버전 1.1 · 원본 일러스트 동작 적용");
 
 
