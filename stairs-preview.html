@@ -407,6 +407,12 @@ for(const key of ["neon-stairs-unified-v10","neon-stairs-wardrobe-v8"]){
 function saveInventory(){try{localStorage.setItem(STORE_KEY,JSON.stringify(inventory));}catch(e){}}
 function toastShop(message){const el=$("starToast");el.textContent=message;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,2300);}
 function equipOrBuy(type,item){
+ // Characters are always selectable; retain star purchases for pets and stairs.
+ if(type==="character"){
+  if(!inventory.owned.includes(item.id))inventory.owned.push(item.id);
+  inventory.character=item.id;state.character=item.id;
+  saveInventory();refreshShopUI();drawPreviews();return;
+ }
  if(!inventory.owned.includes(item.id)){
   if(starLedger.stars<item.price){toastShop("★ 별이 부족해요! 계단을 올라 별을 모아 주세요.");return;}
   starLedger.stars-=item.price;
@@ -531,7 +537,7 @@ saveInventory();refreshShopUI();
 const loadedAssets=new Set();
 function markAssetLoaded(name){
  loadedAssets.add(name);drawPreviews();
- if(loadedAssets.size===3){
+ if(loadedAssets.has("base")){
   $("startButton").disabled=false;$("largeButton").disabled=false;
   $("overlayText").textContent="오르기는 그대로 한 칸, 방향 전환은 돌아서 한 칸! 다음 계단을 보고 눌러요.";
   document.body.dataset.assets="ready";
@@ -539,8 +545,8 @@ function markAssetLoaded(name){
 }
 function assetFailed(name){
  document.body.dataset.assets="error";
- $("startButton").disabled=true;$("largeButton").disabled=true;
- $("overlayText").textContent=name+" 이미지를 불러오지 못했어요. 새로고침해 주세요.";
+ if(!loadedAssets.has("base")){$("startButton").disabled=true;$("largeButton").disabled=true;}
+ $("overlayText").textContent=name+" 이미지를 불러오지 못했어요. 기본 캐릭터로 계속 플레이할 수 있어요.";
 }
 const heroMotionAtlas=new Image(),petMotionAtlas=new Image();
 let heroMotionRows=null,petMotionRows=null;
@@ -577,7 +583,7 @@ function drawMotion(c,img,row,x,y,scale,facing,phase,targetHeight){
 const originalDrawRunner=drawRunner;
 drawRunner=function(c,x,y,scale,facing,phase,config){
  if(!["knight","pirate","robot","astronaut","shadow"].includes(config.character))return originalDrawRunner(c,x,y,scale,facing,phase,config);
- const row=heroMotionRows?.[config.character];if(!row)return;
+ const row=heroMotionRows?.[config.character];if(!row)return originalDrawRunner(c,x,y,scale,facing,phase,{...config,character:"azure"});
  c.save();
  if(config.outfit==="sport")c.filter="hue-rotate(22deg)";
  if(config.outfit==="space")c.filter="saturate(.6) brightness(1.12)";
@@ -630,7 +636,7 @@ for(const item of RUNNERS){
  const cv=document.createElement("canvas");cv.width=160;cv.height=200;b.append(cv,document.createTextNode(item.name));
  $("characters").append(b);b.addEventListener("click",()=>equipOrBuy("character",item));
 }
-document.querySelector(".footer").textContent="2026.11.17 · v1.1 — 원본 일러스트 동작 적용 · 캐릭터 10종 · 펫 10종 · 계단 12종";
+document.querySelector(".footer").textContent="2026.11.17 · v1.2 — 캐릭터 10종 자유 선택 · 펫/계단 별 구매 유지";
 document.querySelector(".note").innerHTML=document.querySelector(".note").innerHTML.replace("플레이 버전 0.8","플레이 버전 1.1 · 원본 일러스트 동작 적용");
 
 runnerAtlas.src="./assets/stairs-runners-v08.png";
