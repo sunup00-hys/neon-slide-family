@@ -49,10 +49,11 @@ body{background:#191b2c}
 .choice{min-width:0}.choice .cost{font-size:10px;color:#ffe0a0;font-weight:800}.shop-caption{font-size:12px;color:#e5d4b0;margin-top:12px}.choice.locked{border-style:dashed}@media(max-width:520px){.choices{grid-template-columns:repeat(3,minmax(0,1fr))}.hud-top{gap:5px}.hud-actions{gap:4px}.hud-actions button{padding:8px 6px;font-size:10px}.star-strip{margin-right:0;padding:4px 6px;gap:4px}.score{font-size:36px}.unit{font-size:10px}}
 .choices{grid-template-columns:repeat(3,minmax(0,1fr))}.choice canvas{width:100%;height:auto;max-width:112px;image-rendering:auto}.choice{padding:10px 5px}.choice[aria-pressed=true]{box-shadow:0 0 15px #d6b7ff35}.hud-actions button{white-space:nowrap}
  .family-switch{position:relative;z-index:25;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px max(12px,calc((100vw - 1200px)/2));background:#1a2035;border-bottom:1px solid #ffffff30}.family-switch-links{display:flex;gap:6px;flex-wrap:wrap;flex:1}.family-switch a{font-size:12px;text-decoration:none;padding:7px 10px;border:1px solid #ffffff30;border-radius:10px;color:#e8e7fa}.family-switch a.current{background:#685889;color:white}.family-switch button{padding:8px 11px;font-size:12px}.family-switch #familyProfileStatus{font-size:11px;color:#ead79e}.family-profile-dialog{background:#242940;color:white;border:1px solid #a99ac5;border-radius:18px;padding:22px;max-width:min(400px,92vw)}.family-profile-dialog::backdrop{background:#0009}.family-profile-dialog #familyProfileChoices{display:grid;gap:8px}.family-profile-dialog #familyProfileChoices button{width:100%;text-align:left}.family-profile-dialog p{font-size:12px}.immersive .family-switch{position:fixed;left:0;right:0;top:0;z-index:35;padding-top:max(8px,env(safe-area-inset-top));background:#1a2035eF}.immersive .game-shell{top:64px;height:calc(100dvh - 64px)}@media(max-width:760px){.family-switch{gap:5px}.family-switch-links{overflow-x:auto;flex-wrap:nowrap}.family-switch a{white-space:nowrap}.immersive .game-shell{top:94px;height:calc(100dvh - 94px)}}
+.difficulty-picker{display:flex;gap:6px;margin:8px 0 14px}.difficulty-picker button{flex:1;min-width:0;padding:10px 4px;border:1px solid #ffffff40;border-radius:12px;background:#242d47;color:#eeeaff;font-size:14px;font-weight:800}.difficulty-picker button[aria-pressed=true]{background:#c7b2f3;color:#201c38;border-color:#e5d8ff;box-shadow:0 0 0 2px #c7b2f333}.difficulty-picker small{display:block;font-size:10px;font-weight:500;margin-top:4px}.difficulty-heading{margin:10px 0 4px!important;font-size:12px!important}.difficulty-picker button:disabled{opacity:.6}.dialog{max-height:100%;overflow-y:auto}
 </style>
 </head>
-<body class="immersive" data-build="1.1-illustrated-motion">
-<nav class="family-switch" aria-label="가족 게임 전환"><div class="family-switch-links"><a href="./index.html">♫ 리듬</a><a class="current" href="./stairs-preview.html" aria-current="page">↗ 계단</a><a href="./words.html">✦ 낱말</a><a href="./sudoku.html">▦ 스도쿠</a><a href="./magic.html">⚗ 물약</a><a href="./arrows.html">➜ 화살표</a><a href="./zoodoku.html">🐾 쥬도쿠</a></div><button id="familyProfileButton" type="button">👤 사용자 선택</button><span id="familyProfileStatus">사용자 확인 중</span></nav>
+<body class="immersive" data-build="2.1-stairs-levels">
+<nav class="family-switch" aria-label="가족 게임 전환"><div class="family-switch-links"><a href="./index.html">♫ 리듬</a><a class="current" href="./stairs-preview.html" aria-current="page">↗ 계단</a><a href="./words.html">✦ 낱말</a><a href="./sudoku.html">▦ 스도쿠</a><a href="./magic.html">⚗ 물약</a><a href="./arrows.html">➜ 화살표</a><a href="./zoodoku.html">🐾 쥬도쿠</a><a href="./bus.html">🚌 버스</a><a class="family-dress-link" href="./words.html?view=dress&amp;v=21-stairs-levels">♕ 꾸미기</a></div><button id="familyProfileButton" type="button">👤 사용자 선택</button><span id="familyProfileStatus">사용자 확인 중</span></nav>
 <dialog id="familyProfileDialog" class="family-profile-dialog"><h2>사용자 변경</h2><p>기존 가족게임의 사용자 목록을 불러옵니다.</p><div id="familyProfileChoices"></div><p id="familyProfileError"></p><button id="familyProfileClose" type="button">닫기</button></dialog>
 <main class="page">
 <header class="page-head"><div><div class="eyebrow">NEON STAIRS · FAMILY GAME</div><h1>별빛 성의 러너</h1></div><nav aria-label="가족게임 이동" style="display:flex;gap:9px;flex-wrap:wrap"><a href="./words.html">✦ 낱말게임</a><a href="./index.html">⌂ 가족게임 홈</a></nav></header>
@@ -66,7 +67,8 @@ body{background:#191b2c}
 <div class="hud-sub"><span id="modeStatus">무한 도전</span><span id="bestStatus">이 기기 최고 0</span></div>
 </div>
 <div class="toast" id="starToast" role="status" hidden></div><div class="overlay" id="overlay">
-<div class="dialog"><div class="mode-label" id="overlayLabel">READY TO RUN</div><h2 id="overlayTitle">계단을 달려 올라요</h2><div class="result" id="result" hidden></div><p id="overlayText">오른쪽 버튼은 바라보는 방향으로 한 칸!<br>계단이 꺾이면 왼쪽 ‘방향 전환’으로 돌아서 한 칸!</p><button class="primary" id="startButton">게임 시작</button><button class="secondary" id="reviveButton" hidden>😇 ★ 15개로 현재 계단에서 부활</button><button class="secondary" id="wardrobeButton">캐릭터 · 게임 설정</button><div id="elevatorChoices" style="margin-top:12px"><p style="margin:5px 0;color:#ffe2a0">🛗 엘리베이터 · 시작 계단 선택</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px"><button data-elevator="100" style="padding:8px 3px;font-size:11px">100층<br>★ 30</button><button data-elevator="200" style="padding:8px 3px;font-size:11px">200층<br>★ 50</button><button data-elevator="300" style="padding:8px 3px;font-size:11px">300층<br>★ 100</button></div></div></div>
+<div class="dialog"><div class="mode-label" id="overlayLabel">READY TO RUN</div><h2 id="overlayTitle">계단을 달려 올라요</h2><div class="result" id="result" hidden></div><p id="overlayText">오른쪽 버튼은 바라보는 방향으로 한 칸!<br>계단이 꺾이면 왼쪽 ‘방향 전환’으로 돌아서 한 칸!</p><p class="difficulty-heading">방향 전환 난이도</p><div class="difficulty-picker" role="group" aria-label="계단 난이도">
+<button type="button" data-difficulty="beginner" aria-pressed="true">초보<small>방향 전환 적게</small></button><button type="button" data-difficulty="intermediate" aria-pressed="false">중수<small>방향 전환 보통</small></button><button type="button" data-difficulty="expert" aria-pressed="false">고수<small>방향 전환 자주</small></button></div><button class="primary" id="startButton">게임 시작</button><button class="secondary" id="reviveButton" hidden>😇 ★ 15개로 현재 계단에서 부활</button><button class="secondary" id="wardrobeButton">캐릭터 · 게임 설정</button><div id="elevatorChoices" style="margin-top:12px"><p style="margin:5px 0;color:#ffe2a0">🛗 엘리베이터 · 시작 계단 선택</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px"><button data-elevator="100" style="padding:8px 3px;font-size:11px">100층<br>★ 30</button><button data-elevator="200" style="padding:8px 3px;font-size:11px">200층<br>★ 50</button><button data-elevator="300" style="padding:8px 3px;font-size:11px">300층<br>★ 100</button></div></div></div>
 </div>
 </div>
 <div class="controls" aria-label="게임 조작">
@@ -86,7 +88,8 @@ body{background:#191b2c}
 <h3>액세서리</h3><div class="chips"><button class="chip" id="crownButton" aria-pressed="false">왕관</button><button class="chip" id="wingsButton" aria-pressed="false">날개</button><button class="chip" id="shoesButton" aria-pressed="false">네온 운동화</button></div>
 <h3>펫</h3><div class="chips" id="petChoices"></div><h3>계단</h3><div class="chips"><button class="chip" data-stairs="brick" aria-pressed="true">자수정 석판</button><button class="chip" data-stairs="crystal" aria-pressed="false">크리스털</button><button class="chip" data-stairs="cloud" aria-pressed="false">구름</button><button class="chip" data-stairs="wood" aria-pressed="false">나무</button></div>
 <h3>배경</h3><div class="chips"><button class="chip" data-background="city" aria-pressed="false">도시 야경</button><button class="chip" data-background="castle" aria-pressed="true">별빛 성</button><button class="chip" data-background="forest" aria-pressed="false">숲</button><button class="chip" data-background="space" aria-pressed="false">우주</button></div>
-<div class="setting-line"><label for="modeSelect">플레이 방식</label><select id="modeSelect"><option value="infinite">무한 도전</option><option value="stage">스테이지 도전</option></select></div>
+<h3>방향 전환 난이도</h3><div class="difficulty-picker" role="group" aria-label="계단 난이도">
+<button type="button" data-difficulty="beginner" aria-pressed="true">초보<small>방향 전환 적게</small></button><button type="button" data-difficulty="intermediate" aria-pressed="false">중수<small>방향 전환 보통</small></button><button type="button" data-difficulty="expert" aria-pressed="false">고수<small>방향 전환 자주</small></button></div><div class="setting-line"><label for="modeSelect">플레이 방식</label><select id="modeSelect"><option value="infinite">무한 도전</option><option value="stage">스테이지 도전</option></select></div>
 <div class="setting-line" id="stageRow" hidden><label for="stageSelect">시작 스테이지</label><select id="stageSelect"><option value="1">1 · 20계단</option><option value="2">2 · 40계단</option><option value="3">3 · 60계단</option><option value="4">4 · 80계단</option><option value="5">5 · 100계단</option><option value="6">6 · 120계단</option><option value="7">7 · 140계단</option><option value="8">8 · 160계단</option><option value="9">9 · 180계단</option><option value="10">10 · 200계단</option></select></div>
 <div class="setting-line"><span>효과음</span><button class="chip" id="soundButton" aria-pressed="true">켜짐</button></div>
 <div class="reward-info"><div>나의 공통 별 <strong id="wardrobeStars">★ 0</strong></div><p>무한 도전: 20계단마다 노랑 ★3 · 주황 ★5 · 골드 ★10 순환<br>스테이지: 처음 성공한 단계마다 3개<br>낱말게임과 같은 서버 지갑에 저장됩니다. 엘리베이터로 건너뛴 별은 지급되지 않습니다.</p></div><button class="full-button" id="largeButton">↗ 화면 크게 보기 + 게임 시작</button><button class="full-button" id="settingsStartButton" style="background:#b6e5c8;color:#18372c">▶ 게임 시작</button>
@@ -97,21 +100,12 @@ body{background:#191b2c}
 </main>
 <script>
 "use strict";
-function makeRoute(seed, difficulty) {
- let value=seed>>>0, run=0, direction=1;
- const steps=[{x:0,y:0,d:1}];
- function random(){value=(Math.imul(value,1664525)+1013904223)>>>0;return value/4294967296;}
- function ensure(count){
-  while(steps.length<=count){
-   const i=steps.length;
-   if(i>3 && (run>=Math.max(2,5-Math.floor((i+difficulty*30)/100)) || random()<Math.min(.5,.18+(i+difficulty*25)/1400))){direction=-direction;run=0;}
-   const previous=steps[i-1];
-   if(Math.abs(previous.x+direction)>4){direction=-Math.sign(previous.x);run=0;}
-   steps.push({x:previous.x+direction,y:i,d:direction});run++;
-  }
-  return steps;
- }
- ensure(35); return {steps,ensure};
+function makeRoute(seed,difficulty,level){
+ let value=seed>>>0,run=0,direction=1;const steps=[{x:0,y:0,d:1}];
+ const rules={beginner:{min:4,max:7,chance:.08},intermediate:{min:2,max:4,chance:.32},expert:{min:1,max:2,chance:.72}}[level];
+ const random=()=>{value=(Math.imul(value,1664525)+1013904223)>>>0;return value/4294967296;};
+ function ensure(count){while(steps.length<=count){const i=steps.length;if(rules ? run>=rules.max || (run>=rules.min && random()<rules.chance) : i>3&&(run>=Math.max(2,5-Math.floor((i+difficulty*30)/100))||random()<Math.min(.5,.18+(i+difficulty*25)/1400))){direction=-direction;run=0;}const previous=steps[i-1];if(Math.abs(previous.x+direction)>4){direction=-Math.sign(previous.x);run=0;}steps.push({x:previous.x+direction,y:i,d:direction});run++;}return steps;}
+ ensure(35);return {steps,ensure};
 }
 function resolveMove(route,index,facing,action){
  route.ensure(index+1);
@@ -121,9 +115,9 @@ function resolveMove(route,index,facing,action){
 const STEP_X=46, STEP_Y=30;
 const $=id=>document.getElementById(id);
 const canvas=$("gameCanvas"),ctx=canvas.getContext("2d");
-const state={status:"ready",index:0,facing:1,energy:1,mode:"infinite",stage:1,best:0,character:"azure",outfit:"classic",stairs:"brick",background:"castle",crown:false,wings:false,shoes:false,sound:true,large:true};
+const state={status:"ready",index:0,facing:1,energy:1,mode:"infinite",stage:1,difficulty:"beginner",best:0,character:"azure",outfit:"classic",stairs:"brick",background:"castle",crown:false,wings:false,shoes:false,sound:true,large:true};
 try{state.best=Math.max(0,Number(localStorage.getItem("neon-stairs-preview-best-v2"))||0);}catch(e){}
-let route=makeRoute(20261117,0), width=400,height=550,renderX=0,renderY=0,camX=0,camY=0,lastFrame=null,runUntil=0,stepAt=-1000,trail=[],animTime=0,fall=0,seedCounter=0,audio=null;
+let route=makeRoute(20261117,0,state.difficulty), width=400,height=550,renderX=0,renderY=0,camX=0,camY=0,lastFrame=null,runUntil=0,stepAt=-1000,trail=[],animTime=0,fall=0,seedCounter=0,audio=null;
 const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function target(){return state.mode==="stage"?state.stage*20:Infinity;}
 function syncHud(){
@@ -132,8 +126,9 @@ function syncHud(){
  $("energyFill").style.transform="scaleX("+Math.max(0,state.energy)+")";
  $("energyFill").style.background=state.energy<.25?"#eea6a7":"#c5e6c0";
  $("energyBar").setAttribute("aria-valuenow",String(Math.round(state.energy*100)));
- $("modeStatus").textContent=state.mode==="stage"?"스테이지 "+state.stage+" · 목표 "+target()+"계단":"무한 도전 · 직접 조작";
+ $("modeStatus").textContent=({beginner:"초보",intermediate:"중수",expert:"고수"}[state.difficulty])+" · "+(state.mode==="stage"?"스테이지 "+state.stage+" · 목표 "+target()+"계단":"무한 도전 · 직접 조작");
  $("bestStatus").textContent="이 기기 최고 "+state.best;
+ document.querySelectorAll("[data-difficulty]").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.difficulty===state.difficulty));b.disabled=shared.starting||shared.busy;});
  $("pauseButton").textContent=state.status==="paused"?"▶ 계속":"Ⅱ 정지";
 }
 function showOverlay(label,title,text,button,result){
@@ -143,7 +138,7 @@ function showOverlay(label,title,text,button,result){
 function recordBest(){if(state.index>state.best){state.best=state.index;try{localStorage.setItem("neon-stairs-preview-best-v2",String(state.best));}catch(e){}}}
 function reset(){
  flushProgress();
- route=makeRoute(20261117+(++seedCounter)*7919,state.mode==="stage"?state.stage-1:0);
+ route=makeRoute(20261117+(++seedCounter)*7919,state.mode==="stage"?state.stage-1:0,state.difficulty);
  state.index=0;state.facing=1;state.energy=1;state.status="ready";
  renderX=renderY=camX=camY=fall=runUntil=0;gainEffects=[];trail=[];stepAt=-1000;$("starToast").hidden=true;
  $("reviveButton").hidden=true;
@@ -161,9 +156,9 @@ async function start(){
 function beginPlaying(){state.status="playing";$("overlay").hidden=true;$("reviveButton").hidden=true;lastFrame=null;unlockAudio();canvas.focus?.({preventScroll:true});syncHud();}
 async function newSharedRun(){
  await shared.queue;
- const result=await enqueueWallet(()=>walletApi("stairsStart",{mode:state.mode,stage:state.stage}));
+ const result=await enqueueWallet(()=>walletApi("stairsStart",{mode:state.mode,stage:state.stage,difficulty:state.difficulty}));
  shared.run=result.run;shared.queuedIndex=0;shared.actions=[];
- route=makeRoute(result.run.seed,state.mode==="stage"?state.stage-1:0);
+ route=makeRoute(result.run.seed,state.mode==="stage"?state.stage-1:0,result.run.difficulty);
 }
 function pause(){
  if(state.status!=="playing")return;
@@ -318,6 +313,14 @@ choose("data-outfit","outfit");choose("data-background","background");
 function toggle(id,key){$(id).addEventListener("click",()=>{state[key]=!state[key];$(id).setAttribute("aria-pressed",String(state[key]));drawPreviews();});}
 toggle("crownButton","crown");toggle("wingsButton","wings");toggle("shoesButton","shoes");
 $("soundButton").addEventListener("click",()=>{state.sound=!state.sound;$("soundButton").setAttribute("aria-pressed",String(state.sound));$("soundButton").textContent=state.sound?"켜짐":"꺼짐";unlockAudio();});
+function selectDifficulty(level){
+ if(shared.starting||shared.busy||level===state.difficulty)return;
+ state.difficulty=level;
+ try{localStorage.setItem("neon-stairs-difficulty-v1",level);}catch(e){}
+ reset();
+}
+document.querySelectorAll("[data-difficulty]").forEach(b=>b.addEventListener("click",()=>selectDifficulty(b.dataset.difficulty)));
+try{const saved=localStorage.getItem("neon-stairs-difficulty-v1");if(["beginner","intermediate","expert"].includes(saved))state.difficulty=saved;}catch(e){}
 function changeMode(){state.mode=$("modeSelect").value;state.stage=Number($("stageSelect").value);$("stageRow").hidden=state.mode!=="stage";reset();}
 $("modeSelect").addEventListener("change",changeMode);$("stageSelect").addEventListener("change",changeMode);
 document.addEventListener("keydown",e=>{
@@ -737,4 +740,22 @@ document.querySelector(".note").innerHTML=document.querySelector(".note").innerH
 runnerAtlas.src="./assets/stairs-runners-v08.png";
 new ResizeObserver(resize).observe($("stageView"));resize();drawPreviews();syncHud();requestAnimationFrame(frame);
 </script>
-</body></html>
+<script data-family-navigation-v21>
+(function(){
+ const nav=document.querySelector('.switch-games,.family-switch-links,.family-links')||document.querySelector('.game-switch');
+ if(!nav)return;
+ const links=Array.from(nav.querySelectorAll('a'));
+ const stairs=links.find(a=>new URL(a.href,location.href).pathname.endsWith('/stairs-preview.html'));
+ let dress=links.find(a=>new URL(a.href,location.href).searchParams.get('view')==='dress');
+ if(dress)nav.append(dress);
+ if(stairs&&dress)nav.insertBefore(stairs,dress);
+ function sync(link){
+  let wallet=new URLSearchParams(location.search).get('wallet');
+  if(!wallet)for(const other of nav.querySelectorAll('a')){if(other===link)continue;const value=new URL(other.href,location.href).searchParams.get('wallet');if(value){wallet=value;break;}}
+  const u=new URL(link.href,location.href);u.searchParams.set('v','21-stairs-levels');
+  if(wallet)u.searchParams.set('wallet',wallet);else u.searchParams.delete('wallet');link.href=u.href;
+ }
+ for(const link of nav.querySelectorAll("a")){sync(link);link.addEventListener('click',()=>sync(link),true);}
+ document.querySelectorAll('.tabs [data-page="wardrobe"],.topbar nav [data-view="dress"],.local-nav #dress').forEach(b=>b.parentElement.append(b));
+})();
+</script></body></html>
