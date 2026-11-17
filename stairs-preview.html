@@ -150,7 +150,7 @@ body{background:#191b2c}
 <button class="choice" data-character="prince" aria-pressed="false"><canvas width="160" height="200"></canvas>왕자 레온</button>
 <button class="choice" data-character="witch" aria-pressed="false"><canvas width="160" height="200"></canvas>마법사 미오</button><button class="choice" data-character="ninja" aria-pressed="false"><canvas width="160" height="200"></canvas>닌자 카이</button>
 </div>
-<div class="shop-caption" id="shopCaption">캐릭터 10종은 자유롭게 선택할 수 있어요. 펫·계단 구매에는 공통 별을 사용해요.</div><h3>컬러 스타일</h3><div class="chips"><button class="chip" data-outfit="classic" aria-pressed="true">오리지널</button><button class="chip" data-outfit="sport" aria-pressed="false">민트·로즈</button><button class="chip" data-outfit="space" aria-pressed="false">실버·골드</button></div>
+<div class="shop-caption" id="shopCaption">캐릭터 11종을 선택할 수 있어요. 펫·계단 구매에는 공통 별을 사용해요.</div><h3>컬러 스타일</h3><div class="chips"><button class="chip" data-outfit="classic" aria-pressed="true">오리지널</button><button class="chip" data-outfit="sport" aria-pressed="false">민트·로즈</button><button class="chip" data-outfit="space" aria-pressed="false">실버·골드</button></div>
 <h3>액세서리</h3><div class="chips"><button class="chip" id="crownButton" aria-pressed="false">왕관</button><button class="chip" id="wingsButton" aria-pressed="false">날개</button><button class="chip" id="shoesButton" aria-pressed="false">네온 운동화</button></div>
 <h3>펫</h3><div class="chips" id="petChoices"></div><h3>계단</h3><div class="chips"><button class="chip" data-stairs="brick" aria-pressed="true">자수정 석판</button><button class="chip" data-stairs="crystal" aria-pressed="false">크리스털</button><button class="chip" data-stairs="cloud" aria-pressed="false">구름</button><button class="chip" data-stairs="wood" aria-pressed="false">나무</button></div>
 <h3>배경</h3><div class="chips"><button class="chip" data-background="city" aria-pressed="false">도시 야경</button><button class="chip" data-background="castle" aria-pressed="true">별빛 성</button><button class="chip" data-background="forest" aria-pressed="false">숲</button><button class="chip" data-background="space" aria-pressed="false">우주</button></div>
@@ -645,7 +645,7 @@ function drawBackground(){
 
 // One source of truth for five character choices, unlocks and gameplay.
 const STORE_KEY="neon-stairs-integrated-shop-v1";
-const RUNNERS=[{id:"azure",name:"스카이",price:0},{id:"luna",name:"루나",price:8},{id:"prince",name:"왕자 레온",price:12},{id:"witch",name:"마법사 미오",price:15},{id:"ninja",name:"닌자 카이",price:18},{id:"knight",name:"복싱선수",price:20},{id:"pirate",name:"저격수",price:22},{id:"robot",name:"아이언맨",price:24},{id:"astronaut",name:"헐크",price:26},{id:"shadow",name:"투명인간",price:30}];
+const RUNNERS=[{id:"azure",name:"스카이",price:0},{id:"luna",name:"루나",price:8},{id:"prince",name:"왕자 레온",price:12},{id:"witch",name:"마법사 미오",price:15},{id:"ninja",name:"닌자 카이",price:18},{id:"knight",name:"복싱선수",price:20},{id:"pirate",name:"저격수",price:22},{id:"robot",name:"아이언맨",price:24},{id:"astronaut",name:"헐크",price:26},{id:"shadow",name:"투명인간",price:30},{id:"boltboy",name:"번개 히어로",price:0}];
 const PETS=[{id:"none",name:"없음",price:0},{id:"dog",name:"강아지",price:0},{id:"cat",name:"고양이",price:5},{id:"bunny",name:"토끼",price:7},{id:"fox",name:"여우",price:9},{id:"dragon",name:"드래곤",price:14},{id:"panda",name:"판다",price:16},{id:"penguin",name:"로봇캣",price:18},{id:"unicorn",name:"유니콘",price:20},{id:"slime",name:"마법책",price:22},{id:"phoenix",name:"불사조",price:25}];
 const STAIR_ITEMS=[{id:"brick",name:"자수정 석판",price:0},{id:"crystal",name:"크리스털",price:6},{id:"cloud",name:"구름",price:8},{id:"wood",name:"나무",price:6},{id:"gold",name:"황금",price:12},{id:"lava",name:"용암",price:14},{id:"rainbow",name:"무지개",price:16},{id:"glass",name:"투명 유리",price:18},{id:"fire",name:"불꽃 계단",price:20},{id:"ice",name:"빙하 계단",price:18},{id:"neon",name:"네온 계단",price:22},{id:"cosmic",name:"우주석 계단",price:24}];
 const legacyInventoryOwner="neon-stairs-items-migrated-wallet";
@@ -916,8 +916,38 @@ for(const item of RUNNERS){
  const cv=document.createElement("canvas");cv.width=160;cv.height=200;b.append(cv,document.createTextNode(item.name));
  $("characters").append(b);b.addEventListener("click",()=>equipOrBuy("character",item));
 }
-document.querySelector(".footer").textContent="2026.11.17 · v1.3 — 낱말·계단 공통 별 · 서버 저장 · 캐릭터 10종";
+document.querySelector(".footer").textContent="2026.11.17 · v1.3 — 낱말·계단 공통 별 · 서버 저장 · 캐릭터 11종";
 document.querySelector(".note").innerHTML=document.querySelector(".note").innerHTML.replace("플레이 버전 0.8","플레이 버전 1.1 · 원본 일러스트 동작 적용");
+
+
+/* Bolt Boy: animated cosmetic with preserved shared wallet and existing server inventory. */
+const boltBoyImage=new Image();boltBoyImage.src="./assets/bolt-boy-runner.svg?v=1";
+const BOLT_KEY="neon-stairs-boltboy-character";
+const oldApplyStairs=applyStairs;
+applyStairs=function(d){oldApplyStairs(d);if(localStorage.getItem(BOLT_KEY)==="1"){state.character="boltboy";inventory.character="boltboy";refreshShopUI();}};
+const oldEquipOrBuy=equipOrBuy;
+equipOrBuy=async function(type,item){
+ if(type==="character"&&item.id==="boltboy"){
+  if(!shared.ready){toastShop("먼저 사용자를 선택해 주세요.");return;}
+  localStorage.setItem(BOLT_KEY,"1");state.character="boltboy";inventory.character="boltboy";refreshShopUI();drawPreviews();toastShop("번개 히어로 선택 완료");return;
+ }
+ if(type==="character")localStorage.removeItem(BOLT_KEY);
+ return oldEquipOrBuy(type,item);
+};
+const beforeBoltDraw=drawRunner;
+drawRunner=function(c,x,y,scale,facing,phase,config){
+ if(config.character!=="boltboy"||!boltBoyImage.complete||!boltBoyImage.naturalWidth)return beforeBoltDraw(c,x,y,scale,facing,phase,config);
+ c.save();c.translate(x,y);c.scale(facing,1);
+ const running=phase>=0&&state.status!=="falling";
+ const gait=running?Math.sin(phase*2.6):0;
+ const tilt=state.status==="falling"?Math.min(.75,Math.max(-.75,(failure?.elapsed||0)*1.1)):gait*.035;
+ c.rotate(tilt);c.translate(0,running?-Math.abs(gait)*2.2*scale:0);
+ const h=77*scale,w=h*180/210;
+ c.imageSmoothingEnabled=true;c.imageSmoothingQuality="high";
+ c.drawImage(boltBoyImage,-w/2,-h,w,h);
+ if(state.status==="falling"&&failure?.elapsed>.4){c.font=(15*scale)+"px system-ui";c.fillStyle="#ffe36b";c.fillText("✦",w*.2,-h*.8);}
+ c.restore();
+};
 
 runnerAtlas.src="./assets/stairs-runners-v08.png";
 new ResizeObserver(resize).observe($("stageView"));resize();drawPreviews();syncHud();requestAnimationFrame(frame);
