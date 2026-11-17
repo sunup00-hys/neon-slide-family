@@ -235,7 +235,9 @@ function frame(now){
  const stride=active&&!reduced?-Math.sin(Math.min(1,(now-stepAt)/105)*Math.PI)*7:0;
  trail=trail.filter(p=>now-p.born<250);
  if(!reduced)for(const p of trail){const t=(now-p.born)/250;ctx.globalAlpha=(1-t)*.55;for(let j=0;j<3;j++)rect(ctx,"#ded6bf",p.x-p.facing*(10+t*17+j*6),p.y-2-t*(3+j*2),4-j,3-j*.5);ctx.globalAlpha=1;}
- drawPet(ctx,renderX,renderY+fall+stride,Math.min(3,Math.max(2,width/170)),state.facing,phase);
+ const petStep=route.steps[Math.max(0,state.index-3)];
+ const petX=petStep.x*STEP_X,petY=-petStep.y*STEP_Y;
+ drawPet(ctx,petX,petY-5,Math.min(3,Math.max(2,width/170)),state.facing,phase);
   drawRunner(ctx,renderX,renderY+fall+stride,Math.min(3,Math.max(2,width/170)),state.facing,phase,state);
  if(active&&!reduced){rect(ctx,"#e2e0bd77",renderX-state.facing*19,renderY-2,3,2);}
  ctx.restore();drawGain(now);animatePreviews(now);requestAnimationFrame(frame);
@@ -583,7 +585,7 @@ drawRunner=function(c,x,y,scale,facing,phase,config){
 };
 drawPet=function(c,x,y,scale,facing,phase){
  const row=petMotionRows?.[state.pet];if(!row)return;
- drawMotion(c,petMotionAtlas,row,x-facing*43*scale,y-4,scale,facing,phase,30);
+ drawMotion(c,petMotionAtlas,row,x,y-4,scale*.78,facing,phase,30);
 };
 function drawPetPreviews(){
  document.querySelectorAll("[data-pet-preview]").forEach(cv=>{
