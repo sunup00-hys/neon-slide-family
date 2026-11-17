@@ -121,6 +121,12 @@ body{background:#191b2c}
 .stair-grid .stair-choice{padding:4px 2px 8px;min-width:0;overflow:hidden;font-size:11px;background:linear-gradient(145deg,#15263e,#101a31);border:1px solid #72789c;border-radius:15px}
 .stair-choice canvas{display:block;width:100%;height:auto;aspect-ratio:1.35;image-rendering:auto}
 .stair-choice[aria-pressed=true]{border-color:#ffde85;box-shadow:0 0 12px #ffdc6570;outline:2px solid #ffde85}
+
+/* Personal-record celebration: live text, selected character, user-server values. */
+#recordDialog{color:#fff;border:2px solid #8befff;border-radius:28px;padding:0;width:min(430px,92vw);max-height:92dvh;overflow:auto;background:radial-gradient(ellipse at 50% 58%,#443073,#131c36 70%);box-shadow:0 0 22px #57d8ff88,0 0 70px #bc6eff55;text-align:center}
+#recordDialog::backdrop{background:#030817c9;backdrop-filter:blur(5px)}
+.record-content{position:relative;overflow:hidden;padding:22px 20px 18px}.record-owner{display:inline-block;color:#c9f6ff;font-weight:800;padding:4px 16px;border:1px solid #7de5ff88;border-radius:30px;background:#142e4e}.record-art{margin:13px 0 16px;line-height:1.16;transform:rotate(-3deg);font-size:clamp(32px,8vw,48px);font-weight:1000;letter-spacing:-2px;filter:drop-shadow(0 5px 0 #704117) drop-shadow(0 0 9px #ffaf4055)}.record-art span{display:block;color:#ffd65d;-webkit-text-stroke:1px #fff0c2;text-shadow:2px 3px 0 #bd6316,4px 5px 0 #192340}.record-art span:first-child{font-size:.86em;color:#ffec8b}.record-values{display:flex;justify-content:center;gap:12px;align-items:center;background:#080f26aa;border:1px solid #b2b2ff88;border-radius:16px;padding:9px;color:#ccd6f3;font-size:14px}.record-values strong{display:block;color:#ffe58a;font-size:28px}.record-values .up{font-size:29px;color:#74efff}.record-stage{position:relative;margin:10px -10px 0;height:min(32dvh,270px);background:radial-gradient(ellipse at 50% 92%,#66dfff44,transparent 48%)}#recordDance{width:100%;height:100%;display:block}.record-note{margin:0 0 12px;font-size:13px;color:#c9d9ed}.record-actions{display:flex;gap:10px}.record-actions button{flex:1;font-weight:900}.record-actions .primary{color:#06243a;background:linear-gradient(#adffff,#39cae7);border:1px solid #e7ffff;box-shadow:0 0 15px #55dfff66}.record-content:before{content:'✦　★　✧　　　　✦　★';position:absolute;inset:125px 0 auto;color:#fcd96f;pointer-events:none;font-size:24px;letter-spacing:10px;animation:record-spark 1.4s ease-in-out infinite alternate}@keyframes record-spark{to{transform:translateY(15px);opacity:.5}}@media(prefers-reduced-motion:reduce){.record-content:before{animation:none}}
+
 </style>
 </head>
 <body class="immersive" data-build="2.6-bolt-motion-fix">
@@ -135,7 +141,7 @@ body{background:#191b2c}
 <div class="hud">
 <div class="hud-top"><div class="score-wrap"><span class="score" id="score">0</span><span class="unit">계단</span></div><div class="star-strip" id="starPill"><span class="star-symbol" aria-hidden="true">★</span><span><small>공통 별</small><span id="starBalance">0</span></span></div><div class="hud-actions"><button id="quickWardrobe">캐릭터</button><button id="pauseButton" aria-label="일시 정지">Ⅱ 정지</button><button id="sizeButton">↙ 작게 보기</button></div></div>
 <div class="energy" role="progressbar" aria-label="남은 시간" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" id="energyBar"><span id="energyFill"></span></div>
-<div class="hud-sub"><span id="modeStatus">무한 도전</span><span id="bestStatus">이 기기 최고 0</span></div>
+<div class="hud-sub"><span id="modeStatus">무한 도전</span><span id="bestStatus">사용자 최고 —</span></div>
 </div>
 <div class="toast" id="starToast" role="status" hidden></div><div class="overlay" id="overlay">
 <div class="dialog"><div class="mode-label" id="overlayLabel">READY TO RUN</div><h2 id="overlayTitle">계단을 달려 올라요</h2><div class="result" id="result" hidden></div><p id="overlayText">오른쪽 버튼은 바라보는 방향으로 한 칸!<br>계단이 꺾이면 왼쪽 ‘방향 전환’으로 돌아서 한 칸!</p><p class="difficulty-heading">방향 전환 난이도</p><div class="difficulty-picker" role="group" aria-label="계단 난이도">
@@ -169,6 +175,13 @@ body{background:#191b2c}
 </div>
 <footer class="footer">2026.11.17 · 0.9 — 5종 신규 러너·원본 디자인 4프레임 달리기·별 해금·펫·계단 상점</footer>
 </main>
+<dialog id="recordDialog" aria-labelledby="recordHeading"><div class="record-content">
+<div class="record-owner" id="recordOwner">나의 최고기록</div><h2 class="record-art" id="recordHeading"><span>아싸~!</span><span>기록 경신!</span></h2>
+<div class="record-values"><div>이전 기록<br><span id="recordPrevious"></span></div><span class="up">⬆</span><div>새 최고기록<strong id="recordNew"></strong></div></div>
+<div class="record-stage"><canvas id="recordDance" width="640" height="460" aria-label="선택한 캐릭터의 가슴 팝 축하 댄스"></canvas></div>
+<p class="record-note">최고기록을 뛰어넘었어요!<br><span id="recordSaved">사용자 기록으로 저장 완료</span></p>
+<div class="record-actions"><button type="button" class="primary" id="recordAgain">한 번 더!</button><button type="button" id="recordClose">닫기</button></div>
+</div></dialog>
 <script>
 "use strict";
 // v2 uses exact turn budgets in ten-step bands. Keep v1 runs unchanged.
@@ -247,7 +260,8 @@ const STEP_X=46, STEP_Y=30;
 const $=id=>document.getElementById(id);
 const canvas=$("gameCanvas"),ctx=canvas.getContext("2d");
 const state={status:"ready",index:0,facing:1,energy:1,mode:"infinite",stage:1,difficulty:"beginner",best:0,character:"azure",outfit:"classic",stairs:"brick",background:"castle",crown:false,wings:false,shoes:false,sound:true,large:true};
-try{state.best=Math.max(0,Number(localStorage.getItem("neon-stairs-preview-best-v2"))||0);}catch(e){}
+// Personal best is authoritative on the shared user server; never import a device record.
+let runRecord=null;
 let route=makeRoute(20261117,0,state.difficulty,2), width=400,height=550,renderX=0,renderY=0,camX=0,camY=0,lastFrame=null,runUntil=0,stepAt=-1000,trail=[],animTime=0,fall=0,seedCounter=0,audio=null,failure=null;
 const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function target(){return state.mode==="stage"?state.stage*20:Infinity;}
@@ -258,7 +272,7 @@ function syncHud(){
  $("energyFill").style.background=state.energy<.25?"#eea6a7":"#c5e6c0";
  $("energyBar").setAttribute("aria-valuenow",String(Math.round(state.energy*100)));
  $("modeStatus").textContent=({beginner:"초보",intermediate:"중수",expert:"고수"}[state.difficulty])+" · "+(route.tierAt?route.tierAt(state.index+1).label+" 구간 · ":"")+(state.mode==="stage"?"스테이지 "+state.stage+" · 목표 "+target()+"계단":"무한 도전 · 직접 조작");
- $("bestStatus").textContent="이 기기 최고 "+state.best;
+ $("bestStatus").textContent=shared.ready?"나의 최고 "+state.best.toLocaleString()+"계단":"사용자 최고 —";
  document.querySelectorAll("[data-difficulty]").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.difficulty===state.difficulty));b.disabled=shared.starting||shared.busy;});
  for(const id of ["pauseButton","quickWardrobe","sizeButton"])$(id).disabled=state.status==="falling";
  $("gameShell").dataset.phase=state.status;
@@ -269,8 +283,9 @@ function showOverlay(label,title,text,button,result){
  $("overlay").hidden=false;$("overlayLabel").textContent=label;$("overlayTitle").textContent=title;$("overlayText").textContent=text;
  $("startButton").textContent=button;$("result").hidden=result===undefined;$("result").textContent=result===undefined?"":result+" 계단";
 }
-function recordBest(){if(state.index>state.best){state.best=state.index;try{localStorage.setItem("neon-stairs-preview-best-v2",String(state.best));}catch(e){}}}
+function recordBest(){} // Server validates successful steps and persists the user record.
 function reset(){
+ closeRecordPopup();runRecord=null;
  failure=null;
  flushProgress();
  route=makeRoute(20261117+(++seedCounter)*7919,state.mode==="stage"?state.stage-1:0,state.difficulty,2);
@@ -293,6 +308,7 @@ async function newSharedRun(){
  await shared.queue;
  const result=await enqueueWallet(()=>walletApi("stairsStart",{mode:state.mode,stage:state.stage,difficulty:state.difficulty,routeVersion:2}));
  shared.run=result.run;shared.queuedIndex=0;shared.actions=[];
+ runRecord={runId:result.run.id,profileId:shared.profileId,previous:state.best,confirmed:0,shown:state.best,character:state.character,config:{...state}};
  route=makeRoute(result.run.seed,state.mode==="stage"?state.stage-1:0,result.run.difficulty,result.run.routeVersion);
 }
 function pause(){
@@ -335,11 +351,13 @@ function finish(success,reason){
  showResult(true,reason);
 }
 function showResult(success,reason){
+ if(runRecord){runRecord.character=state.character;runRecord.config={...state};}
  showOverlay(success?"STAGE CLEAR":"TRY AGAIN",success?"스테이지 성공!":"다시 달려 볼까요?",reason,success&&state.stage<10?"다음 스테이지":"다시 도전",state.index);
  $("reviveButton").hidden=success;
  $("reviveButton").textContent="😇 ★ "+REVIVE_COST+"개로 "+state.index+"계단에서 부활";
  $("reviveButton").disabled=starLedger.stars<REVIVE_COST;
  if(success)sound("win");syncHud();
+ maybeCelebrateRecord();
 }
 // A failed attempt is visual only: keep the last valid index for rewards and revival.
 function failurePose(elapsed,travel,height,reducedMotion=false){
@@ -369,6 +387,7 @@ function updateFailure(dt){
  return pose;
 }
 function action(kind){
+ if($("recordDialog").open)return;
  if(!state.large && state.status==="paused")return;
  if(!runnerFrames)return;
  if(state.status==="ready"){start();return;}
@@ -474,7 +493,7 @@ function frame(now){
   }
  }else drawRunner(ctx,renderX,renderY+stride,Math.min(3,Math.max(2,width/170)),state.facing,phase,state);
  if(active&&!reduced){rect(ctx,"#e2e0bd77",renderX-state.facing*19,renderY-2,3,2);}
- ctx.restore();drawGain(now);animatePreviews(now);requestAnimationFrame(frame);
+ ctx.restore();drawGain(now);animatePreviews(now);drawRecordDance(now);requestAnimationFrame(frame);
 }
 function bindControl(id,kind){
  const b=$(id);
@@ -511,6 +530,7 @@ try{const saved=localStorage.getItem("neon-stairs-difficulty-v1");if(["beginner"
 function changeMode(){state.mode=$("modeSelect").value;state.stage=Number($("stageSelect").value);$("stageRow").hidden=state.mode!=="stage";reset();}
 $("modeSelect").addEventListener("change",changeMode);$("stageSelect").addEventListener("change",changeMode);
 document.addEventListener("keydown",e=>{
+ if($("recordDialog").open)return;
  if(e.target&&/SELECT|INPUT|TEXTAREA|BUTTON/.test(e.target.tagName))return;
  if(e.code==="Escape"){e.preventDefault();setLarge(!state.large);return;}
  if(e.repeat)return;
@@ -555,6 +575,8 @@ async function walletApi(type,extra={}){
  if(data.stairs&&data.snapshot?.revision===shared.revision)applyStairs(data.stairs);syncStars();return data;
 }
 function applyStairs(d){
+ state.best=Math.max(0,Number(d.best)||0);
+ if($("bestStatus"))$("bestStatus").textContent="나의 최고 "+state.best.toLocaleString()+"계단";
  starLedger.infiniteMilestone=d.infiniteMilestone||0;starLedger.stages=d.stages||[];
  inventory={owned:[...d.owned],character:d.character,pet:d.pet,stairs:d.stairs};
  for(const type of ["character","pet","stairs"])state[type]=inventory[type];
@@ -565,6 +587,8 @@ function flushProgress(ended=false){
  const actions=shared.actions.splice(0),runId=shared.run.id,expectedIndex=shared.queuedIndex;
  shared.queuedIndex=state.index;
  enqueueWallet(()=>walletApi("stairsProgress",{runId,expectedIndex,actions,ended})).then(r=>{
+  if(runRecord?.runId===runId&&runRecord.profileId===shared.profileId){runRecord.previous=Math.max(runRecord.previous,state.best>r.run.index?state.best:0);runRecord.confirmed=Math.max(runRecord.confirmed,r.run.index);}
+  syncHud();maybeCelebrateRecord();
   if(r.gained){$("starPill").classList.remove("bump");void $("starPill").offsetWidth;$("starPill").classList.add("bump");toastShop("★ 공통 별 +"+r.gained+" · 서버 저장 완료");gainEffects.push({born:animTime,value:r.gained});}
  }).catch(()=>{});
 }
@@ -1002,6 +1026,48 @@ drawRunner=function(c,x,y,scale,facing,phase,config){
  c.restore();
 };
 boltMotionAtlas.src="./assets/bolt-hero-motion-v2.webp";
+
+
+// Show only confirmed progress from this user's current run, after its result.
+let celebration=null;
+function closeRecordPopup(){const dialog=$("recordDialog");if(dialog.open)dialog.close();celebration=null;}
+function maybeCelebrateRecord(){
+ const r=runRecord;
+ if(!r||!shared.ready||r.profileId!==shared.profileId||r.runId!==shared.run?.id||!['over','complete'].includes(state.status))return;
+ if(r.confirmed<=Math.max(r.previous,r.shown)||r.confirmed<state.best)return;
+ const previous=Math.max(r.previous,r.shown);r.shown=r.confirmed;
+ const user=familyUsers.find(p=>p.profileId===r.profileId);
+ $("recordOwner").textContent=(user?.name||"나")+"의 최고기록";
+ $("recordPrevious").textContent=previous.toLocaleString()+"계단";
+ $("recordNew").textContent=r.confirmed.toLocaleString()+"계단";
+ celebration={config:{...r.config,character:r.character},since:performance.now()};
+ $("recordDialog").showModal();sound("win");
+}
+$("recordClose").onclick=closeRecordPopup;
+$("recordAgain").onclick=()=>{closeRecordPopup();start();};
+$("recordDialog").addEventListener("close",()=>{celebration=null;});
+const danceSource=document.createElement("canvas");danceSource.width=400;danceSource.height=430;
+const danceSourceCtx=danceSource.getContext("2d");
+function drawRecordDance(now){
+ if(!celebration||!$("recordDialog").open)return;
+ const c=$("recordDance").getContext("2d"),w=640,h=460,t=(now-celebration.since)/1000;
+ c.clearRect(0,0,w,h);
+ c.save();c.translate(w/2,398);
+ const glow=c.createRadialGradient(0,0,10,0,0,190);glow.addColorStop(0,'#9cefff99');glow.addColorStop(1,'#6b48ff00');c.fillStyle=glow;c.beginPath();c.ellipse(0,0,220,45,0,0,Math.PI*2);c.fill();
+ c.strokeStyle='#8cefff';c.lineWidth=3;c.beginPath();c.ellipse(0,0,180,30,0,0,Math.PI*2);c.stroke();c.restore();
+ danceSourceCtx.clearRect(0,0,400,430);
+ drawRunner(danceSourceCtx,200,408,4.6,1,-1,celebration.config);
+ // Keep the feet grounded; warp contiguous horizontal strips so the torso
+ // expands and recoils while the shoulders and head lean on the beat.
+ const beat=reduced?0:Math.pow(Math.max(0,Math.sin(t*Math.PI*4)),5),sway=reduced?0:Math.sin(t*Math.PI*2)*5;
+ for(let y=0;y<430;y+=2){
+  const chest=Math.exp(-Math.pow((y-220)/65,2)),head=Math.exp(-Math.pow((y-110)/90,2));
+  const stretch=1+beat*.15*chest,shift=sway*(1-y/430)+beat*9*head;
+  c.drawImage(danceSource,0,y,400,2,120+shift-(stretch-1)*200,20+y*.87-beat*8*head,400*stretch,1.85);
+ }
+ for(let i=0;i<24;i++){const a=i*2.4,x=(Math.sin(a)*.5+.5)*w,y=reduced?(i*53)%h:((t*(25+i%5*6)+i*53)%h);c.fillStyle=['#ffdc77','#85efff','#c9a4ff'][i%3];c.save();c.translate(x,y);c.rotate(a+t);c.fillRect(-3,-4,6,9);c.restore();}
+ if(beat>.2){c.strokeStyle='#8af5ff';c.lineWidth=3;c.globalAlpha=beat;for(const sign of [-1,1]){c.beginPath();c.arc(320,205,94+beat*20,sign<0?2.5:-.65,sign<0?3.7:.65);c.stroke();}c.globalAlpha=1;}
+}
 
 runnerAtlas.src="./assets/stairs-runners-v08.png";
 new ResizeObserver(resize).observe($("stageView"));resize();drawPreviews();syncHud();requestAnimationFrame(frame);
