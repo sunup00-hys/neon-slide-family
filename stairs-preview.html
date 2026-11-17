@@ -115,9 +115,10 @@ body{background:#191b2c}
  .overlay #wardrobeButton{grid-column:2;grid-row:5/7}
  .overlay #elevatorChoices{grid-column:2;grid-row:3/5}
 }
+.difficulty-guide{margin:10px 0;font-size:12px;color:#ead79e}.difficulty-guide summary{cursor:pointer}.difficulty-guide p{margin:8px 0;font-size:11px;line-height:1.6}
 </style>
 </head>
-<body class="immersive" data-build="2.3-failure-fall">
+<body class="immersive" data-build="2.4-progressive-levels">
 <nav class="family-switch" aria-label="가족 게임 전환"><div class="family-switch-links"><a href="./index.html">♫ 리듬</a><a class="current" href="./stairs-preview.html" aria-current="page">↗ 계단</a><a href="./words.html">✦ 낱말</a><a href="./sudoku.html">▦ 스도쿠</a><a href="./magic.html">⚗ 물약</a><a href="./arrows.html">➜ 화살표</a><a href="./zoodoku.html">🐾 쥬도쿠</a><a href="./bus.html">🚌 버스</a><a class="family-dress-link" href="./words.html?view=dress&amp;v=21-stairs-levels">♕ 꾸미기</a></div><button id="familyProfileButton" type="button">👤 사용자 선택</button><span id="familyProfileStatus">사용자 확인 중</span></nav>
 <dialog id="familyProfileDialog" class="family-profile-dialog"><h2>사용자 변경</h2><p>기존 가족게임의 사용자 목록을 불러옵니다.</p><div id="familyProfileChoices"></div><p id="familyProfileError"></p><button id="familyProfileClose" type="button">닫기</button></dialog>
 <main class="page">
@@ -133,7 +134,7 @@ body{background:#191b2c}
 </div>
 <div class="toast" id="starToast" role="status" hidden></div><div class="overlay" id="overlay">
 <div class="dialog"><div class="mode-label" id="overlayLabel">READY TO RUN</div><h2 id="overlayTitle">계단을 달려 올라요</h2><div class="result" id="result" hidden></div><p id="overlayText">오른쪽 버튼은 바라보는 방향으로 한 칸!<br>계단이 꺾이면 왼쪽 ‘방향 전환’으로 돌아서 한 칸!</p><p class="difficulty-heading">방향 전환 난이도</p><div class="difficulty-picker" role="group" aria-label="계단 난이도">
-<button type="button" data-difficulty="beginner" aria-pressed="true">초보<small>방향 전환 적게</small></button><button type="button" data-difficulty="intermediate" aria-pressed="false">중수<small>방향 전환 보통</small></button><button type="button" data-difficulty="expert" aria-pressed="false">고수<small>방향 전환 자주</small></button></div><button class="primary" id="startButton">게임 시작</button><button class="secondary" id="reviveButton" hidden>😇 ★ 15개로 현재 계단에서 부활</button><button class="secondary" id="wardrobeButton">캐릭터 · 게임 설정</button><div id="elevatorChoices" style="margin-top:12px"><p style="margin:5px 0;color:#ffe2a0">🛗 엘리베이터 · 시작 계단 선택</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px"><button data-elevator="100" style="padding:8px 3px;font-size:11px">100층<br>★ 30</button><button data-elevator="200" style="padding:8px 3px;font-size:11px">200층<br>★ 50</button><button data-elevator="300" style="padding:8px 3px;font-size:11px">300층<br>★ 100</button></div></div></div>
+<button type="button" data-difficulty="beginner" aria-pressed="true">초보<small>기본 · 구간 변화</small></button><button type="button" data-difficulty="intermediate" aria-pressed="false">중수<small>초보보다 +20%</small></button><button type="button" data-difficulty="expert" aria-pressed="false">고수<small>초보보다 +50%</small></button></div><button class="primary" id="startButton">게임 시작</button><button class="secondary" id="reviveButton" hidden>😇 ★ 15개로 현재 계단에서 부활</button><button class="secondary" id="wardrobeButton">캐릭터 · 게임 설정</button><div id="elevatorChoices" style="margin-top:12px"><p style="margin:5px 0;color:#ffe2a0">🛗 엘리베이터 · 시작 계단 선택</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px"><button data-elevator="100" style="padding:8px 3px;font-size:11px">100층<br>★ 30</button><button data-elevator="200" style="padding:8px 3px;font-size:11px">200층<br>★ 50</button><button data-elevator="300" style="padding:8px 3px;font-size:11px">300층<br>★ 100</button></div></div></div>
 </div>
 </div>
 <div class="controls" aria-label="게임 조작">
@@ -154,7 +155,7 @@ body{background:#191b2c}
 <h3>펫</h3><div class="chips" id="petChoices"></div><h3>계단</h3><div class="chips"><button class="chip" data-stairs="brick" aria-pressed="true">자수정 석판</button><button class="chip" data-stairs="crystal" aria-pressed="false">크리스털</button><button class="chip" data-stairs="cloud" aria-pressed="false">구름</button><button class="chip" data-stairs="wood" aria-pressed="false">나무</button></div>
 <h3>배경</h3><div class="chips"><button class="chip" data-background="city" aria-pressed="false">도시 야경</button><button class="chip" data-background="castle" aria-pressed="true">별빛 성</button><button class="chip" data-background="forest" aria-pressed="false">숲</button><button class="chip" data-background="space" aria-pressed="false">우주</button></div>
 <h3>방향 전환 난이도</h3><div class="difficulty-picker" role="group" aria-label="계단 난이도">
-<button type="button" data-difficulty="beginner" aria-pressed="true">초보<small>방향 전환 적게</small></button><button type="button" data-difficulty="intermediate" aria-pressed="false">중수<small>방향 전환 보통</small></button><button type="button" data-difficulty="expert" aria-pressed="false">고수<small>방향 전환 자주</small></button></div><div class="setting-line"><label for="modeSelect">플레이 방식</label><select id="modeSelect"><option value="infinite">무한 도전</option><option value="stage">스테이지 도전</option></select></div>
+<button type="button" data-difficulty="beginner" aria-pressed="true">초보<small>기본 · 구간 변화</small></button><button type="button" data-difficulty="intermediate" aria-pressed="false">중수<small>초보보다 +20%</small></button><button type="button" data-difficulty="expert" aria-pressed="false">고수<small>초보보다 +50%</small></button></div><details class="difficulty-guide"><summary>높이에 따른 난이도 안내</summary><p>초보 선택 기준 · 20계단마다 초보·중수 구간이 바뀌어요.<br>201~500계단: 중수 70% · 고수 30%<br>501~1000계단: 중수 50% · 고수 50%<br>1001계단 이상: 중수 30% · 고수 70%<br>중수 선택: 방향 전환 20% 증가 · 고수 선택: 50% 증가</p></details><div class="setting-line"><label for="modeSelect">플레이 방식</label><select id="modeSelect"><option value="infinite">무한 도전</option><option value="stage">스테이지 도전</option></select></div>
 <div class="setting-line" id="stageRow" hidden><label for="stageSelect">시작 스테이지</label><select id="stageSelect"><option value="1">1 · 20계단</option><option value="2">2 · 40계단</option><option value="3">3 · 60계단</option><option value="4">4 · 80계단</option><option value="5">5 · 100계단</option><option value="6">6 · 120계단</option><option value="7">7 · 140계단</option><option value="8">8 · 160계단</option><option value="9">9 · 180계단</option><option value="10">10 · 200계단</option></select></div>
 <div class="setting-line"><span>효과음</span><button class="chip" id="soundButton" aria-pressed="true">켜짐</button></div>
 <div class="reward-info"><div>나의 공통 별 <strong id="wardrobeStars">★ 0</strong></div><p>무한 도전: 20계단마다 노랑 ★3 · 주황 ★5 · 골드 ★10 순환<br>스테이지: 처음 성공한 단계마다 3개<br>낱말게임과 같은 서버 지갑에 저장됩니다. 엘리베이터로 건너뛴 별은 지급되지 않습니다.</p></div><button class="full-button" id="largeButton">↗ 화면 크게 보기 + 게임 시작</button><button class="full-button" id="settingsStartButton" style="background:#b6e5c8;color:#18372c">▶ 게임 시작</button>
@@ -165,7 +166,67 @@ body{background:#191b2c}
 </main>
 <script>
 "use strict";
-function makeRoute(seed,difficulty,level){
+// v2 uses exact turn budgets in ten-step bands. Keep v1 runs unchanged.
+function makeProgressiveStairsRoute(seed,level='beginner'){
+ const factor={beginner:1,intermediate:1.2,expert:1.5}[level]||1;
+ const density={beginner:.26,intermediate:.34,expert:.46};
+ const labels={beginner:'초보',intermediate:'중수',expert:'고수'};
+ const steps=[{x:0,y:0,d:1}];let value=seed>>>0,carry=0;
+ const random=()=>{value=(Math.imul(value,1664525)+1013904223)>>>0;return value/4294967296;};
+ const groups=new Map();
+ function tierAt(index){
+  const i=Math.max(1,index);let tier;
+  if(i<=200)tier=Math.floor((i-1)/20)%2?'intermediate':'beginner';
+  else{
+   const start=i<=500?201:i<=1000?501:1001;
+   const lower=i<=500?7:i<=1000?5:3;
+   const group=start+Math.floor((i-start)/100)*100;
+   if(!groups.has(group)){
+    let r=(seed^Math.imul(group,2246822519))>>>0;
+    const slots=Array.from({length:10},(_,n)=>n<lower?'intermediate':'expert');
+    for(let n=9;n>0;n--){r=(Math.imul(r,1664525)+1013904223)>>>0;const j=Math.floor(r/4294967296*(n+1));[slots[n],slots[j]]=[slots[j],slots[n]];}
+    groups.set(group,slots);
+   }
+   tier=groups.get(group)[Math.floor((i-group)/10)];
+  }
+  return {tier,label:labels[tier],factor,density:density[tier]*factor};
+ }
+ function appendBand(){
+  const start=steps.length,last=steps[start-1],info=tierAt(start);
+  const budget=carry+10*info.density,turns=Math.floor(budget+1e-9);carry=budget-turns;
+  const memo=new Map();
+  function ways(left,x,d,remaining){
+   if(remaining<0||remaining>left)return 0;
+   if(!left)return remaining===0?1:0;
+   const key=[left,x,d,remaining].join(',');if(memo.has(key))return memo.get(key);
+   const i=start+10-left;let total=0;
+   for(const turn of [0,1]){
+    if(i<=3&&turn)continue;
+    const next=turn?-d:d;if(Math.abs(x+next)>4)continue;
+    total+=ways(left-1,x+next,next,remaining-turn);
+   }
+   memo.set(key,total);return total;
+  }
+  if(!ways(10,last.x,last.d,turns))throw Error('계단 패턴을 만들지 못했어요.');
+  let x=last.x,d=last.d,remaining=turns;
+  for(let offset=0;offset<10;offset++){
+   const left=10-offset,i=start+offset,options=[];
+   for(const turn of [0,1]){
+    if(i<=3&&turn)continue;
+    const next=turn?-d:d;if(Math.abs(x+next)>4)continue;
+    const weight=ways(left-1,x+next,next,remaining-turn);if(weight)options.push({turn,next,weight});
+   }
+   let pick=random()*options.reduce((sum,o)=>sum+o.weight,0),chosen=options.at(-1);
+   for(const option of options){pick-=option.weight;if(pick<0){chosen=option;break;}}
+   remaining-=chosen.turn;d=chosen.next;x+=d;steps.push({x,y:i,d});
+  }
+ }
+ function ensure(count){while(steps.length<=count)appendBand();return steps;}
+ ensure(35);return {steps,ensure,tierAt,version:2};
+}
+
+function makeRoute(seed,difficulty,level,routeVersion=1){
+ if(routeVersion===2)return makeProgressiveStairsRoute(seed,level);
  let value=seed>>>0,run=0,direction=1;const steps=[{x:0,y:0,d:1}];
  const rules={beginner:{min:4,max:7,chance:.08},intermediate:{min:2,max:4,chance:.32},expert:{min:1,max:2,chance:.72}}[level];
  const random=()=>{value=(Math.imul(value,1664525)+1013904223)>>>0;return value/4294967296;};
@@ -182,7 +243,7 @@ const $=id=>document.getElementById(id);
 const canvas=$("gameCanvas"),ctx=canvas.getContext("2d");
 const state={status:"ready",index:0,facing:1,energy:1,mode:"infinite",stage:1,difficulty:"beginner",best:0,character:"azure",outfit:"classic",stairs:"brick",background:"castle",crown:false,wings:false,shoes:false,sound:true,large:true};
 try{state.best=Math.max(0,Number(localStorage.getItem("neon-stairs-preview-best-v2"))||0);}catch(e){}
-let route=makeRoute(20261117,0,state.difficulty), width=400,height=550,renderX=0,renderY=0,camX=0,camY=0,lastFrame=null,runUntil=0,stepAt=-1000,trail=[],animTime=0,fall=0,seedCounter=0,audio=null,failure=null;
+let route=makeRoute(20261117,0,state.difficulty,2), width=400,height=550,renderX=0,renderY=0,camX=0,camY=0,lastFrame=null,runUntil=0,stepAt=-1000,trail=[],animTime=0,fall=0,seedCounter=0,audio=null,failure=null;
 const reduced=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function target(){return state.mode==="stage"?state.stage*20:Infinity;}
 function syncHud(){
@@ -191,7 +252,7 @@ function syncHud(){
  $("energyFill").style.transform="scaleX("+Math.max(0,state.energy)+")";
  $("energyFill").style.background=state.energy<.25?"#eea6a7":"#c5e6c0";
  $("energyBar").setAttribute("aria-valuenow",String(Math.round(state.energy*100)));
- $("modeStatus").textContent=({beginner:"초보",intermediate:"중수",expert:"고수"}[state.difficulty])+" · "+(state.mode==="stage"?"스테이지 "+state.stage+" · 목표 "+target()+"계단":"무한 도전 · 직접 조작");
+ $("modeStatus").textContent=({beginner:"초보",intermediate:"중수",expert:"고수"}[state.difficulty])+" · "+(route.tierAt?route.tierAt(state.index+1).label+" 구간 · ":"")+(state.mode==="stage"?"스테이지 "+state.stage+" · 목표 "+target()+"계단":"무한 도전 · 직접 조작");
  $("bestStatus").textContent="이 기기 최고 "+state.best;
  document.querySelectorAll("[data-difficulty]").forEach(b=>{b.setAttribute("aria-pressed",String(b.dataset.difficulty===state.difficulty));b.disabled=shared.starting||shared.busy;});
  for(const id of ["pauseButton","quickWardrobe","sizeButton"])$(id).disabled=state.status==="falling";
@@ -207,7 +268,7 @@ function recordBest(){if(state.index>state.best){state.best=state.index;try{loca
 function reset(){
  failure=null;
  flushProgress();
- route=makeRoute(20261117+(++seedCounter)*7919,state.mode==="stage"?state.stage-1:0,state.difficulty);
+ route=makeRoute(20261117+(++seedCounter)*7919,state.mode==="stage"?state.stage-1:0,state.difficulty,2);
  state.index=0;state.facing=1;state.energy=1;state.status="ready";
  renderX=renderY=camX=camY=fall=runUntil=0;gainEffects=[];trail=[];stepAt=-1000;$("starToast").hidden=true;
  $("reviveButton").hidden=true;
@@ -225,9 +286,9 @@ async function start(){
 function beginPlaying(){failure=null;fall=0;state.status="playing";$("overlay").hidden=true;$("reviveButton").hidden=true;lastFrame=null;unlockAudio();canvas.focus?.({preventScroll:true});syncHud();}
 async function newSharedRun(){
  await shared.queue;
- const result=await enqueueWallet(()=>walletApi("stairsStart",{mode:state.mode,stage:state.stage,difficulty:state.difficulty}));
+ const result=await enqueueWallet(()=>walletApi("stairsStart",{mode:state.mode,stage:state.stage,difficulty:state.difficulty,routeVersion:2}));
  shared.run=result.run;shared.queuedIndex=0;shared.actions=[];
- route=makeRoute(result.run.seed,state.mode==="stage"?state.stage-1:0,result.run.difficulty);
+ route=makeRoute(result.run.seed,state.mode==="stage"?state.stage-1:0,result.run.difficulty,result.run.routeVersion);
 }
 function pause(){
  if(state.status!=="playing")return;
