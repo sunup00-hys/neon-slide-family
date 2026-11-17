@@ -48,9 +48,12 @@ body{background:#191b2c}
 @media(orientation:landscape) and (max-height:540px){.immersive .controls{padding-top:7px;gap:12px}.immersive .control{min-height:78px;flex-direction:row;gap:16px;padding:6px}.immersive .control .icon{width:48px;height:48px}.immersive .control small{display:none}.immersive .hud{padding-top:8px}.immersive .energy{margin-top:5px;height:15px}.immersive .score{font-size:35px}}
 .choice{min-width:0}.choice .cost{font-size:10px;color:#ffe0a0;font-weight:800}.shop-caption{font-size:12px;color:#e5d4b0;margin-top:12px}.choice.locked{border-style:dashed}@media(max-width:520px){.choices{grid-template-columns:repeat(3,minmax(0,1fr))}.hud-top{gap:5px}.hud-actions{gap:4px}.hud-actions button{padding:8px 6px;font-size:10px}.star-strip{margin-right:0;padding:4px 6px;gap:4px}.score{font-size:36px}.unit{font-size:10px}}
 .choices{grid-template-columns:repeat(3,minmax(0,1fr))}.choice canvas{width:100%;height:auto;max-width:112px;image-rendering:auto}.choice{padding:10px 5px}.choice[aria-pressed=true]{box-shadow:0 0 15px #d6b7ff35}.hud-actions button{white-space:nowrap}
+ .family-switch{position:relative;z-index:25;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px max(12px,calc((100vw - 1200px)/2));background:#1a2035;border-bottom:1px solid #ffffff30}.family-switch-links{display:flex;gap:6px;flex-wrap:wrap;flex:1}.family-switch a{font-size:12px;text-decoration:none;padding:7px 10px;border:1px solid #ffffff30;border-radius:10px;color:#e8e7fa}.family-switch a.current{background:#685889;color:white}.family-switch button{padding:8px 11px;font-size:12px}.family-switch #familyProfileStatus{font-size:11px;color:#ead79e}.family-profile-dialog{background:#242940;color:white;border:1px solid #a99ac5;border-radius:18px;padding:22px;max-width:min(400px,92vw)}.family-profile-dialog::backdrop{background:#0009}.family-profile-dialog #familyProfileChoices{display:grid;gap:8px}.family-profile-dialog #familyProfileChoices button{width:100%;text-align:left}.family-profile-dialog p{font-size:12px}.immersive .family-switch{position:fixed;left:0;right:0;top:0;z-index:35;padding-top:max(8px,env(safe-area-inset-top));background:#1a2035eF}.immersive .game-shell{top:64px;height:calc(100dvh - 64px)}@media(max-width:760px){.family-switch{gap:5px}.family-switch-links{overflow-x:auto;flex-wrap:nowrap}.family-switch a{white-space:nowrap}.immersive .game-shell{top:94px;height:calc(100dvh - 94px)}}
 </style>
 </head>
 <body class="immersive" data-build="1.1-illustrated-motion">
+<nav class="family-switch" aria-label="가족 게임 전환"><div class="family-switch-links"><a href="./index.html">♫ 리듬</a><a class="current" href="./stairs-preview.html" aria-current="page">↗ 계단</a><a href="./words.html">✦ 낱말</a><a href="./sudoku.html">▦ 스도쿠</a><a href="./magic.html">⚗ 물약</a><a href="./arrows.html">➜ 화살표</a><a href="./zoodoku.html">🐾 쥬도쿠</a></div><button id="familyProfileButton" type="button">👤 사용자 선택</button><span id="familyProfileStatus">사용자 확인 중</span></nav>
+<dialog id="familyProfileDialog" class="family-profile-dialog"><h2>사용자 변경</h2><p>기존 가족게임의 사용자 목록을 불러옵니다.</p><div id="familyProfileChoices"></div><p id="familyProfileError"></p><button id="familyProfileClose" type="button">닫기</button></dialog>
 <main class="page">
 <header class="page-head"><div><div class="eyebrow">NEON STAIRS · FAMILY GAME</div><h1>별빛 성의 러너</h1></div><nav aria-label="가족게임 이동" style="display:flex;gap:9px;flex-wrap:wrap"><a href="./words.html">✦ 낱말게임</a><a href="./index.html">⌂ 가족게임 홈</a></nav></header>
 <div class="layout">
@@ -545,8 +548,28 @@ for(const b of document.querySelectorAll("[data-character]")){
  b.addEventListener("click",()=>{const item=RUNNERS.find(v=>v.id===b.dataset.character);if(item)equipOrBuy("character",item);});
 }
 for(const type of ["character","pet","stairs"]){const arr=type==="character"?RUNNERS:type==="pet"?PETS:STAIR_ITEMS;if(arr.some(v=>v.id===inventory[type])&&inventory.owned.includes(inventory[type]))state[type]=inventory[type];}
+const familyApi="https://neon-family-cloud.sunup00.chatgpt.site/api/neon";
+let familyUsers=[];
+async function loadFamilyUsers(){
+ const label=$("familyProfileStatus"),box=$("familyProfileChoices");
+ try{
+  const res=await fetch(familyApi,{cache:"no-store"});if(!res.ok)throw Error("서버 연결 실패");
+  const data=await res.json();const snapshot=data.snapshot||data;
+  familyUsers=[...(snapshot.customProfiles||[]).filter(p=>!p.hidden),{id:"seojun",name:"서준",icon:"👦"},{id:"chaewon",name:"채원",icon:"👧"}];
+  const profiles=snapshot.profiles||{};
+  familyUsers=familyUsers.filter((p,i,arr)=>profiles[p.id]&&arr.findIndex(x=>x.id===p.id)===i);
+  for(const id of Object.keys(profiles))if(!familyUsers.some(p=>p.id===id))familyUsers.push({id,name:id,icon:"👤"});
+  box.replaceChildren();for(const p of familyUsers){const b=document.createElement("button");b.textContent=(p.icon||"👤")+" "+p.name+" · ★ "+(profiles[p.id]?.stars??0);b.onclick=()=>chooseFamilyUser(p.id);box.append(b);}
+  const selected=familyUsers.find(p=>p.id===new URLSearchParams(location.search).get("wallet"));
+  label.textContent=selected?"👤 "+selected.name+" · ★ "+(profiles[selected.id]?.stars??0):"👤 사용자 선택";
+ }catch(e){label.textContent="👤 사용자 선택";$("familyProfileError").textContent="사용자 서버에 연결하지 못했습니다. 기존 가족게임에서 사용자를 선택해 주세요.";}
+}
+function chooseFamilyUser(id){if(!familyUsers.some(p=>p.id===id))return;const u=new URL(location.href);u.searchParams.set("wallet",id);location.assign(u.href);}
+$("familyProfileButton").onclick=()=>{loadFamilyUsers();$("familyProfileDialog").showModal();};
+$("familyProfileClose").onclick=()=>$("familyProfileDialog").close();
+loadFamilyUsers();
 const wallet=new URLSearchParams(location.search).get("wallet");
-if(wallet)for(const home of document.querySelectorAll(".page-head a")){const u=new URL(home.href);u.searchParams.set("wallet",wallet);home.href=u.href;}
+if(wallet)for(const home of document.querySelectorAll(".page-head a,.family-switch-links a")){const u=new URL(home.href);u.searchParams.set("wallet",wallet);home.href=u.href;}
 saveInventory();refreshShopUI();
 
 /* Illustrated motion assets: one image source per character, in shop and play. */
