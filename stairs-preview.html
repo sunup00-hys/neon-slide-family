@@ -89,11 +89,11 @@ body{background:#191b2c}
 <div class="setting-line"><label for="modeSelect">플레이 방식</label><select id="modeSelect"><option value="infinite">무한 도전</option><option value="stage">스테이지 도전</option></select></div>
 <div class="setting-line" id="stageRow" hidden><label for="stageSelect">시작 스테이지</label><select id="stageSelect"><option value="1">1 · 20계단</option><option value="2">2 · 40계단</option><option value="3">3 · 60계단</option><option value="4">4 · 80계단</option><option value="5">5 · 100계단</option><option value="6">6 · 120계단</option><option value="7">7 · 140계단</option><option value="8">8 · 160계단</option><option value="9">9 · 180계단</option><option value="10">10 · 200계단</option></select></div>
 <div class="setting-line"><span>효과음</span><button class="chip" id="soundButton" aria-pressed="true">켜짐</button></div>
-<div class="reward-info"><div>나의 계단 체험 별 <strong id="wardrobeStars">★ 0</strong></div><p>무한 도전: 20계단마다 노랑 ★3 · 주황 ★5 · 골드 ★10 순환<br>스테이지: 처음 성공한 단계마다 3개<br>이 기기에 저장되며 공용 별과 별도로 표시됩니다. 엘리베이터로 건너뛴 별은 지급되지 않습니다.</p></div><button class="full-button" id="largeButton">↗ 화면 크게 보기 + 게임 시작</button><button class="full-button" id="settingsStartButton" style="background:#b6e5c8;color:#18372c">▶ 게임 시작</button>
-<p class="note">방향 전환 버튼도 한 칸을 올라갑니다. 잘못 누르거나 시간이 다 되면 다시 도전해요. 설정 화면을 열면 게임은 잠시 멈춥니다.<br>플레이 버전 0.8 · 공용 별 합산은 서버 연동 후 지원됩니다.</p>
+<div class="reward-info"><div>나의 공통 별 <strong id="wardrobeStars">★ 0</strong></div><p>무한 도전: 20계단마다 노랑 ★3 · 주황 ★5 · 골드 ★10 순환<br>스테이지: 처음 성공한 단계마다 3개<br>낱말게임과 같은 서버 지갑에 저장됩니다. 엘리베이터로 건너뛴 별은 지급되지 않습니다.</p></div><button class="full-button" id="largeButton">↗ 화면 크게 보기 + 게임 시작</button><button class="full-button" id="settingsStartButton" style="background:#b6e5c8;color:#18372c">▶ 게임 시작</button>
+<p class="note">방향 전환 버튼도 한 칸을 올라갑니다. 잘못 누르거나 시간이 다 되면 다시 도전해요. 설정 화면을 열면 게임은 잠시 멈춥니다.<br>플레이 버전 0.9 · 획득·구매·부활·엘리베이터 모두 공통 별을 사용합니다.</p>
 </aside>
 </div>
-<footer class="footer">2026.11.17 · 0.8 — 5종 신규 러너·원본 디자인 4프레임 달리기·별 해금·펫·계단 상점</footer>
+<footer class="footer">2026.11.17 · 0.9 — 5종 신규 러너·원본 디자인 4프레임 달리기·별 해금·펫·계단 상점</footer>
 </main>
 <script>
 "use strict";
@@ -142,17 +142,28 @@ function showOverlay(label,title,text,button,result){
 }
 function recordBest(){if(state.index>state.best){state.best=state.index;try{localStorage.setItem("neon-stairs-preview-best-v2",String(state.best));}catch(e){}}}
 function reset(){
+ flushProgress();
  route=makeRoute(20261117+(++seedCounter)*7919,state.mode==="stage"?state.stage-1:0);
  state.index=0;state.facing=1;state.energy=1;state.status="ready";
  renderX=renderY=camX=camY=fall=runUntil=0;gainEffects=[];trail=[];stepAt=-1000;$("starToast").hidden=true;
  $("reviveButton").hidden=true;
  showOverlay("READY TO RUN","계단을 달려 올라요","오르기는 그대로 한 칸, 방향 전환은 돌아서 한 칸! 다음 계단의 방향을 보고 눌러요.","게임 시작");syncHud();
 }
-function start(){
- if(!runnerFrames)return;
- if(state.status==="paused"){state.status="playing";}
- else{if(state.status==="over"||state.status==="complete")reset();state.status="playing";}
- $("overlay").hidden=true;$("reviveButton").hidden=true;lastFrame=null;unlockAudio();canvas.focus?.({preventScroll:true});syncHud();
+async function start(){
+ if(!runnerFrames||shared.starting||shared.busy)return;
+ if(!shared.ready){toastShop("공통 별 서버에 연결한 뒤 시작해주세요.");$("familyProfileDialog").showModal();return;}
+ if(state.status==="paused"){beginPlaying();return;}
+ if(state.status==="playing")return;
+ if(state.status==="over"||state.status==="complete")reset();
+ shared.starting=true;
+ try{await newSharedRun();beginPlaying();}catch(e){walletError(e);}finally{shared.starting=false;}
+}
+function beginPlaying(){state.status="playing";$("overlay").hidden=true;$("reviveButton").hidden=true;lastFrame=null;unlockAudio();canvas.focus?.({preventScroll:true});syncHud();}
+async function newSharedRun(){
+ await shared.queue;
+ const result=await enqueueWallet(()=>walletApi("stairsStart",{mode:state.mode,stage:state.stage}));
+ shared.run=result.run;shared.queuedIndex=0;shared.actions=[];
+ route=makeRoute(result.run.seed,state.mode==="stage"?state.stage-1:0);
 }
 function pause(){
  if(state.status!=="playing")return;
@@ -160,30 +171,34 @@ function pause(){
 }
 const REVIVE_COST=15;
 const elevatorPrices={100:30,200:50,300:100};
-function takeElevator(floor){
- const cost=elevatorPrices[floor];if(!cost||state.status==="playing")return;
+async function takeElevator(floor){
+ const cost=elevatorPrices[floor];if(!cost||state.status==="playing"||shared.busy||shared.starting)return;
+ if(!shared.ready){toastShop("사용자를 선택하고 공통 별 서버에 연결해주세요.");return;}
  if(state.mode!=="infinite"){toastShop("🛗 엘리베이터는 무한 도전에서 이용할 수 있어요.");return;}
- if(starLedger.stars<cost){toastShop("★ 엘리베이터에 필요한 별이 부족해요!");return;}
- if(state.status!=="ready")reset();
- starLedger.stars-=cost;starLedger.infiniteMilestone=Math.max(starLedger.infiniteMilestone,Math.floor(floor/20));
- try{localStorage.setItem(STAR_KEY,JSON.stringify(starLedger));}catch(e){}
- route.ensure(floor+35);state.index=floor;state.facing=route.steps[floor].d;state.energy=1;
- const step=route.steps[floor];renderX=camX=step.x*STEP_X;renderY=camY=-step.y*STEP_Y;fall=0;trail=[];
- syncHud();start();toastShop("🛗 "+floor+"계단 도착! ★ "+cost+"개 사용");
+ shared.busy=true;
+ try{
+  reset();await newSharedRun();
+  const result=await enqueueWallet(()=>walletApi("stairsElevator",{runId:shared.run.id,expectedIndex:0,floor}));
+  shared.run=result.run;shared.queuedIndex=floor;
+  route.ensure(floor+35);state.index=floor;state.facing=result.run.facing;state.energy=1;
+  const step=route.steps[floor];renderX=camX=step.x*STEP_X;renderY=camY=-step.y*STEP_Y;fall=0;trail=[];
+  beginPlaying();toastShop("🛗 "+floor+"계단 도착! 공통 ★ "+cost+"개 사용");
+ }catch(e){walletError(e);}finally{shared.busy=false;}
 }
 document.querySelectorAll("[data-elevator]").forEach(b=>b.addEventListener("click",()=>takeElevator(Number(b.dataset.elevator))));
-function revive(){
- if(state.status!=="over")return;
- if(starLedger.stars<REVIVE_COST){toastShop("★ 부활에는 별 15개가 필요해요.");return;}
- starLedger.stars-=REVIVE_COST;
- try{localStorage.setItem(STAR_KEY,JSON.stringify(starLedger));}catch(e){}
- state.energy=1;state.status="playing";fall=0;lastFrame=null;runUntil=0;trail=[];
- $("overlay").hidden=true;$("reviveButton").hidden=true;
- syncHud();toastShop("😇 천사의 도움! "+state.index+"계단에서 다시 시작");
+async function revive(){
+ if(state.status!=="over"||shared.busy||!shared.ready)return;
+ shared.busy=true;$("reviveButton").disabled=true;
+ try{
+  await shared.queue;
+  await enqueueWallet(()=>walletApi("stairsRevive",{runId:shared.run.id,expectedIndex:state.index}));
+  state.energy=1;fall=0;runUntil=0;trail=[];beginPlaying();
+  toastShop("😇 공통 별 15개 사용! "+state.index+"계단에서 다시 시작");
+ }catch(e){walletError(e);}finally{shared.busy=false;$("reviveButton").disabled=starLedger.stars<REVIVE_COST;}
 }
 $("reviveButton").addEventListener("click",revive);
 function finish(success,reason){
- if(state.status!=="playing")return;state.status=success?"complete":"over";recordBest();if(success)checkStars(true);
+ if(state.status!=="playing")return;state.status=success?"complete":"over";recordBest();if(success)checkStars(true);else flushProgress(true);
  showOverlay(success?"STAGE CLEAR":"TRY AGAIN",success?"스테이지 성공!":"다시 달려 볼까요?",reason,success&&state.stage<10?"다음 스테이지":"다시 도전",state.index);
  $("reviveButton").hidden=success;
  $("reviveButton").textContent="😇 ★ "+REVIVE_COST+"개로 "+state.index+"계단에서 부활";
@@ -193,8 +208,9 @@ function finish(success,reason){
 function action(kind){
  if(!state.large && state.status==="paused")return;
  if(!runnerFrames)return;
- if(state.status==="ready")start();
+ if(state.status==="ready"){start();return;}
  if(state.status!=="playing")return;
+ shared.actions.push(kind);
  const move=resolveMove(route,state.index,state.facing,kind);
  state.facing=move.facing;
  if(!move.ok){finish(false,"다음 계단 방향과 달랐어요. 방향 전환도 한 칸을 오릅니다.");return;}
@@ -315,35 +331,54 @@ document.addEventListener("visibilitychange",()=>{if(document.hidden)pause();});
 window.addEventListener("blur",pause);window.addEventListener("resize",resize);
 function drawPreviews(){document.querySelectorAll("[data-character]").forEach(b=>{const cv=b.querySelector("canvas"),c=cv.getContext("2d");c.clearRect(0,0,cv.width,cv.height);c.imageSmoothingEnabled=true;drawRunner(c,80,192,2.45,1,reduced?-1:animTime/75,Object.assign({},state,{character:b.getAttribute("data-character")}));});}
 
-const STAR_KEY="neon-stairs-preview-stars-v3";
-function readStars(){
- try{const raw=JSON.parse(localStorage.getItem(STAR_KEY)||"null");if(raw&&Number.isSafeInteger(raw.stars)&&raw.stars>=0)return {stars:raw.stars,infiniteMilestone:Math.max(0,Math.floor(Number(raw.infiniteMilestone)||0)),stages:Array.isArray(raw.stages)?raw.stages.filter(x=>Number.isInteger(x)&&x>=1&&x<=10):[]};}catch(e){}
- return {stars:0,infiniteMilestone:0,stages:[]};
-}
-let starLedger=readStars(),gainEffects=[],toastTimer;
+// The server wallet is the only star balance. No stair star balance is read or written locally.
+let starLedger={stars:0,infiniteMilestone:0,stages:[]},gainEffects=[],toastTimer;
+const shared={wallet:new URLSearchParams(location.search).get("wallet"),profileId:null,ready:false,starting:false,busy:false,queue:Promise.resolve(),actions:[],queuedIndex:0,run:null,revision:-1,failed:false};
 function syncStars(){
- $("starBalance").textContent=starLedger.stars;
- $("wardrobeStars").textContent="★ "+starLedger.stars;
+ $("starBalance").textContent=shared.ready?starLedger.stars:"—";
+ $("reviveButton").disabled=!shared.ready||shared.busy||starLedger.stars<15;
+ $("wardrobeStars").textContent=shared.ready?"★ "+starLedger.stars:"서버 연결 중";
 }
 function starReward(milestone){return [3,5,10][(milestone-1)%3];}
 function starColor(milestone){return ["#ffe778","#ff9c45","#ffd54a"][(milestone-1)%3];}
-function checkStars(stageClear){
- const stored=readStars();if(stored.stars>starLedger.stars)starLedger=stored;
- let gain=0;
- if(state.mode==="infinite"){
-  const milestone=Math.floor(state.index/20);
-  if(milestone>starLedger.infiniteMilestone){for(let n=starLedger.infiniteMilestone+1;n<=milestone;n++)gain+=starReward(n);starLedger.infiniteMilestone=milestone;}
- }else if(stageClear&&!starLedger.stages.includes(state.stage)){gain=3;starLedger.stages.push(state.stage);}
- if(!gain)return 0;
- starLedger.stars+=gain;
- let saved=true;try{localStorage.setItem(STAR_KEY,JSON.stringify(starLedger));}catch(e){saved=false;}
- syncStars();$("starPill").classList.remove("bump");
- // Force a new animation only on an earned reward, never on each frame.
- void $("starPill").offsetWidth;$("starPill").classList.add("bump");
- $("starToast").textContent="★ 체험 별 +"+gain+(saved?" · 저장됨":" · 이번 화면에서 보관");
- $("starToast").hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>{$("starToast").hidden=true;},2100);
- gainEffects.push({born:animTime,value:gain});return gain;
+function walletError(e){pause();toastShop(e.message||"공통 별 서버 연결을 확인해주세요.");}
+function enqueueWallet(fn){
+ const next=shared.queue.then(()=>{if(shared.failed)throw Error("저장 연결이 끊겼어요. 새로고침 후 다시 연결해주세요.");return fn();});
+ shared.queue=next.catch(e=>{if(!e.status||e.status>=500||e.status===409){shared.failed=true;shared.ready=false;}walletError(e);});
+ return next;
 }
+async function walletApi(type,extra={}){
+ const body={type,profileId:shared.profileId,operationId:crypto.randomUUID(),...extra};let response,data;
+ for(let attempt=0;attempt<3;attempt++){
+  try{
+   response=await fetch("https://neon-family-cloud.sunup00.chatgpt.site/api/words",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),cache:"no-store",keepalive:type==="stairsProgress"});
+   data=await response.json();if(!response.ok){const error=Object.assign(Error(data.error||"공통 별을 저장하지 못했어요."),{status:response.status});if(response.status<500)throw error;throw error;}break;
+  }catch(e){if((e.status&&e.status<500)||attempt===2)throw e;await new Promise(r=>setTimeout(r,250*(attempt+1)));}
+ }
+ if(data.snapshot&&data.snapshot.revision>=shared.revision){
+  shared.revision=data.snapshot.revision;
+  familyUsers=data.snapshot.profiles.map(p=>({id:p.walletId,profileId:p.id,name:p.walletId==="dad"?"DAD":p.name,stars:p.stars}));
+  const p=data.snapshot.profiles.find(p=>p.walletId===shared.wallet);
+  if(p){shared.profileId=p.id;starLedger.stars=p.stars;if(p.stairs)applyStairs(p.stairs);}
+  renderFamilyUsers();
+ }
+ if(data.stairs&&data.snapshot?.revision===shared.revision)applyStairs(data.stairs);syncStars();return data;
+}
+function applyStairs(d){
+ starLedger.infiniteMilestone=d.infiniteMilestone||0;starLedger.stages=d.stages||[];
+ inventory={owned:[...d.owned],character:d.character,pet:d.pet,stairs:d.stairs};
+ for(const type of ["character","pet","stairs"])state[type]=inventory[type];
+ refreshShopUI();
+}
+function flushProgress(ended=false){
+ if(!shared.run||(!shared.actions.length&&!ended))return;
+ const actions=shared.actions.splice(0),runId=shared.run.id,expectedIndex=shared.queuedIndex;
+ shared.queuedIndex=state.index;
+ enqueueWallet(()=>walletApi("stairsProgress",{runId,expectedIndex,actions,ended})).then(r=>{
+  if(r.gained){$("starPill").classList.remove("bump");void $("starPill").offsetWidth;$("starPill").classList.add("bump");toastShop("★ 공통 별 +"+r.gained+" · 서버 저장 완료");gainEffects.push({born:animTime,value:r.gained});}
+ }).catch(()=>{});
+}
+function checkStars(stageClear){if(stageClear||state.index%20===0)flushProgress();}
 function drawStar(x,y,size,now,milestone=1){
  ctx.save();ctx.translate(Math.round(x),Math.round(y+Math.sin(now/210)*2));
  ctx.beginPath();
@@ -428,6 +463,7 @@ const STORE_KEY="neon-stairs-integrated-shop-v1";
 const RUNNERS=[{id:"azure",name:"스카이",price:0},{id:"luna",name:"루나",price:8},{id:"prince",name:"왕자 레온",price:12},{id:"witch",name:"마법사 미오",price:15},{id:"ninja",name:"닌자 카이",price:18},{id:"knight",name:"복싱선수",price:20},{id:"pirate",name:"저격수",price:22},{id:"robot",name:"아이언맨",price:24},{id:"astronaut",name:"헐크",price:26},{id:"shadow",name:"투명인간",price:30}];
 const PETS=[{id:"none",name:"없음",price:0},{id:"dog",name:"강아지",price:0},{id:"cat",name:"고양이",price:5},{id:"bunny",name:"토끼",price:7},{id:"fox",name:"여우",price:9},{id:"dragon",name:"드래곤",price:14},{id:"panda",name:"판다",price:16},{id:"penguin",name:"로봇캣",price:18},{id:"unicorn",name:"유니콘",price:20},{id:"slime",name:"마법책",price:22},{id:"phoenix",name:"불사조",price:25}];
 const STAIR_ITEMS=[{id:"brick",name:"자수정 석판",price:0},{id:"crystal",name:"크리스털",price:6},{id:"cloud",name:"구름",price:8},{id:"wood",name:"나무",price:6},{id:"gold",name:"황금",price:12},{id:"lava",name:"용암",price:14},{id:"rainbow",name:"무지개",price:16},{id:"glass",name:"투명 유리",price:18},{id:"fire",name:"불꽃 계단",price:20},{id:"ice",name:"빙하 계단",price:18},{id:"neon",name:"네온 계단",price:22},{id:"cosmic",name:"우주석 계단",price:24}];
+const legacyInventoryOwner="neon-stairs-items-migrated-wallet";
 let inventory={owned:["azure","brick","none","dog"],character:"azure",pet:"dog",stairs:"brick"};
 try{const saved=JSON.parse(localStorage.getItem(STORE_KEY)||"null");if(saved&&Array.isArray(saved.owned))inventory={...inventory,...saved};}catch(e){}
 for(const key of ["neon-stairs-unified-v10","neon-stairs-wardrobe-v8"]){
@@ -439,22 +475,12 @@ for(const key of ["neon-stairs-unified-v10","neon-stairs-wardrobe-v8"]){
   }
  }}catch(e){}
 }
-function saveInventory(){try{localStorage.setItem(STORE_KEY,JSON.stringify(inventory));}catch(e){}}
-function toastShop(message){const el=$("starToast");el.textContent=message;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,2300);}
-function equipOrBuy(type,item){
- // Characters are always selectable; retain star purchases for pets and stairs.
- if(type==="character"){
-  if(!inventory.owned.includes(item.id))inventory.owned.push(item.id);
-  inventory.character=item.id;state.character=item.id;
-  saveInventory();refreshShopUI();drawPreviews();return;
- }
- if(!inventory.owned.includes(item.id)){
-  if(starLedger.stars<item.price){toastShop("★ 별이 부족해요! 계단을 올라 별을 모아 주세요.");return;}
-  starLedger.stars-=item.price;
-  try{localStorage.setItem(STAR_KEY,JSON.stringify(starLedger));}catch(e){}
-  inventory.owned.push(item.id);syncStars();toastShop("★ "+item.name+" 해금 완료!");
- }
- inventory[type]=item.id;state[type]=item.id;saveInventory();refreshShopUI();drawPreviews();
+function saveInventory(){} // Ownership and selection are saved by the shared server.
+function toastShop(message){const el=$("starToast");el.textContent=message;el.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.hidden=true,3000);}
+async function equipOrBuy(type,item){
+ if(!shared.ready||shared.busy){toastShop("먼저 사용자를 선택하고 서버에 연결해주세요.");return;}
+ shared.busy=true;
+ try{await enqueueWallet(()=>walletApi("stairsEquip",{kind:type,itemId:item.id}));drawPreviews();toastShop(item.name+" 적용 완료 · 공통 별 서버 저장");}catch(e){walletError(e);}finally{shared.busy=false;}
 }
 function refreshShopUI(){
  document.querySelectorAll("[data-character]").forEach(b=>{
@@ -564,29 +590,43 @@ for(const b of document.querySelectorAll("[data-character]")){
  b.addEventListener("click",()=>{const item=RUNNERS.find(v=>v.id===b.dataset.character);if(item)equipOrBuy("character",item);});
 }
 for(const type of ["character","pet","stairs"]){const arr=type==="character"?RUNNERS:type==="pet"?PETS:STAIR_ITEMS;if(arr.some(v=>v.id===inventory[type])&&inventory.owned.includes(inventory[type]))state[type]=inventory[type];}
-const familyApi="https://neon-family-cloud.sunup00.chatgpt.site/api/neon";
 let familyUsers=[];
-async function loadFamilyUsers(){
- const label=$("familyProfileStatus"),box=$("familyProfileChoices");
- try{
-  const res=await fetch(familyApi,{cache:"no-store"});if(!res.ok)throw Error("서버 연결 실패");
-  const data=await res.json();const snapshot=data.snapshot||data;
-  familyUsers=[...(snapshot.customProfiles||[]).filter(p=>!p.hidden),{id:"seojun",name:"서준",icon:"👦"},{id:"chaewon",name:"채원",icon:"👧"}];
-  const profiles=snapshot.profiles||{};
-  familyUsers=familyUsers.filter((p,i,arr)=>profiles[p.id]&&arr.findIndex(x=>x.id===p.id)===i);
-  for(const id of Object.keys(profiles))if(!familyUsers.some(p=>p.id===id))familyUsers.push({id,name:id,icon:"👤"});
-  box.replaceChildren();for(const p of familyUsers){const b=document.createElement("button");b.textContent=(p.icon||"👤")+" "+p.name+" · ★ "+(profiles[p.id]?.stars??0);b.onclick=()=>chooseFamilyUser(p.id);box.append(b);}
-  const selected=familyUsers.find(p=>p.id===new URLSearchParams(location.search).get("wallet"));
-  label.textContent=selected?"👤 "+selected.name+" · ★ "+(profiles[selected.id]?.stars??0):"👤 사용자 선택";
- }catch(e){label.textContent="👤 사용자 선택";$("familyProfileError").textContent="사용자 서버에 연결하지 못했습니다. 기존 가족게임에서 사용자를 선택해 주세요.";}
+function renderFamilyUsers(){
+ const box=$("familyProfileChoices");box.replaceChildren();
+ for(const p of familyUsers){const b=document.createElement("button");b.textContent="👤 "+p.name+" · ★ "+p.stars;b.onclick=()=>chooseFamilyUser(p.id);box.append(b);}
+ const selected=familyUsers.find(p=>p.id===shared.wallet);
+ $("familyProfileStatus").textContent=selected?"👤 "+selected.name+" · 공통 ★ "+selected.stars:"👤 사용자 선택";
 }
-function chooseFamilyUser(id){if(!familyUsers.some(p=>p.id===id))return;const u=new URL(location.href);u.searchParams.set("wallet",id);location.assign(u.href);}
-$("familyProfileButton").onclick=()=>{loadFamilyUsers();$("familyProfileDialog").showModal();};
+async function loadFamilyUsers(){
+ try{
+  await shared.queue;await walletApi("state");
+  if(!shared.profileId){shared.ready=false;$("familyProfileError").textContent="공통 별을 사용할 가족을 선택해주세요.";return;}
+  if(!shared.ready){
+   shared.ready=true;
+   // Retain existing unlocked items once on the selected account; local stars are never imported.
+   let owned=[];try{const prior=localStorage.getItem(legacyInventoryOwner);if(!prior){const old=JSON.parse(localStorage.getItem(STORE_KEY)||"null");owned=old?.owned||[];}}catch(e){}
+   await enqueueWallet(()=>walletApi("stairsImportItems",{owned}));
+   try{localStorage.setItem(legacyInventoryOwner,shared.wallet);}catch(e){}
+   await walletApi("stairsOverview");
+   
+  }
+  $("familyProfileError").textContent="낱말게임과 같은 공통 별 지갑을 사용 중입니다.";syncStars();
+ }catch(e){shared.ready=false;$("familyProfileError").textContent=e.message;syncStars();}
+}
+async function chooseFamilyUser(id){
+ if(!familyUsers.some(p=>p.id===id))return;pause();flushProgress();await shared.queue;
+ if(shared.failed){toastShop("저장 연결을 확인한 뒤 사용자를 변경해주세요.");return;}
+ const u=new URL(location.href);u.searchParams.set("wallet",id);location.assign(u.href);
+}
+$("familyProfileButton").onclick=()=>{pause();loadFamilyUsers();$("familyProfileDialog").showModal();};
 $("familyProfileClose").onclick=()=>$("familyProfileDialog").close();
 loadFamilyUsers();
-const wallet=new URLSearchParams(location.search).get("wallet");
-if(wallet)for(const home of document.querySelectorAll(".page-head a,.family-switch-links a")){const u=new URL(home.href);u.searchParams.set("wallet",wallet);home.href=u.href;}
-saveInventory();refreshShopUI();
+if(shared.wallet)for(const home of document.querySelectorAll(".page-head a,.family-switch-links a")){const u=new URL(home.href);u.searchParams.set("wallet",shared.wallet);home.href=u.href;}
+for(const link of document.querySelectorAll(".page-head a,.family-switch-links a"))link.addEventListener("click",async event=>{event.preventDefault();pause();flushProgress();await shared.queue;if(!shared.failed)location.assign(link.href);});
+window.addEventListener("pagehide",()=>flushProgress());
+document.addEventListener("visibilitychange",()=>{if(document.hidden)flushProgress();else if(shared.ready&&!shared.failed)loadFamilyUsers();});
+setInterval(()=>{if(shared.ready&&!shared.failed&&shared.actions.length)flushProgress();},5000);
+refreshShopUI();
 
 /* Illustrated motion assets: one image source per character, in shop and play. */
 const loadedAssets=new Set();
@@ -691,7 +731,7 @@ for(const item of RUNNERS){
  const cv=document.createElement("canvas");cv.width=160;cv.height=200;b.append(cv,document.createTextNode(item.name));
  $("characters").append(b);b.addEventListener("click",()=>equipOrBuy("character",item));
 }
-document.querySelector(".footer").textContent="2026.11.17 · v1.2 — 캐릭터 10종 자유 선택 · 펫/계단 별 구매 유지";
+document.querySelector(".footer").textContent="2026.11.17 · v1.3 — 낱말·계단 공통 별 · 서버 저장 · 캐릭터 10종";
 document.querySelector(".note").innerHTML=document.querySelector(".note").innerHTML.replace("플레이 버전 0.8","플레이 버전 1.1 · 원본 일러스트 동작 적용");
 
 runnerAtlas.src="./assets/stairs-runners-v08.png";
