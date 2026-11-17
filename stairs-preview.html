@@ -354,7 +354,7 @@ function drawBackground(){
  // Hanging pixel banners give the tower a recognizable arcade silhouette.
  const bannerY=((camY*.23)%460+460)%460-160;
  for(const side of [-1,1]){
-  const bx=width/2+side*Math.min(width*.37,260);
+  const bx=width*.8+side*Math.min(width*.13,85);
   rect(ctx,"#252538",bx-19,bannerY-4,38,4);rect(ctx,"#b39162",bx-20,bannerY-6,40,3);
   rect(ctx,"#39283e",bx-15,bannerY,31,76);rect(ctx,side<0?"#885276":"#4f7184",bx-12,bannerY,25,68);
   rect(ctx,"#c8a57b",bx-10,bannerY+4,2,59);rect(ctx,"#c8a57b",bx+9,bannerY+4,2,59);
@@ -367,7 +367,7 @@ function drawBackground(){
  }
  const gap=370,dy=((height*.83-camY*.3)%gap+gap)%gap;
  for(let y=dy-gap;y<height+150;y+=gap){
-  const center=width/2;
+  const center=width*.8;
   // Repeating stone gate and its arch scroll at a slower depth than the steps.
   ctx.fillStyle="#272b40";ctx.beginPath();ctx.arc(center,y-25,72,Math.PI,0);ctx.lineTo(center+72,y+104);ctx.lineTo(center-72,y+104);ctx.closePath();ctx.fill();
   rect(ctx,"#483d48",center-50,y-23,100,127);
