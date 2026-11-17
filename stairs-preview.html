@@ -577,7 +577,7 @@ function refreshWardrobe(){
  for(const type of ["pet","stairs"]){const row=document.getElementById("shop-"+type);if(!row)continue;for(const b of row.children){const id=b.dataset.item,it=ITEMS[type].find(v=>v[0]===id);b.textContent=it[1]+(state[type]===id?" ✓":inv.owned.includes(id)?"":" ★"+it[2]);b.setAttribute("aria-pressed",String(state[type]===id))}}
 }
 const originalDrawRunner=drawRunner;
-function drawRunner(c,x,y,scale,facing,phase,config){
+drawRunner=function(c,x,y,scale,facing,phase,config){
  const id=config.character;
  if(!["azure","luna","prince","witch","ninja"].includes(id)){originalDrawRunner(c,x,y,scale,facing,phase,config);return}
  const colors={
