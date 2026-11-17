@@ -56,7 +56,7 @@ frame.addEventListener("load",()=>{
   c.restore();
  };
  w.drawRunner=function(c,x,y,scale,facing,phase,config){
-   if(config.character==="azure" && scale>1.3){
+   if(shopData.pet==="dog" && scale>1.3){
      const t=phase>=0?Math.floor(phase)%8:0;
      c.save();c.translate(Math.round(x-facing*scale*24),Math.round(y+scale));c.scale(facing*scale*.76,scale*.76);
      const d=(color,a,b,ww,hh)=>{c.fillStyle=color;c.fillRect(Math.round(a),Math.round(b),ww,hh)};
@@ -147,7 +147,7 @@ function refreshShop(){
   button.disabled=selected;
   button.onclick=()=>{
    if(!owned){if(!spend(price)){alert("별이 부족해요! 계단을 올라 별을 모아 주세요.");return}shopData.owned.push(id)}
-   shopData[tab]=id;saveShop();if(game){if(tab==="hero")game.state.character=item[4]||"azure";if(tab==="step")game.state.stairs=["brick","crystal","cloud","wood"].includes(id)?id:"brick";try{game.drawPreviews()}catch(e){}}
+   shopData[tab]=id;saveShop();if(game){if(tab==="hero")game.eval("state").character=item[4]||"azure";if(tab==="step")game.eval("state").stairs=["brick","crystal","cloud","wood"].includes(id)?id:"brick";try{game.drawPreviews()}catch(e){}}
    refreshShop();
   };
   card.append(button);box.append(card);
@@ -175,8 +175,8 @@ function attachShop(){
  try{
   originalRunner=game.drawRunner;
   originalStair=game.drawStair;
-  game.state.character=heroes.find(x=>x[0]===shopData.hero)?.[4]||"azure";
-  game.state.stairs=["brick","crystal","cloud","wood"].includes(shopData.step)?shopData.step:"brick";
+  game.eval("state").character=heroes.find(x=>x[0]===shopData.hero)?.[4]||"azure";
+  game.eval("state").stairs=["brick","crystal","cloud","wood"].includes(shopData.step)?shopData.step:"brick";
   game.drawRunner=function(c,x,y,scale,facing,phase,config){
     const originalCharacter=config.character;
     const chosen=heroes.find(v=>v[0]===shopData.hero);
@@ -188,7 +188,7 @@ function attachShop(){
   game.drawStair=function(x,y,index){
     originalStair(x,y,index);
     const color={gold:"#ffe079",lava:"#ed6d48",rainbow:["#f77bb4","#8cddff","#a6e985","#e4b2ff"][index%4]}[shopData.step];
-    if(color){game.ctx.fillStyle=color;game.ctx.fillRect(Math.round(x-25),Math.round(y),50,4);game.ctx.fillStyle="#ffffff88";game.ctx.fillRect(Math.round(x-21),Math.round(y+5),32,2)}
+    if(color){game.eval("ctx").fillStyle=color;game.eval("ctx").fillRect(Math.round(x-25),Math.round(y),50,4);game.eval("ctx").fillStyle="#ffffff88";game.eval("ctx").fillRect(Math.round(x-21),Math.round(y+5),32,2)}
   };
   game.document.querySelectorAll("[data-character]").forEach(b=>b.addEventListener("click",()=>{const h=heroes.find(v=>v[4]===b.dataset.character);if(h&&shopData.owned.includes(h[0])){shopData.hero=h[0];saveShop()}else{shop.classList.add("open");tab="hero";refreshShop()}},true));
   game.drawPreviews();
