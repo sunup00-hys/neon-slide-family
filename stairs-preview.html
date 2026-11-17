@@ -118,7 +118,7 @@ body{background:#191b2c}
 .difficulty-guide{margin:10px 0;font-size:12px;color:#ead79e}.difficulty-guide summary{cursor:pointer}.difficulty-guide p{margin:8px 0;font-size:11px;line-height:1.6}
 </style>
 </head>
-<body class="immersive" data-build="2.5-bolt-hero-24">
+<body class="immersive" data-build="2.6-bolt-motion-fix">
 <nav class="family-switch" aria-label="가족 게임 전환"><div class="family-switch-links"><a href="./index.html">♫ 리듬</a><a class="current" href="./stairs-preview.html" aria-current="page">↗ 계단</a><a href="./words.html">✦ 낱말</a><a href="./sudoku.html">▦ 스도쿠</a><a href="./magic.html">⚗ 물약</a><a href="./arrows.html">➜ 화살표</a><a href="./zoodoku.html">🐾 쥬도쿠</a><a href="./bus.html">🚌 버스</a><a class="family-dress-link" href="./words.html?view=dress&amp;v=21-stairs-levels">♕ 꾸미기</a></div><button id="familyProfileButton" type="button">👤 사용자 선택</button><span id="familyProfileStatus">사용자 확인 중</span></nav>
 <dialog id="familyProfileDialog" class="family-profile-dialog"><h2>사용자 변경</h2><p>기존 가족게임의 사용자 목록을 불러옵니다.</p><div id="familyProfileChoices"></div><p id="familyProfileError"></p><button id="familyProfileClose" type="button">닫기</button></dialog>
 <main class="page">
@@ -917,7 +917,7 @@ for(const item of RUNNERS){
  const cv=document.createElement("canvas");cv.width=160;cv.height=200;b.append(cv,document.createTextNode(item.name));
  $("characters").append(b);b.addEventListener("click",()=>equipOrBuy("character",item));
 }
-document.querySelector(".footer").textContent="2026.11.17 · v2.5 — 볼트 히어로 24프레임 · 캐릭터 11종 · 공통 별 · 서버 저장";
+document.querySelector(".footer").textContent="2026.11.17 · v2.6 — 볼트 히어로 24프레임 · 캐릭터 11종 · 공통 별 · 서버 저장";
 document.querySelector(".note").innerHTML=document.querySelector(".note").innerHTML.replace("플레이 버전 0.8","플레이 버전 1.1 · 원본 일러스트 동작 적용");
 
 
@@ -936,13 +936,17 @@ drawRunner=function(c,x,y,scale,facing,phase,config){
  if(config.character!=="boltboy")return beforeBoltDraw(c,x,y,scale,facing,phase,config);
  if(!boltMotionRows)return;
  const inGame=config===state;
+ // RAF timestamps can precede an input handled in that same display frame.
+ const stepElapsed=Math.max(0,animTime-stepAt);
  let action="run",frame=phase<0?0:Math.floor(animTime/45)%8;
  if(!reduced&&inGame){
   if(state.status==="falling"&&failure){action="fall";frame=Math.min(7,Math.floor(failure.elapsed/1.04*8));}
   else if(animTime<boltRecoverUntil){action="jump";frame=Math.max(0,7-Math.floor((boltRecoverUntil-animTime)/420*8));}
-  else if(phase>=0&&animTime-stepAt<110){action="jump";frame=Math.min(7,Math.floor((animTime-stepAt)/110*8));}
+  else if(phase>=0&&stepElapsed<110){action="jump";frame=Math.floor(stepElapsed/110*8);}
  }
- const row=boltMotionRows[action],f=row.frames[frame];
+ const row=boltMotionRows[action]||boltMotionRows.run;
+ const safeFrame=Number.isFinite(frame)?Math.max(0,Math.min(row.frames.length-1,Math.floor(frame))):0;
+ const f=row.frames[safeFrame]||row.frames[0];
  // All actions share the standing body scale, so a crouch never grows into a giant.
  const k=77*scale/boltMotionRows.run.maxHeight;
  c.save();c.translate(Math.round(x),Math.round(y));c.scale(facing,1);
