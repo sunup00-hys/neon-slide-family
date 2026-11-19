@@ -14,5 +14,5 @@ if(!match)throw Error('Missing game module');
 const contents=match[1].replace("'./vendor/three.module.js'",JSON.stringify(three));
 const result=await build({stdin:{contents,resolveDir:root,loader:'js'},bundle:true,minify:true,format:'esm',write:false,legalComments:'inline'});
 const script=result.outputFiles[0].text.replaceAll('</script','<\\/script');
-await writeFile(path.join(root,'egg-heist.html'),source.replace(match[0],`<script type="module">${script}</script>`));
+await writeFile(path.join(root,'egg-heist.html'),source.replace(match[0],()=>`<script type="module">${script}</script>`));
 console.log('Built standalone egg-heist.html');
