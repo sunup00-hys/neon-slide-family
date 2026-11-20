@@ -67,3 +67,9 @@
 - GitHub Actions 실행 상태는 확인 불가(커넥터의 commit workflow 조회는 PR 트리거만 지원). git clone은 DNS 오류.
 - 이 검사는 JS 구문만 확인. 브라우저 DOM, 런타임 예외, 서버 연동, 2인 실시간 대결 및 Pages 배포 상태는 검증하지 못함.
 - 다음: 실제 브라우저에서 두 사용자 초대/수락/진행/기권/재접속 테스트 및 Pages 배포 검증. words.html/arrows.html 공통 메뉴는 별도 미완료.
+
+## 2026-11-20 단계 3 대결 UI 정적 회귀 검사 확대
+- scripts/check-html-syntax.mjs에 필수 UI ID 9개와 대결 관련 훅 문자열 5개 검사 추가: 4e929e8.
+- GitHub의 stairs-preview.html 전체 소스에서 14개 항목 모두 존재 확인.
+- 정적 존재 여부만 검증한 것이며 실제 DOM 이벤트·서버 연결·2인 대결 성공을 뜻하지 않음. GitHub Actions 성공 여부도 아직 미확인.
+- 다음 단계: 실제 브라우저 2세션으로 대결 신청/수락/동기화/기권/재접속 검증 및 Pages 파일 비교.
