@@ -85,3 +85,8 @@
 - .github/workflows/neon-browser-smoke.yml 생성: a905a1d. workflow_dispatch 수동 실행 방식.
 - 실제 GitHub Actions 실행 결과는 아직 확인하지 못함. 실패 가능성 있으며 성공으로 기록 금지. 테스트는 대결 신청을 전송하지 않으며 사용자 별/기록 변경 없음.
 - 다음: GitHub Actions > NEON browser smoke test > Run workflow 실행, 실패 로그 기반 수정. 이후 두 사용자 서버 대결 테스트 및 배포 일치 검증.
+
+## 2026-11-20 사용자 요청: 계단 게임 일반 화면 90% 축소
+- stairs-preview.html의 일반 .page에 CSS zoom: .9 적용, immersive 전체 화면은 제외: a6ca044.
+- GitHub 파일 재조회로 스타일 저장 확인. 실제 모바일 렌더링 및 Pages 반영은 아직 검증하지 못함.
+- 별/기록/캐릭터 데이터 수정 없음.
