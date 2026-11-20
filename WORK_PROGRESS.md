@@ -46,3 +46,11 @@
 - 실행 환경에서 GitHub clone 시 DNS 연결 실패. 전체 소스 로컬 구문 검사와 브라우저 2클라이언트 동작 테스트는 수행하지 못함.
 - 단계 3은 **미완료**. 성공으로 표시 금지. 다음 작업: 전체 파일 확보 후 JS 구문 검사, 사용자 A/B 대결 초대·수락·동기화·재접속·기권, 별/구매/기록 회귀 테스트. 이후 Pages 배포 검증.
 - words.html / arrows.html 공통 메뉴 미반영 상태 유지. 대형 파일의 무검증 덮어쓰기 금지.
+
+## 2026-11-20 단계 3 추가 정적 점검
+- GitHub connector로 전체 `stairs-preview.html`(128,969자) 및 `index.html`(502,208자)을 읽음. Git clone은 DNS 오류로 불가.
+- `stairs-preview.html`: script 블록 7개(닫는 태그 7개), 중복 HTML id 없음, duelDialog/duelClose/familyProfileDialog/recordDialog/wardrobeStars 관련 코드 존재.
+- `index.html`: script 블록 12개(닫는 태그 12개), 중복 HTML id 없음, 공통 별 지갑 관련 코드 존재.
+- 이는 구조적 정적 점검일 뿐 JavaScript 파싱 성공이나 실제 기능 작동을 증명하지 않음.
+- GitHub Pages URL을 외부 조회 시도했으나 접근 불가. 배포 최신성 및 실시간 대결은 미검증.
+- 다음 재개: 실제 브라우저와 2개 세션에서 대결·기권·재접속 검증, JS 파서 검사, Pages 원본 해시 비교. 검증 전 완료 선언 금지.
