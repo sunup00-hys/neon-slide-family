@@ -79,3 +79,9 @@
 - workflow_dispatch 수동 실행 시 실제 Pages의 index.html 및 stairs-preview.html을 저장소 체크아웃 버전과 byte-for-byte 비교. 실패/배포 지연 시 30초 간격 최대 6회 재시도 후 오류 보고.
 - 이 워크플로는 등록만 완료. 실제 실행 및 성공 결과는 아직 미확인. 페이지에 외부 접근 시도도 도구에서 실패함.
 - GitHub Actions 탭에서 'Verify deployed NEON Pages' -> Run workflow로 실행해 결과 확인 필요. 대결 기능 2인 실사용 검증은 별도.
+
+## 2026-11-20 단계 4 실제 브라우저 스모크 테스트 준비
+- scripts/check-pages-browser.mjs 생성: 0a8d7d2. Playwright Chromium으로 실제 Pages 메인/계단 페이지 HTTP, pageerror, 모바일 대결 버튼 및 팝업 열기·닫기 점검.
+- .github/workflows/neon-browser-smoke.yml 생성: a905a1d. workflow_dispatch 수동 실행 방식.
+- 실제 GitHub Actions 실행 결과는 아직 확인하지 못함. 실패 가능성 있으며 성공으로 기록 금지. 테스트는 대결 신청을 전송하지 않으며 사용자 별/기록 변경 없음.
+- 다음: GitHub Actions > NEON browser smoke test > Run workflow 실행, 실패 로그 기반 수정. 이후 두 사용자 서버 대결 테스트 및 배포 일치 검증.
