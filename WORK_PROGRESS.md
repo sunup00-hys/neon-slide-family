@@ -73,3 +73,9 @@
 - GitHub의 stairs-preview.html 전체 소스에서 14개 항목 모두 존재 확인.
 - 정적 존재 여부만 검증한 것이며 실제 DOM 이벤트·서버 연결·2인 대결 성공을 뜻하지 않음. GitHub Actions 성공 여부도 아직 미확인.
 - 다음 단계: 실제 브라우저 2세션으로 대결 신청/수락/동기화/기권/재접속 검증 및 Pages 파일 비교.
+
+## 2026-11-20 단계 4 Pages 배포 일치 검증 준비
+- .github/workflows/neon-pages-verify.yml 신규 생성, 커밋 32ec26e.
+- workflow_dispatch 수동 실행 시 실제 Pages의 index.html 및 stairs-preview.html을 저장소 체크아웃 버전과 byte-for-byte 비교. 실패/배포 지연 시 30초 간격 최대 6회 재시도 후 오류 보고.
+- 이 워크플로는 등록만 완료. 실제 실행 및 성공 결과는 아직 미확인. 페이지에 외부 접근 시도도 도구에서 실패함.
+- GitHub Actions 탭에서 'Verify deployed NEON Pages' -> Run workflow로 실행해 결과 확인 필요. 대결 기능 2인 실사용 검증은 별도.
