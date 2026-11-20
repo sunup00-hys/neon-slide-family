@@ -60,3 +60,10 @@
 - .github/workflows/neon-static-check.yml 생성: 9b8f12f. main push / workflow_dispatch 시 Node 22에서 검사 실행.
 - GitHub Actions 실제 실행 결과는 아직 확인하지 못함. 브라우저 기능, 외부 서버, 두 클라이언트 대결 및 Pages 배포 검증을 대체하지 않음.
 - 다음: Actions 결과 확인 후 실패 수정, 2인 대결 브라우저 검증, Pages 배포 바이트 비교. 완료 선언 금지.
+
+## 2026-11-20 단계 3 직접 구문 검사 결과
+- GitHub connector로 현재 main의 index.html, stairs-preview.html 전체 내용을 가져와 JS Function 파서로 inline classic script 구문 검사.
+- index.html: 12/12 통과, stairs-preview.html: 7/7 통과. 발견된 구문 오류 0건.
+- GitHub Actions 실행 상태는 확인 불가(커넥터의 commit workflow 조회는 PR 트리거만 지원). git clone은 DNS 오류.
+- 이 검사는 JS 구문만 확인. 브라우저 DOM, 런타임 예외, 서버 연동, 2인 실시간 대결 및 Pages 배포 상태는 검증하지 못함.
+- 다음: 실제 브라우저에서 두 사용자 초대/수락/진행/기권/재접속 테스트 및 Pages 배포 검증. words.html/arrows.html 공통 메뉴는 별도 미완료.
