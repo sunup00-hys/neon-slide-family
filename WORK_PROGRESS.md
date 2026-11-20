@@ -54,3 +54,9 @@
 - 이는 구조적 정적 점검일 뿐 JavaScript 파싱 성공이나 실제 기능 작동을 증명하지 않음.
 - GitHub Pages URL을 외부 조회 시도했으나 접근 불가. 배포 최신성 및 실시간 대결은 미검증.
 - 다음 재개: 실제 브라우저와 2개 세션에서 대결·기권·재접속 검증, JS 파서 검사, Pages 원본 해시 비교. 검증 전 완료 선언 금지.
+
+## 2026-11-20 단계 3 자동 검사 기반 추가
+- scripts/check-html-syntax.mjs 생성: e2de133. Node 내장 vm.Script로 index.html/stairs-preview.html의 classic inline JS 구문 검사 및 중복 HTML ID 검사.
+- .github/workflows/neon-static-check.yml 생성: 9b8f12f. main push / workflow_dispatch 시 Node 22에서 검사 실행.
+- GitHub Actions 실제 실행 결과는 아직 확인하지 못함. 브라우저 기능, 외부 서버, 두 클라이언트 대결 및 Pages 배포 검증을 대체하지 않음.
+- 다음: Actions 결과 확인 후 실패 수정, 2인 대결 브라우저 검증, Pages 배포 바이트 비교. 완료 선언 금지.
