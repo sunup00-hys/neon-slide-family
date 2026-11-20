@@ -1,0 +1,33 @@
+name: Verify deployed NEON Pages
+on:
+  workflow_dispatch:
+jobs:
+  compare-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compare live Pages HTML to repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://sunup00-hys.github.io/neon-slide-family"
+          for file in index.html stairs-preview.html; do
+            echo "Checking $file"
+            success=0
+            for attempt in 1 2 3 4 5 6; do
+              if curl --fail --location --silent --show-error --max-time 30 --retry 2 "$base/$file" -o "/tmp/neon-$file" && cmp -s "$file" "/tmp/neon-$file"; then
+                echo "PASS: deployed $file matches repository"
+                success=1
+                break
+              fi
+              echo "Attempt $attempt: Pages not yet identical; retrying..."
+              sleep 30
+            done
+            if [ "$success" -ne 1 ]; then
+              echo "::error::Deployed $file does not match the checked-out commit or is unavailable"
+              if [ -f "/tmp/neon-$file" ]; then
+                sha256sum "$file" "/tmp/neon-$file"
+              fi
+              exit 1
+            fi
+          done
