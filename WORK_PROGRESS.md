@@ -26,3 +26,10 @@
 - 기존 게임 코드 유지, wallet URL 전달 적용.
 - 미완료: 나머지 게임 페이지 메뉴 통일, 실제 GitHub Pages 렌더링 및 두 기기 실시간 대결 검증.
 - 1단계는 부분 반영 상태이며 최종 완료로 표시하지 않음.
+
+## 2026-11-20 단계 1 추가 작업
+- 공통 메뉴 적용: activity(98d5617d), bus(6311fdc4), egg-heist(c1bdc074), history(2a27f984), magic(473c5da6), save-pet(bde62055), sudoku(587ada5f), zoodoku(50f91c40).
+- 이전 index, stairs-preview 포함 10개 페이지 반영.
+- words.html 및 arrows.html: GitHub fetch_file 반환 콘텐츠가 비어 있어 수정하지 않음. 파일 삭제/덮어쓰기 금지.
+- 다음: 두 파일 안전하게 읽기, 페이지 렌더링 검증, 팝업 닫기/모바일 점검.
+- 실서비스 정상 동작은 아직 검증되지 않음.
