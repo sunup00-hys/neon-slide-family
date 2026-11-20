@@ -20,6 +20,16 @@ for (const file of files) {
     try { new vm.Script(source, { filename: file + ':inline-script-' + (i + 1) }); checked++; }
     catch (error) { console.error(error.message); failures++; }
   }
+  if (file === 'stairs-preview.html') {
+    const requiredIds = ['duelDialog', 'duelClose', 'duelBody', 'duelMessage', 'familyProfileDialog', 'familyProfileClose', 'recordDialog', 'recordClose', 'wardrobeStars'];
+    const missing = requiredIds.filter(id => !ids.includes(id));
+    if (missing.length) { console.error(file, 'missing required UI IDs:', missing.join(', ')); failures++; }
+    const duelScript = scripts.find(m => m[1].includes('data-stairs-duel-v1'))?.[2] ?? '';
+    const requiredDuelHooks = ['duelAccept', 'duelDecline', 'duelCancel', 'duelUser', 'duelDifficulty'];
+    const missingHooks = requiredDuelHooks.filter(hook => !duelScript.includes(hook));
+    if (missingHooks.length) { console.error(file, 'missing duel UI hooks:', missingHooks.join(', ')); failures++; }
+    console.log(file + ': duel modal required IDs and hooks checked');
+  }
   console.log(file + ': checked ' + checked + ' classic scripts; duplicate IDs ' + duplicateIds.length);
 }
 if (failures) process.exitCode = 1;
