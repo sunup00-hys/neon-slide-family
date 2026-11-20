@@ -90,3 +90,9 @@
 - stairs-preview.html의 일반 .page에 CSS zoom: .9 적용, immersive 전체 화면은 제외: a6ca044.
 - GitHub 파일 재조회로 스타일 저장 확인. 실제 모바일 렌더링 및 Pages 반영은 아직 검증하지 못함.
 - 별/기록/캐릭터 데이터 수정 없음.
+
+## 2026-11-20 사용자 요청: 대결 전체 화면 및 캐릭터 선택
+- stairs-preview.html: 기존 duel.viewActive 진입의 setLarge(true) 유지하여 대결은 immersive 전체 화면 강제.
+- 대결 HUD 상단에 '🎭 캐릭터 설정' 버튼 및 dialog 추가. 기존 #characters DOM을 임시 이동하여 원래 선택 이벤트와 캐릭터 데이터를 재사용, 닫으면 원위치. 대결 종료 시 dialog 정리.
+- 커밋 e23e4cb. GitHub 소스 재조회 후 classic inline JS 7/7 구문 검사 통과.
+- 실제 모바일 렌더링 및 2인 대결 서버 동작, Pages 배포 반영은 아직 검증하지 못함.
